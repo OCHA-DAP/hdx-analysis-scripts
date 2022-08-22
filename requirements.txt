@@ -1,1 +1,2 @@
 hdx-python-api
+mixpanel-utils
