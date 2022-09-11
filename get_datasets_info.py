@@ -48,7 +48,8 @@ def main():
             "update frequency",
             "organisation",
             "data link",
-            "url,",
+            "url",
+            "is cod",
             "tags",
             "private",
             "requestable",
@@ -85,7 +86,12 @@ def main():
             data_link = dataset.get_resource()["url"]
             requestable = "N"
         url = dataset.get_hdx_url()
-        tags = ", ".join(dataset.get_tags())
+        tags = dataset.get_tags()
+        if "common operational dataset - cod" in tags:
+            is_cod = "Y"
+        else:
+            is_cod = "N"
+        tags = ", ".join(tags)
         private = "Y" if dataset["private"] else "N"
         updated_by_script = dataset.get("updated_by_script", "")
         archived = "Y" if dataset["archived"] else "N"
@@ -103,6 +109,7 @@ def main():
             org,
             data_link,
             url,
+            is_cod,
             tags,
             private,
             requestable,
