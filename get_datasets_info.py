@@ -57,6 +57,9 @@ def main():
             "archived",
         )
     ]
+    created_per_month = dict()
+    metadata_updated_per_month = dict()
+    data_updated_per_month = dict()
     for dataset in datasets:
         dataset_id = dataset["id"]
         name = dataset["name"]
@@ -66,6 +69,12 @@ def main():
         created = dataset["metadata_created"]
         metadata_updated = dataset["metadata_modified"]
         data_updated = dataset["last_modified"]
+        year_month = created[:7]
+        created_per_month[year_month] = created_per_month.get(year_month, 0) + 1
+        year_month = metadata_updated[:7]
+        metadata_updated_per_month[year_month] = metadata_updated_per_month.get(year_month, 0) + 1
+        year_month = data_updated[:7]
+        data_updated_per_month[year_month] = data_updated_per_month.get(year_month, 0) + 1
         date_of_dataset = dataset.get_date_of_dataset()
         startdate = date_of_dataset["startdate_str"]
         if date_of_dataset["ongoing"]:
@@ -118,6 +127,14 @@ def main():
         )
         rows.append(row)
     write_list_to_csv("datasets.csv", rows, headers=1)
+    keys = set(created_per_month.keys())
+    keys.update(metadata_updated_per_month.keys())
+    keys.update(data_updated_per_month.keys())
+    rows = [("Year Month", "Created", "Metadata Updated", "Data Updated")]
+    for key in sorted(keys):
+        row = (key, created_per_month.get(key, ""), metadata_updated_per_month.get(key, ""), data_updated_per_month.get(key, ""))
+        rows.append(row)
+    write_list_to_csv("updates.csv", rows, headers=1)
 
 
 if __name__ == "__main__":
