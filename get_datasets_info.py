@@ -66,15 +66,17 @@ def main():
         title = dataset["title"]
         downloads_year = dataset_downloads.get(dataset_id, 0)
         downloads_alltime = dataset.get("total_res_downloads", "")
+        updated_by_script = dataset.get("updated_by_script", "")
         created = dataset["metadata_created"]
         metadata_updated = dataset["metadata_modified"]
         data_updated = dataset["last_modified"]
-        year_month = created[:7]
-        created_per_month[year_month] = created_per_month.get(year_month, 0) + 1
-        year_month = metadata_updated[:7]
-        metadata_updated_per_month[year_month] = metadata_updated_per_month.get(year_month, 0) + 1
-        year_month = data_updated[:7]
-        data_updated_per_month[year_month] = data_updated_per_month.get(year_month, 0) + 1
+        if not updated_by_script:
+            year_month = created[:7]
+            created_per_month[year_month] = created_per_month.get(year_month, 0) + 1
+            year_month = metadata_updated[:7]
+            metadata_updated_per_month[year_month] = metadata_updated_per_month.get(year_month, 0) + 1
+            year_month = data_updated[:7]
+            data_updated_per_month[year_month] = data_updated_per_month.get(year_month, 0) + 1
         date_of_dataset = dataset.get_date_of_dataset()
         startdate = date_of_dataset["startdate_str"]
         if date_of_dataset["ongoing"]:
@@ -102,7 +104,6 @@ def main():
             is_cod = "N"
         tags = ", ".join(tags)
         private = "Y" if dataset["private"] else "N"
-        updated_by_script = dataset.get("updated_by_script", "")
         archived = "Y" if dataset["archived"] else "N"
         row = (
             name,
@@ -134,7 +135,7 @@ def main():
     for key in sorted(keys):
         row = (key, created_per_month.get(key, ""), metadata_updated_per_month.get(key, ""), data_updated_per_month.get(key, ""))
         rows.append(row)
-    write_list_to_csv("updates.csv", rows, headers=1)
+    write_list_to_csv("non_script_updates.csv", rows, headers=1)
 
 
 if __name__ == "__main__":
