@@ -21,7 +21,7 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Run script
       run: |
-        python run.py --output_dir=org_stats
+        python get_org_stats.py --output_dir=org_stats
     - name: Deploy 🚀
       if: always()
       uses: JamesIves/github-pages-deploy-action@v4
