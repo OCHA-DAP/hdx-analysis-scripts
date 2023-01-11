@@ -20,6 +20,9 @@ jobs:
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Run script
+      env:
+        PREPREFIX: ${{ secrets.PREPREFIX }}
+        USER_AGENT: ${{ secrets.USER_AGENT }}
       run: |
         python get_org_stats.py --output_dir=org_stats
     - name: Deploy 🚀
