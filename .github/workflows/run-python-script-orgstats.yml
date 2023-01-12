@@ -23,6 +23,9 @@ jobs:
       env:
         PREPREFIX: ${{ secrets.PREPREFIX }}
         USER_AGENT: ${{ secrets.USER_AGENT }}
+        MIXPANEL_API_SECRET: ${{ secrets.MIXPANEL_API_SECRET }}
+        MIXPANEL_PROJECT_ID: ${{ secrets.MIXPANEL_PROJECT_ID }}
+        MIXPANEL_TOKEN: ${{ secrets.MIXPANEL_TOKEN }}
       run: |
         python get_org_stats.py --output_dir=org_stats
     - name: Deploy 🚀
