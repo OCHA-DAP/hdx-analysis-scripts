@@ -22,12 +22,12 @@ lookup = "hdx-analysis-scripts"
 
 def get_mixpanel_downloads(mixpanel_config_yaml, start_date, end_date):
     logger.info("Getting downloads from MixPanel")
-    if mixpanel_config_yaml:
+    try:
         mixpanel_config = load_yaml(mixpanel_config_yaml)
         api_secret = mixpanel_config["api_secret"]
         project_id = mixpanel_config["project_id"]
         token = mixpanel_config["token"]
-    else:
+    except FileNotFoundError:
         api_secret = getenv("MIXPANEL_API_SECRET")
         project_id = getenv("MIXPANEL_PROJECT_ID")
         token = getenv("MIXPANEL_TOKEN")
