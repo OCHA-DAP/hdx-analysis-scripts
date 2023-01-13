@@ -1,6 +1,6 @@
 import argparse
 import logging
-from os import getenv, mkdir
+from os import mkdir
 from os.path import expanduser, join
 from shutil import rmtree
 
@@ -12,51 +12,12 @@ from hdx.facades.keyword_arguments import facade
 from hdx.utilities.dateparse import now_utc, parse_date
 from hdx.utilities.dictandlist import dict_of_lists_add, write_list_to_csv
 from hdx.utilities.downloader import Download
-from hdx.utilities.loader import load_yaml
-from mixpanel_utils import MixpanelUtils
+
+from mixpanel_downloads import get_mixpanel_downloads
 
 logger = logging.getLogger()
 
 lookup = "hdx-analysis-scripts"
-
-
-def get_mixpanel_downloads(mixpanel_config_yaml, start_date, end_date):
-    logger.info("Getting downloads from MixPanel")
-    try:
-        mixpanel_config = load_yaml(mixpanel_config_yaml)
-        api_secret = mixpanel_config["api_secret"]
-        project_id = mixpanel_config["project_id"]
-        token = mixpanel_config["token"]
-    except FileNotFoundError:
-        api_secret = getenv("MIXPANEL_API_SECRET")
-        project_id = getenv("MIXPANEL_PROJECT_ID")
-        token = getenv("MIXPANEL_TOKEN")
-    mputils = MixpanelUtils(
-        api_secret=api_secret,
-        project_id=project_id,
-        token=token,
-    )
-    start_date_str = start_date.strftime("%Y-%m-%d")
-    end_date_str = end_date.strftime("%Y-%m-%d")
-    jql_query = """
-    function main() {
-      return Events({
-        from_date: '%s',
-        to_date: '%s',
-        event_selectors: [{event: "resource download"}]
-      })
-      .groupByUser(["properties.resource id","properties.dataset id",mixpanel.numeric_bucket('time',mixpanel.daily_time_buckets)],mixpanel.reducer.null())
-      .groupBy(["key.2"], mixpanel.reducer.count())
-        .map(function(r){
-        return [
-          r.key[0], r.value
-        ];
-      });
-    }""" % (
-        start_date_str,
-        end_date_str,
-    )
-    return dict(mputils.query_jql(jql_query))
 
 
 def main(output_dir, mixpanel_config_yaml, **ignore):
@@ -85,6 +46,7 @@ def main(output_dir, mixpanel_config_yaml, **ignore):
         organisations = dict()
         logger.info("Getting all organisation names")
         organisation_names = Organization.get_all_organization_names()
+        logger.info("Getting downloads from MixPanel")
         dataset_downloads = get_mixpanel_downloads(
             mixpanel_config_yaml, last_year, today
         )

@@ -1,45 +1,42 @@
+import argparse
+import logging
+from os import mkdir
 from os.path import expanduser, join
+from shutil import rmtree
 
+from dateutil.relativedelta import relativedelta
 from hdx.data.dataset import Dataset
-from hdx.facades.simple import facade
+from hdx.facades.keyword_arguments import facade
+from hdx.utilities.dateparse import now_utc
 from hdx.utilities.dictandlist import write_list_to_csv
-from hdx.utilities.loader import load_yaml
-from mixpanel_utils import MixpanelUtils
+
+from mixpanel_downloads import get_mixpanel_downloads
+
+logger = logging.getLogger()
+
+lookup = "hdx-analysis-scripts"
 
 
-def main():
-    home_folder = expanduser("~")
-    configuration = load_yaml(join(home_folder, ".mixpanel.yml"))
-    mputils = MixpanelUtils(
-        configuration["api_secret"],
-        project_id=configuration["project_id"],
-        token=configuration["token"],
+def main(output_dir, mixpanel_config_yaml, **ignore):
+    rmtree(output_dir, ignore_errors=True)
+    mkdir(output_dir)
+
+    today = now_utc()
+    five_years_ago = today - relativedelta(years=5)
+
+    logger.info("Getting downloads from MixPanel")
+    dataset_downloads = get_mixpanel_downloads(
+        mixpanel_config_yaml, five_years_ago, today
     )
 
-    jql_query = """
-    function main() {
-      return Events({
-        from_date: '2017-01-01',
-        to_date: '2022-12-31',
-        event_selectors: [{event: "resource download"}]
-      })
-      .groupByUser(["properties.resource id","properties.dataset id",mixpanel.numeric_bucket('time',mixpanel.daily_time_buckets)],mixpanel.reducer.null())
-      .groupBy(["key.2"], mixpanel.reducer.count())
-        .map(function(r){
-        return [
-          r.key[0], r.value
-        ];
-      });
-    }"""
-
-    dataset_downloads = dict(mputils.query_jql(jql_query))
+    logger.info("Examining all datasets")
     datasets = Dataset.get_all_datasets()
     rows = [
         (
             "name",
             "title",
-            "downloads since 2017",
             "downloads all time",
+            "downloads last 5 years",
             "date created",
             "date metadata updated",
             "date data updated",
@@ -64,7 +61,7 @@ def main():
         dataset_id = dataset["id"]
         name = dataset["name"]
         title = dataset["title"]
-        downloads_year = dataset_downloads.get(dataset_id, 0)
+        downloads_5years = dataset_downloads.get(dataset_id, 0)
         downloads_alltime = dataset.get("total_res_downloads", "")
         updated_by_script = dataset.get("updated_by_script", "")
         created = dataset["metadata_created"]
@@ -108,8 +105,8 @@ def main():
         row = (
             name,
             title,
-            downloads_year,
             downloads_alltime,
+            downloads_5years,
             created,
             metadata_updated,
             data_updated,
@@ -127,7 +124,10 @@ def main():
             archived,
         )
         rows.append(row)
-    write_list_to_csv("datasets.csv", rows, headers=1)
+    if rows:
+        filepath = join(output_dir, "datasets.csv")
+        logger.info(f"Writing rows to {filepath}")
+        write_list_to_csv(filepath, rows, headers=1)
     keys = set(created_per_month.keys())
     keys.update(metadata_updated_per_month.keys())
     keys.update(data_updated_per_month.keys())
@@ -135,8 +135,24 @@ def main():
     for key in sorted(keys):
         row = (key, created_per_month.get(key, ""), metadata_updated_per_month.get(key, ""), data_updated_per_month.get(key, ""))
         rows.append(row)
-    write_list_to_csv("non_script_updates.csv", rows, headers=1)
+    if rows:
+        filepath = join(output_dir, "non_script_updates.csv")
+        logger.info(f"Writing rows to {filepath}")
+        write_list_to_csv(filepath, rows, headers=1)
 
 
 if __name__ == "__main__":
-    facade(main, hdx_site="prod", user_agent="test")
+    parser = argparse.ArgumentParser(description="Datasets Info script")
+    parser.add_argument("-od", "--output_dir", default="output", help="Output folder")
+    args = parser.parse_args()
+    home_folder = expanduser("~")
+    facade(
+        main,
+        hdx_read_only=True,
+        hdx_site="prod",
+        user_agent_config_yaml=join(home_folder, ".useragents.yml"),
+        user_agent_lookup=lookup,
+        project_config_yaml=join("config", "project_configuration.yml"),
+        output_dir=args.output_dir,
+        mixpanel_config_yaml=join(home_folder, ".mixpanel.yml"),
+    )
