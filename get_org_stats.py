@@ -72,7 +72,12 @@ def main(output_dir, mixpanel_config_yaml, **ignore):
             downloads_last_year = dataset_downloads.get(dataset["id"], 0)
             organisation["downloads last year"] += downloads_last_year
             organisation["datasets"] += 1
-            data_updated = parse_date(dataset["last_modified"])
+            data_updated = dataset.get("last_modified")
+            if not data_updated:
+                name = dataset["name"]
+                logger.error(f"Dataset {name} has no last modified field!")
+                continue
+            data_updated = parse_date(data_updated)
             if data_updated > last_quarter and data_updated <= today:
                 organisation["Updated last 3 months"] = "Yes"
             if dataset["name"] in dataset_name_to_explorers:

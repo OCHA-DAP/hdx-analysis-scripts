@@ -10,9 +10,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Set up Python 3.x
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: 3.x
     - name: Install dependencies
@@ -37,7 +37,7 @@ jobs:
         target-folder: org_stats
     - name: Send mail
       if: failure()
-      uses: dawidd6/action-send-mail@v2
+      uses: dawidd6/action-send-mail@v3
       with:
         server_address: ${{secrets.EMAIL_SERVER}}
         server_port: ${{secrets.EMAIL_PORT}}

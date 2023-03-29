@@ -1,2 +1,2 @@
-hdx-python-api==5.9.5
+hdx-python-api==5.9.9
 mixpanel-utils

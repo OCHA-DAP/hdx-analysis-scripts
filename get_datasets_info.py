@@ -40,8 +40,8 @@ def main(output_dir, mixpanel_config_yaml, **ignore):
             "date created",
             "date metadata updated",
             "date data updated",
-            "dataset start date",
-            "dataset end date",
+            "reference period start",
+            "reference period end",
             "update frequency",
             "organisation",
             "data link",
@@ -66,7 +66,10 @@ def main(output_dir, mixpanel_config_yaml, **ignore):
         updated_by_script = dataset.get("updated_by_script", "")
         created = dataset["metadata_created"]
         metadata_updated = dataset["metadata_modified"]
-        data_updated = dataset["last_modified"]
+        data_updated = dataset.get("last_modified")
+        if not data_updated:
+            logger.error(f"Dataset {name} has no last modified field!")
+            continue
         if not updated_by_script:
             year_month = created[:7]
             created_per_month[year_month] = created_per_month.get(year_month, 0) + 1
@@ -74,12 +77,12 @@ def main(output_dir, mixpanel_config_yaml, **ignore):
             metadata_updated_per_month[year_month] = metadata_updated_per_month.get(year_month, 0) + 1
             year_month = data_updated[:7]
             data_updated_per_month[year_month] = data_updated_per_month.get(year_month, 0) + 1
-        date_of_dataset = dataset.get_date_of_dataset()
-        startdate = date_of_dataset["startdate_str"]
-        if date_of_dataset["ongoing"]:
+        reference_period = dataset.get_reference_period()
+        startdate = reference_period["startdate_str"]
+        if reference_period["ongoing"]:
             enddate = "ongoing"
         else:
-            enddate = date_of_dataset["enddate_str"]
+            enddate = reference_period["enddate_str"]
         update_frequency = dataset.get("data_update_frequency", "")
         org = dataset.get("organization")
         if org:
@@ -94,11 +97,12 @@ def main(output_dir, mixpanel_config_yaml, **ignore):
             data_link = dataset.get_resource()["url"]
             requestable = "N"
         url = dataset.get_hdx_url()
-        tags = dataset.get_tags()
-        if "common operational dataset - cod" in tags:
+        cod_level = dataset.get("cod_level")
+        if cod_level:
             is_cod = "Y"
         else:
             is_cod = "N"
+        tags = dataset.get_tags()
         tags = ", ".join(tags)
         private = "Y" if dataset["private"] else "N"
         archived = "Y" if dataset["archived"] else "N"
