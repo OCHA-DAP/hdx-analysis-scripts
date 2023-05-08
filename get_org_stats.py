@@ -94,7 +94,7 @@ def main(output_dir, mixpanel_config_yaml, **ignore):
             "Downloads all time",
             "Downloads last year",
             "Datasets",
-            "% API",
+            "% Scripted",
             "Followers",
             "Updated last 3 months",
             "In Explorer or Grid",
