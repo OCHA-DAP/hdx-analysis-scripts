@@ -12,7 +12,7 @@ from hdx.facades.keyword_arguments import facade
 from hdx.utilities.dateparse import now_utc, parse_date
 from hdx.utilities.dictandlist import dict_of_lists_add, write_list_to_csv
 from hdx.utilities.downloader import Download
-
+from hdx.utilities.text import get_fraction_str
 from mixpanel_downloads import get_mixpanel_downloads
 
 logger = logging.getLogger()
@@ -59,6 +59,7 @@ def main(output_dir, mixpanel_config_yaml, **ignore):
             organisation["downloads all time"] = 0
             organisation["downloads last year"] = 0
             organisation["datasets"] = 0
+            organisation["updated_by_script"] = 0
             organisation["Updated last 3 months"] = "No"
             organisation["In explorer or grid"] = "No"
         logger.info("Examining all datasets")
@@ -82,6 +83,10 @@ def main(output_dir, mixpanel_config_yaml, **ignore):
                 organisation["Updated last 3 months"] = "Yes"
             if dataset["name"] in dataset_name_to_explorers:
                 organisation["In explorer or grid"] = "Yes"
+            updated_by_script = dataset.get("updated_by_script")
+            if updated_by_script:
+                organisation["updated_by_script"] += 1
+
         headers = [
             "Organisation name",
             "Organisation title",
@@ -89,6 +94,7 @@ def main(output_dir, mixpanel_config_yaml, **ignore):
             "Downloads all time",
             "Downloads last year",
             "Datasets",
+            "% API",
             "Followers",
             "Updated last 3 months",
             "In Explorer or Grid",
@@ -97,6 +103,11 @@ def main(output_dir, mixpanel_config_yaml, **ignore):
         rows = list()
         for organisation_name in sorted(organisations):
             organisation = organisations[organisation_name]
+            percentage_api = get_fraction_str(
+                organisation["updated_by_script"] * 100,
+                organisation["datasets"],
+                format="%.0f",
+            )
             row = [
                 organisation_name,
                 organisation["title"],
@@ -104,6 +115,7 @@ def main(output_dir, mixpanel_config_yaml, **ignore):
                 organisation["downloads all time"],
                 organisation["downloads last year"],
                 organisation["datasets"],
+                percentage_api,
                 organisation["num_followers"],
                 organisation["Updated last 3 months"],
                 organisation["In explorer or grid"],
