@@ -58,21 +58,29 @@ def main(output_dir, mixpanel_config_yaml, **ignore):
             organisation["orgtype"] = organisation_type
             organisation["downloads all time"] = 0
             organisation["downloads last year"] = 0
-            organisation["datasets"] = 0
+            organisation["public datasets"] = 0
+            organisation["requestable datasets"] = 0
+            organisation["private datasets"] = 0
             organisation["updated_by_script"] = 0
             organisation["Updated last 3 months"] = "No"
             organisation["In explorer or grid"] = "No"
         logger.info("Examining all datasets")
         for dataset in Dataset.get_all_datasets():
+            is_public = False
             if dataset["private"]:
+                organisation["private datasets"] += 1
                 continue
+            elif dataset.is_requestable():
+                organisation["requestable datasets"] += 1
+            else:
+                is_public = True
+                organisation["public datasets"] += 1
             organisation_name = dataset["organization"]["name"]
             organisation = organisations[organisation_name]
             downloads_all_time = dataset["total_res_downloads"]
             organisation["downloads all time"] += downloads_all_time
             downloads_last_year = dataset_downloads.get(dataset["id"], 0)
             organisation["downloads last year"] += downloads_last_year
-            organisation["datasets"] += 1
             data_updated = dataset.get("last_modified")
             if not data_updated:
                 name = dataset["name"]
@@ -84,7 +92,9 @@ def main(output_dir, mixpanel_config_yaml, **ignore):
             if dataset["name"] in dataset_name_to_explorers:
                 organisation["In explorer or grid"] = "Yes"
             updated_by_script = dataset.get("updated_by_script")
-            if updated_by_script:
+            if is_public and updated_by_script:
+                if "tagbot" in updated_by_script and "HDXINTERNAL" in updated_by_script:
+                    continue
                 organisation["updated_by_script"] += 1
 
         headers = [
@@ -93,11 +103,13 @@ def main(output_dir, mixpanel_config_yaml, **ignore):
             "Org type",
             "Downloads all time",
             "Downloads last year",
-            "Datasets",
-            "% Scripted",
+            "Public datasets",
+            "Requestable datasets",
+            "Private datasets",
+            "% of public scripted",
             "Followers",
             "Updated last 3 months",
-            "In Explorer or Grid",
+            "In explorer or grid",
         ]
         logger.info("Generating rows")
         rows = list()
@@ -105,7 +117,7 @@ def main(output_dir, mixpanel_config_yaml, **ignore):
             organisation = organisations[organisation_name]
             percentage_api = get_fraction_str(
                 organisation["updated_by_script"] * 100,
-                organisation["datasets"],
+                organisation["public datasets"],
                 format="%.0f",
             )
             row = [
@@ -114,7 +126,9 @@ def main(output_dir, mixpanel_config_yaml, **ignore):
                 organisation["orgtype"],
                 organisation["downloads all time"],
                 organisation["downloads last year"],
-                organisation["datasets"],
+                organisation["public datasets"],
+                organisation["requestable datasets"],
+                organisation["private datasets"],
                 percentage_api,
                 organisation["num_followers"],
                 organisation["Updated last 3 months"],
