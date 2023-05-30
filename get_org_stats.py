@@ -9,7 +9,7 @@ from hdx.api.configuration import Configuration
 from hdx.data.dataset import Dataset
 from hdx.data.organization import Organization
 from hdx.facades.keyword_arguments import facade
-from hdx.utilities.dateparse import now_utc, parse_date
+from hdx.utilities.dateparse import default_date, now_utc, parse_date
 from hdx.utilities.dictandlist import dict_of_lists_add, write_list_to_csv
 from hdx.utilities.downloader import Download
 from hdx.utilities.text import get_fraction_str
@@ -61,9 +61,12 @@ def main(output_dir, mixpanel_config_yaml, **ignore):
             organisation["public datasets"] = 0
             organisation["requestable datasets"] = 0
             organisation["private datasets"] = 0
-            organisation["updated_by_script"] = 0
-            organisation["Updated last 3 months"] = "No"
-            organisation["In explorer or grid"] = "No"
+            organisation["archived datasets"] = 0
+            organisation["updated by script"] = 0
+            organisation["any updated last 3 months"] = "No"
+            organisation["public updated last 3 months"] = "No"
+            organisation["latest scripted update date"] = default_date
+            organisation["in explorer or grid"] = "No"
         logger.info("Examining all datasets")
         for dataset in Dataset.get_all_datasets():
             is_public = False
@@ -72,6 +75,8 @@ def main(output_dir, mixpanel_config_yaml, **ignore):
                 continue
             elif dataset.is_requestable():
                 organisation["requestable datasets"] += 1
+            elif dataset["archived"]:
+                organisation["archived datasets"] += 1
             else:
                 is_public = True
                 organisation["public datasets"] += 1
@@ -88,14 +93,22 @@ def main(output_dir, mixpanel_config_yaml, **ignore):
                 continue
             data_updated = parse_date(data_updated)
             if data_updated > last_quarter and data_updated <= today:
-                organisation["Updated last 3 months"] = "Yes"
+                organisation["any updated last 3 months"] = "Yes"
+                if is_public:
+                    organisation["public updated last 3 months"] = "Yes"
             if dataset["name"] in dataset_name_to_explorers:
-                organisation["In explorer or grid"] = "Yes"
+                organisation["in explorer or grid"] = "Yes"
             updated_by_script = dataset.get("updated_by_script")
-            if is_public and updated_by_script:
-                if "tagbot" in updated_by_script and "HDXINTERNAL" in updated_by_script:
-                    continue
-                organisation["updated_by_script"] += 1
+            if updated_by_script:
+                if data_updated > organisation["latest scripted update date"]:
+                    organisation["latest scripted update date"] = data_updated
+                if is_public:
+                    if (
+                        "tagbot" in updated_by_script
+                        and "HDXINTERNAL" in updated_by_script
+                    ):
+                        continue
+                    organisation["updated by script"] += 1
 
         headers = [
             "Organisation name",
@@ -106,9 +119,12 @@ def main(output_dir, mixpanel_config_yaml, **ignore):
             "Public datasets",
             "Requestable datasets",
             "Private datasets",
+            "Archived datasets",
             "% of public scripted",
             "Followers",
-            "Updated last 3 months",
+            "Any updated last 3 months",
+            "Public updated last 3 months",
+            "Latest scripted update date",
             "In explorer or grid",
         ]
         logger.info("Generating rows")
@@ -116,10 +132,17 @@ def main(output_dir, mixpanel_config_yaml, **ignore):
         for organisation_name in sorted(organisations):
             organisation = organisations[organisation_name]
             percentage_api = get_fraction_str(
-                organisation["updated_by_script"] * 100,
+                organisation["updated by script"] * 100,
                 organisation["public datasets"],
                 format="%.0f",
             )
+            latest_scripted_update_date = organisation["latest scripted update date"]
+            if latest_scripted_update_date == default_date:
+                latest_scripted_update_date = None
+            else:
+                latest_scripted_update_date = (
+                    latest_scripted_update_date.date().isoformat()
+                )
             row = [
                 organisation_name,
                 organisation["title"],
@@ -129,10 +152,13 @@ def main(output_dir, mixpanel_config_yaml, **ignore):
                 organisation["public datasets"],
                 organisation["requestable datasets"],
                 organisation["private datasets"],
+                organisation["archived datasets"],
                 percentage_api,
                 organisation["num_followers"],
-                organisation["Updated last 3 months"],
-                organisation["In explorer or grid"],
+                organisation["any updated last 3 months"],
+                organisation["public updated last 3 months"],
+                latest_scripted_update_date,
+                organisation["in explorer or grid"],
             ]
             rows.append(row)
         if rows:
