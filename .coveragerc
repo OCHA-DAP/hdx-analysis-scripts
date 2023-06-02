@@ -1,0 +1,14 @@
+[run]
+relative_files = True
+
+[report]
+omit =
+    */run.py
+    */python?.?/*
+    */venv/*
+    */site-packages/*
+    */tests/*
+    *__init__*
+
+exclude_lines =
+    if __name__ == '__main__':
