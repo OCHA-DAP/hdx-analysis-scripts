@@ -4,33 +4,23 @@ from os import mkdir
 from os.path import expanduser, join
 from shutil import rmtree
 
-from dateutil.relativedelta import relativedelta
-from hdx.data.dataset import Dataset
+from downloads import Downloads
 from hdx.facades.keyword_arguments import facade
 from hdx.utilities.dateparse import now_utc
 from hdx.utilities.dictandlist import write_list_to_csv
 
-from mixpanel_downloads import get_mixpanel_downloads
-
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 
 lookup = "hdx-analysis-scripts"
 
 
-def main(output_dir, mixpanel_config_yaml, **ignore):
+def main(downloads, output_dir, **ignore):
     rmtree(output_dir, ignore_errors=True)
     mkdir(output_dir)
 
-    today = now_utc()
-    five_years_ago = today - relativedelta(years=5)
+    dataset_downloads = downloads.get_mixpanel_downloads(5)
 
-    logger.info("Getting downloads from MixPanel")
-    dataset_downloads = get_mixpanel_downloads(
-        mixpanel_config_yaml, five_years_ago, today
-    )
-
-    logger.info("Examining all datasets")
-    datasets = Dataset.get_all_datasets()
+    datasets = downloads.get_all_datasets()
     rows = [
         (
             "name",
@@ -74,9 +64,13 @@ def main(output_dir, mixpanel_config_yaml, **ignore):
             year_month = created[:7]
             created_per_month[year_month] = created_per_month.get(year_month, 0) + 1
             year_month = metadata_updated[:7]
-            metadata_updated_per_month[year_month] = metadata_updated_per_month.get(year_month, 0) + 1
+            metadata_updated_per_month[year_month] = (
+                metadata_updated_per_month.get(year_month, 0) + 1
+            )
             year_month = data_updated[:7]
-            data_updated_per_month[year_month] = data_updated_per_month.get(year_month, 0) + 1
+            data_updated_per_month[year_month] = (
+                data_updated_per_month.get(year_month, 0) + 1
+            )
         reference_period = dataset.get_reference_period()
         startdate = reference_period["startdate_str"]
         if reference_period["ongoing"]:
@@ -137,7 +131,12 @@ def main(output_dir, mixpanel_config_yaml, **ignore):
     keys.update(data_updated_per_month.keys())
     rows = [("Year Month", "Created", "Metadata Updated", "Data Updated")]
     for key in sorted(keys):
-        row = (key, created_per_month.get(key, ""), metadata_updated_per_month.get(key, ""), data_updated_per_month.get(key, ""))
+        row = (
+            key,
+            created_per_month.get(key, ""),
+            metadata_updated_per_month.get(key, ""),
+            data_updated_per_month.get(key, ""),
+        )
         rows.append(row)
     if rows:
         filepath = join(output_dir, "non_script_updates.csv")
@@ -148,8 +147,14 @@ def main(output_dir, mixpanel_config_yaml, **ignore):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Datasets Info script")
     parser.add_argument("-od", "--output_dir", default="output", help="Output folder")
+    parser.add_argument(
+        "-sd", "--saved_dir", default=None, help="Dir for downloaded data"
+    )
     args = parser.parse_args()
     home_folder = expanduser("~")
+    today = now_utc()
+    mixpanel_config_yaml = join(home_folder, ".mixpanel.yml")
+    downloads = Downloads(today, mixpanel_config_yaml, args.saved_dir)
     facade(
         main,
         hdx_read_only=True,
@@ -157,6 +162,6 @@ if __name__ == "__main__":
         user_agent_config_yaml=join(home_folder, ".useragents.yml"),
         user_agent_lookup=lookup,
         project_config_yaml=join("config", "project_configuration.yml"),
+        downloads=downloads,
         output_dir=args.output_dir,
-        mixpanel_config_yaml=join(home_folder, ".mixpanel.yml"),
     )
