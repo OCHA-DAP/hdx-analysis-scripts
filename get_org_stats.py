@@ -50,6 +50,8 @@ def main(downloads, output_dir, **ignore):
         organisation["latest scripted update date"] = default_date
         organisation["in explorer or grid"] = "No"
     for dataset in downloads.get_all_datasets():
+        organisation_name = dataset["organization"]["name"]
+        organisation = organisations[organisation_name]
         is_public = False
         if dataset["private"]:
             organisation["private datasets"] += 1
@@ -61,8 +63,6 @@ def main(downloads, output_dir, **ignore):
         else:
             is_public = True
             organisation["public datasets"] += 1
-        organisation_name = dataset["organization"]["name"]
-        organisation = organisations[organisation_name]
         downloads_all_time = dataset["total_res_downloads"]
         organisation["downloads all time"] += downloads_all_time
         downloads_last_year = dataset_downloads.get(dataset["id"], 0)
