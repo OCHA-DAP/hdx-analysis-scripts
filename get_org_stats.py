@@ -1,9 +1,12 @@
 import argparse
 import logging
+import re
+from datetime import timedelta
 from os import mkdir
 from os.path import expanduser, join
 from shutil import rmtree
 
+from dateutil.parser import ParserError
 from dateutil.relativedelta import relativedelta
 from downloads import Downloads
 from hdx.api.configuration import Configuration
@@ -15,6 +18,8 @@ from hdx.utilities.text import get_fraction_str
 logger = logging.getLogger(__name__)
 
 lookup = "hdx-analysis-scripts"
+
+bracketed_date = re.compile(r"\((.*)\)")
 
 
 def main(downloads, output_dir, **ignore):
@@ -45,11 +50,15 @@ def main(downloads, output_dir, **ignore):
         organisation["private datasets"] = 0
         organisation["archived datasets"] = 0
         organisation["updated by script"] = 0
+        organisation["old updated by script"] = 0
         organisation["any updated last 3 months"] = "No"
-        organisation["public updated last 3 months"] = "No"
+        organisation["any public updated last 3 months"] = "No"
+        organisation["public live datasets"] = 0
+        organisation["public ongoing datasets"] = 0
         organisation["latest scripted update date"] = default_date
         organisation["in explorer or grid"] = "No"
     for dataset in downloads.get_all_datasets():
+        name = dataset["name"]
         organisation_name = dataset["organization"]["name"]
         organisation = organisations[organisation_name]
         is_public = False
@@ -69,24 +78,64 @@ def main(downloads, output_dir, **ignore):
         organisation["downloads last year"] += downloads_last_year
         data_updated = dataset.get("last_modified")
         if not data_updated:
-            name = dataset["name"]
             logger.error(f"Dataset {name} has no last modified field!")
             continue
-        data_updated = parse_date(data_updated)
+        data_updated = parse_date(data_updated, include_microseconds=True)
         if data_updated > last_quarter and data_updated <= downloads.today:
             organisation["any updated last 3 months"] = "Yes"
             if is_public:
-                organisation["public updated last 3 months"] = "Yes"
-        if dataset["name"] in dataset_name_to_explorers:
+                organisation["any public updated last 3 months"] = "Yes"
+        if is_public:
+            update_frequency = dataset.get_expected_update_frequency()
+            if update_frequency == "Live":
+                organisation["public live datasets"] += 1
+            reference_period = dataset.get_reference_period()
+            if reference_period["ongoing"]:
+                organisation["public ongoing datasets"] += 1
+        if name in dataset_name_to_explorers:
             organisation["in explorer or grid"] = "Yes"
         updated_by_script = dataset.get("updated_by_script")
         if updated_by_script:
             if data_updated > organisation["latest scripted update date"]:
                 organisation["latest scripted update date"] = data_updated
             if is_public:
-                if "tagbot" in updated_by_script and "HDXINTERNAL" in updated_by_script:
+                if "HDXINTERNAL" in updated_by_script:
+                    if any(
+                        x in updated_by_script
+                        for x in ("tagbot", "CODs")
+                    ):
+                        continue
+                if any(
+                    x in updated_by_script
+                    for x in (
+                        "HDXPythonLibrary/5.4.8-test (2022-01-04",
+                        "HDXPythonLibrary/5.4.1-test (2021-11-17",
+                    )
+                ):  # Mike maintainer bulk change
                     continue
-                organisation["updated by script"] += 1
+                match = bracketed_date.search(updated_by_script)
+                if match is None:
+                    continue
+                else:
+                    try:
+                        updated_by_script = parse_date(
+                            match.group(1), include_microseconds=True
+                        )
+                        if updated_by_script > data_updated:
+                            organisation["updated by script"] += 1
+                            difference = updated_by_script - data_updated
+                            if difference > timedelta(hours=1):
+                                logger.warning(
+                                    f"updated_by_script is significantly after last_modified for {name}!"
+                                )
+                            continue
+                        difference = data_updated - updated_by_script
+                        if difference < timedelta(hours=1):
+                            organisation["updated by script"] += 1
+                        else:
+                            organisation["old updated by script"] += 1
+                    except ParserError:
+                        continue
 
     headers = [
         "Organisation name",
@@ -99,9 +148,12 @@ def main(downloads, output_dir, **ignore):
         "Private datasets",
         "Archived datasets",
         "% of public scripted",
+        "% of public old scripted",
+        "% of public live",
+        "% of public ongoing",
         "Followers",
         "Any updated last 3 months",
-        "Public updated last 3 months",
+        "Any public updated last 3 months",
         "Latest scripted update date",
         "In explorer or grid",
     ]
@@ -111,6 +163,21 @@ def main(downloads, output_dir, **ignore):
         organisation = organisations[organisation_name]
         percentage_api = get_fraction_str(
             organisation["updated by script"] * 100,
+            organisation["public datasets"],
+            format="%.0f",
+        )
+        percentage_old_api = get_fraction_str(
+            organisation["old updated by script"] * 100,
+            organisation["public datasets"],
+            format="%.0f",
+        )
+        percentage_live = get_fraction_str(
+            organisation["public live datasets"] * 100,
+            organisation["public datasets"],
+            format="%.0f",
+        )
+        percentage_ongoing = get_fraction_str(
+            organisation["public ongoing datasets"] * 100,
             organisation["public datasets"],
             format="%.0f",
         )
@@ -130,9 +197,12 @@ def main(downloads, output_dir, **ignore):
             organisation["private datasets"],
             organisation["archived datasets"],
             percentage_api,
+            percentage_old_api,
+            percentage_live,
+            percentage_ongoing,
             organisation["num_followers"],
             organisation["any updated last 3 months"],
-            organisation["public updated last 3 months"],
+            organisation["any public updated last 3 months"],
             latest_scripted_update_date,
             organisation["in explorer or grid"],
         ]
