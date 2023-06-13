@@ -49,6 +49,7 @@ def main(downloads, output_dir, **ignore):
         organisation["requestable datasets"] = 0
         organisation["private datasets"] = 0
         organisation["archived datasets"] = 0
+        organisation["updated by cod script"] = 0
         organisation["updated by script"] = 0
         organisation["old updated by script"] = 0
         organisation["any updated last 3 months"] = "No"
@@ -100,10 +101,7 @@ def main(downloads, output_dir, **ignore):
                 organisation["latest scripted update date"] = data_updated
             if is_public:
                 if "HDXINTERNAL" in updated_by_script:
-                    if any(
-                        x in updated_by_script
-                        for x in ("tagbot", "CODs")
-                    ):
+                    if any(x in updated_by_script for x in ("tagbot",)):
                         continue
                 if any(
                     x in updated_by_script
@@ -112,6 +110,13 @@ def main(downloads, output_dir, **ignore):
                         "HDXPythonLibrary/5.4.1-test (2021-11-17",
                     )
                 ):  # Mike maintainer bulk change
+                    continue
+                if (
+                    "HDXINTERNAL" in updated_by_script
+                    and "CODs" in updated_by_script
+                    and "cod_level" in dataset
+                ):
+                    organisation["updated by cod script"] += 1
                     continue
                 match = bracketed_date.search(updated_by_script)
                 if match is None:
@@ -147,8 +152,9 @@ def main(downloads, output_dir, **ignore):
         "Requestable datasets",
         "Private datasets",
         "Archived datasets",
-        "% of public scripted",
-        "% of public old scripted",
+        "% of public cod scripted",
+        "% of public non-cod scripted",
+        "% of public previous scripted",
         "% of public live",
         "% of public ongoing",
         "Followers",
@@ -161,6 +167,11 @@ def main(downloads, output_dir, **ignore):
     rows = list()
     for organisation_name in sorted(organisations):
         organisation = organisations[organisation_name]
+        percentage_cod = get_fraction_str(
+            organisation["updated by cod script"] * 100,
+            organisation["public datasets"],
+            format="%.0f",
+        )
         percentage_api = get_fraction_str(
             organisation["updated by script"] * 100,
             organisation["public datasets"],
@@ -196,6 +207,7 @@ def main(downloads, output_dir, **ignore):
             organisation["requestable datasets"],
             organisation["private datasets"],
             organisation["archived datasets"],
+            percentage_cod,
             percentage_api,
             percentage_old_api,
             percentage_live,
