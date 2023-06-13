@@ -58,6 +58,7 @@ def main(downloads, output_dir, **ignore):
         organisation["public ongoing datasets"] = 0
         organisation["latest scripted update date"] = default_date
         organisation["in explorer or grid"] = "No"
+    outdated_lastmodifieds = {}
     for dataset in downloads.get_all_datasets():
         name = dataset["name"]
         organisation_name = dataset["organization"]["name"]
@@ -130,8 +131,8 @@ def main(downloads, output_dir, **ignore):
                             organisation["updated by script"] += 1
                             difference = updated_by_script - data_updated
                             if difference > timedelta(hours=1):
-                                logger.warning(
-                                    f"updated_by_script is significantly after last_modified for {name}!"
+                                dict_of_lists_add(
+                                    outdated_lastmodifieds, organisation_name, name
                                 )
                             continue
                         difference = data_updated - updated_by_script
@@ -223,6 +224,20 @@ def main(downloads, output_dir, **ignore):
         filepath = join(output_dir, "org_stats.csv")
         logger.info(f"Writing rows to {filepath}")
         write_list_to_csv(filepath, rows, headers)
+
+    if outdated_lastmodifieds:
+        message = ["updated_by_script is significantly after last_modified for:\n"]
+        for organisation_name, dataset_names in outdated_lastmodifieds.items():
+            message.append(f"organisation {organisation_name} with ")
+            no_names = len(dataset_names)
+            if no_names > 6:
+                message.append(f"{no_names} datasets such as {dataset_names[0]}")
+            else:
+                message.append("datasets: ")
+                for dataset_name in dataset_names:
+                    message.append(f"{dataset_name} ")
+            message.append("\n")
+        logger.warning("".join(message))
 
 
 if __name__ == "__main__":
