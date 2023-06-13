@@ -107,6 +107,7 @@ def main(downloads, output_dir, **ignore):
                 if any(
                     x in updated_by_script
                     for x in (
+                        "HDXPythonLibrary/5.5.6-test (2022-03-15",
                         "HDXPythonLibrary/5.4.8-test (2022-01-04",
                         "HDXPythonLibrary/5.4.1-test (2021-11-17",
                     )

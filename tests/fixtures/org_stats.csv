@@ -207,7 +207,7 @@ ocha-nigeria,OCHA Nigeria,Local,37232,12964,30,0,0,2,30,0,0,0,7,239,Yes,Yes,2023
 ocha-opt,OCHA occupied Palestinian territory (oPt),Local,10869,3797,32,0,0,3,12,0,0,0,3,180,Yes,Yes,2023-04-04,Yes
 ocha-pakistan,OCHA Pakistan,Local,10013,2278,14,0,0,4,14,0,0,0,7,216,Yes,Yes,2018-11-23,No
 ocha-philippines,OCHA Philippines,Local,65525,22697,35,1,0,34,11,0,0,0,9,327,Yes,Yes,2023-03-02,No
-ocha-roap,OCHA Regional Office for Asia and the Pacific (ROAP),Regional,213401,67783,102,0,0,18,77,6,0,0,24,437,Yes,Yes,2023-04-04,No
+ocha-roap,OCHA Regional Office for Asia and the Pacific (ROAP),Regional,213401,67783,102,0,0,18,77,0,0,0,24,437,Yes,Yes,2023-04-04,No
 ocha-rocca,OCHA ROCCA (closed),Regional,2515,445,0,0,0,9,,,,,,105,No,No,,No
 ocha-rolac,OCHA Latin America and the Caribbean (ROLAC),Regional,79924,35908,148,0,0,25,22,0,0,1,16,363,Yes,Yes,2023-04-20,Yes
 ocha-romena,OCHA Middle East and North Africa (ROMENA),Regional,81005,33004,43,0,0,0,95,0,0,0,40,165,Yes,Yes,2023-04-04,Yes
