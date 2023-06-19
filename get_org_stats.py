@@ -78,17 +78,17 @@ def main(downloads, output_dir, **ignore):
         organisation["downloads all time"] += downloads_all_time
         downloads_last_year = dataset_downloads.get(dataset["id"], 0)
         organisation["downloads last year"] += downloads_last_year
-        data_updated = dataset.get("last_modified")
-        if not data_updated:
+        last_modified = dataset.get("last_modified")
+        if not last_modified:
             logger.error(f"Dataset {name} has no last modified field!")
             continue
-        data_updated = parse_date(data_updated, include_microseconds=True)
-        if data_updated > last_quarter and data_updated <= downloads.today:
+        last_modified = parse_date(last_modified, include_microseconds=True)
+        if last_modified > last_quarter and last_modified <= downloads.today:
             organisation["any updated last 3 months"] = "Yes"
             if is_public:
                 organisation["any public updated last 3 months"] = "Yes"
+        update_frequency = dataset.get_expected_update_frequency()
         if is_public:
-            update_frequency = dataset.get_expected_update_frequency()
             if update_frequency == "Live":
                 organisation["public live datasets"] += 1
             reference_period = dataset.get_reference_period()
@@ -98,8 +98,8 @@ def main(downloads, output_dir, **ignore):
             organisation["in explorer or grid"] = "Yes"
         updated_by_script = dataset.get("updated_by_script")
         if updated_by_script:
-            if data_updated > organisation["latest scripted update date"]:
-                organisation["latest scripted update date"] = data_updated
+            if last_modified > organisation["latest scripted update date"]:
+                organisation["latest scripted update date"] = last_modified
             if is_public:
                 if "HDXINTERNAL" in updated_by_script:
                     if any(x in updated_by_script for x in ("tagbot",)):
@@ -128,15 +128,16 @@ def main(downloads, output_dir, **ignore):
                         updated_by_script = parse_date(
                             match.group(1), include_microseconds=True
                         )
-                        if updated_by_script > data_updated:
+                        if updated_by_script > last_modified:
                             organisation["updated by script"] += 1
-                            difference = updated_by_script - data_updated
-                            if difference > timedelta(hours=1):
-                                dict_of_lists_add(
-                                    outdated_lastmodifieds, organisation_name, name
-                                )
+                            if update_frequency != "Live":
+                                difference = updated_by_script - last_modified
+                                if difference > timedelta(hours=1):
+                                    dict_of_lists_add(
+                                        outdated_lastmodifieds, organisation_name, name
+                                    )
                             continue
-                        difference = data_updated - updated_by_script
+                        difference = last_modified - updated_by_script
                         if difference < timedelta(hours=1):
                             organisation["updated by script"] += 1
                         else:
