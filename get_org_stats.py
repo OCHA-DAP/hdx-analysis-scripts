@@ -40,6 +40,9 @@ def main(downloads, output_dir, **ignore):
     dataset_downloads = downloads.get_mixpanel_downloads(1)
     logger.info("Obtaining organisations data")
     organisations = downloads.get_all_organisations()
+    total_public = 0
+    total_updated_by_cod = 0
+    total_updated_by_script = 0
     for organisation_name, organisation in organisations.items():
         organisation_type = name_to_type.get(organisation_name, "")
         organisation["orgtype"] = organisation_type
@@ -74,6 +77,7 @@ def main(downloads, output_dir, **ignore):
         else:
             is_public = True
             organisation["public datasets"] += 1
+            total_public += 1
         downloads_all_time = dataset["total_res_downloads"]
         organisation["downloads all time"] += downloads_all_time
         downloads_last_year = dataset_downloads.get(dataset["id"], 0)
@@ -119,6 +123,7 @@ def main(downloads, output_dir, **ignore):
                     and "cod_level" in dataset
                 ):
                     organisation["updated by cod script"] += 1
+                    total_updated_by_cod += 1
                     continue
                 match = bracketed_date.search(updated_by_script)
                 if match is None:
@@ -130,6 +135,7 @@ def main(downloads, output_dir, **ignore):
                         )
                         if updated_by_script > last_modified:
                             organisation["updated by script"] += 1
+                            total_updated_by_script += 1
                             if update_frequency != "Live":
                                 difference = updated_by_script - last_modified
                                 if difference > timedelta(hours=1):
@@ -140,6 +146,7 @@ def main(downloads, output_dir, **ignore):
                         difference = last_modified - updated_by_script
                         if difference < timedelta(hours=1):
                             organisation["updated by script"] += 1
+                            total_updated_by_script += 1
                         else:
                             organisation["old updated by script"] += 1
                     except ParserError:
@@ -240,6 +247,13 @@ def main(downloads, output_dir, **ignore):
                     message.append(f"{dataset_name} ")
             message.append("\n")
         logger.warning("".join(message))
+
+    logger.info(f"Total public datasets = {total_public}")
+    logger.info(f"Total public updated by cod script = {total_updated_by_cod}")
+    logger.info(
+        f"Total public updated by all other scripts = {total_updated_by_script}"
+    )
+    return total_public, total_updated_by_cod, total_updated_by_script
 
 
 if __name__ == "__main__":
