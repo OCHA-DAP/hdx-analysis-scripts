@@ -4,7 +4,7 @@ import pytest
 from dateutil.relativedelta import relativedelta
 from hdx.utilities.dateparse import parse_date
 
-from downloads import Downloads
+from common.downloads import Downloads
 from hdx.api.configuration import Configuration
 from hdx.data.dataset import Dataset
 from hdx.utilities.loader import load_json

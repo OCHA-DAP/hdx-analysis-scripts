@@ -1,17 +1,16 @@
 import argparse
 import logging
 import re
-from datetime import timedelta
 from os import mkdir
 from os.path import expanduser, join
 from shutil import rmtree
 
-from dateutil.parser import ParserError
-from dateutil.relativedelta import relativedelta
-from downloads import Downloads
+from common import get_dataset_name_to_explorers
+from common.dataset_statistics import DatasetStatistics
+from common.downloads import Downloads
 from hdx.api.configuration import Configuration
 from hdx.facades.keyword_arguments import facade
-from hdx.utilities.dateparse import default_date, now_utc, parse_date
+from hdx.utilities.dateparse import default_date, now_utc
 from hdx.utilities.dictandlist import dict_of_lists_add, write_list_to_csv
 from hdx.utilities.text import get_fraction_str
 
@@ -28,15 +27,9 @@ def main(downloads, output_dir, **ignore):
 
     configuration = Configuration.read()
 
-    last_quarter = downloads.today - relativedelta(months=3)
     url = configuration["org_stats_url"]
     name_to_type = downloads.get_org_types(url)
-    json = downloads.get_package_links()
-    dataset_name_to_explorers = dict()
-    for explorergridlink in json["result"]:
-        explorergrid = explorergridlink["title"]
-        for dataset_name in set(explorergridlink["package_list"].split(",")):
-            dict_of_lists_add(dataset_name_to_explorers, dataset_name, explorergrid)
+    dataset_name_to_explorers = get_dataset_name_to_explorers(downloads)
     dataset_downloads = downloads.get_mixpanel_downloads(1)
     logger.info("Obtaining organisations data")
     organisations = downloads.get_all_organisations()
@@ -63,94 +56,53 @@ def main(downloads, output_dir, **ignore):
         organisation["in explorer or grid"] = "No"
     outdated_lastmodifieds = {}
     for dataset in downloads.get_all_datasets():
+        datasetstats = DatasetStatistics(
+            downloads.today, dataset_name_to_explorers, dataset
+        )
         name = dataset["name"]
         organisation_name = dataset["organization"]["name"]
         organisation = organisations[organisation_name]
-        is_public = False
-        if dataset["private"]:
+        if datasetstats.public == "N":
             organisation["private datasets"] += 1
             continue
-        elif dataset.is_requestable():
+        elif datasetstats.requestable == "Y":
             organisation["requestable datasets"] += 1
-        elif dataset["archived"]:
+        elif datasetstats.archived == "Y":
             organisation["archived datasets"] += 1
         else:
-            is_public = True
             organisation["public datasets"] += 1
             total_public += 1
         downloads_all_time = dataset["total_res_downloads"]
         organisation["downloads all time"] += downloads_all_time
         downloads_last_year = dataset_downloads.get(dataset["id"], 0)
         organisation["downloads last year"] += downloads_last_year
-        last_modified = dataset.get("last_modified")
-        if not last_modified:
+        if datasetstats.last_modified is None:
             logger.error(f"Dataset {name} has no last modified field!")
             continue
-        last_modified = parse_date(last_modified, include_microseconds=True)
-        if last_modified > last_quarter and last_modified <= downloads.today:
+        if datasetstats.updated_last_3_months == "Y":
             organisation["any updated last 3 months"] = "Yes"
-            if is_public:
+            if datasetstats.public == "Y":
                 organisation["any public updated last 3 months"] = "Yes"
-        update_frequency = dataset.get_expected_update_frequency()
-        if is_public:
-            if update_frequency == "Live":
+        if datasetstats.public == "Y":
+            if datasetstats.live == "Y":
                 organisation["public live datasets"] += 1
-            reference_period = dataset.get_reference_period()
-            if reference_period["ongoing"]:
+            if datasetstats.ongoing == "Y":
                 organisation["public ongoing datasets"] += 1
-        if name in dataset_name_to_explorers:
+        if datasetstats.in_explorer_or_grid == "Y":
             organisation["in explorer or grid"] = "Yes"
-        updated_by_script = dataset.get("updated_by_script")
-        if updated_by_script:
-            if last_modified > organisation["latest scripted update date"]:
-                organisation["latest scripted update date"] = last_modified
-            if is_public:
-                if "HDXINTERNAL" in updated_by_script:
-                    if any(x in updated_by_script for x in ("tagbot",)):
-                        continue
-                if any(
-                    x in updated_by_script
-                    for x in (
-                        "HDXPythonLibrary/5.5.6-test (2022-03-15",
-                        "HDXPythonLibrary/5.4.8-test (2022-01-04",
-                        "HDXPythonLibrary/5.4.1-test (2021-11-17",
-                    )
-                ):  # Mike maintainer bulk change
-                    continue
-                if (
-                    "HDXINTERNAL" in updated_by_script
-                    and "CODs" in updated_by_script
-                    and "cod_level" in dataset
-                ):
-                    organisation["updated by cod script"] += 1
-                    total_updated_by_cod += 1
-                    continue
-                match = bracketed_date.search(updated_by_script)
-                if match is None:
-                    continue
-                else:
-                    try:
-                        updated_by_script = parse_date(
-                            match.group(1), include_microseconds=True
-                        )
-                        if updated_by_script > last_modified:
-                            organisation["updated by script"] += 1
-                            total_updated_by_script += 1
-                            if update_frequency != "Live":
-                                difference = updated_by_script - last_modified
-                                if difference > timedelta(hours=1):
-                                    dict_of_lists_add(
-                                        outdated_lastmodifieds, organisation_name, name
-                                    )
-                            continue
-                        difference = last_modified - updated_by_script
-                        if difference < timedelta(hours=1):
-                            organisation["updated by script"] += 1
-                            total_updated_by_script += 1
-                        else:
-                            organisation["old updated by script"] += 1
-                    except ParserError:
-                        continue
+        if datasetstats.updated_by_cod_script == "Y":
+            organisation["updated by cod script"] += 1
+            total_updated_by_cod += 1
+        if datasetstats.updated_by_script:
+            if datasetstats.last_modified > organisation["latest scripted update date"]:
+                organisation["latest scripted update date"] = datasetstats.last_modified
+            if datasetstats.updated_by_noncod_script == "Y":
+                organisation["updated by script"] += 1
+                total_updated_by_script += 1
+            if datasetstats.outdated_lastmodified == "Y":
+                dict_of_lists_add(outdated_lastmodifieds, organisation_name, name)
+            if datasetstats.old_updated_by_noncod_script == "Y":
+                organisation["old updated by script"] += 1
 
     headers = [
         "Organisation name",

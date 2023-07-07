@@ -4,7 +4,9 @@ from os import mkdir
 from os.path import expanduser, join
 from shutil import rmtree
 
-from downloads import Downloads
+from dateutil.relativedelta import relativedelta
+
+from common.downloads import Downloads
 from hdx.facades.keyword_arguments import facade
 from hdx.utilities.dateparse import now_utc
 from hdx.utilities.dictandlist import write_list_to_csv
@@ -21,6 +23,10 @@ def main(downloads, output_dir, **ignore):
     dataset_downloads = downloads.get_mixpanel_downloads(5)
 
     datasets = downloads.get_all_datasets()
+    last_quarter = downloads.today - relativedelta(months=3)
+    created_per_month = dict()
+    metadata_updated_per_month = dict()
+    data_updated_per_month = dict()
     rows = [
         (
             "name",
@@ -38,15 +44,12 @@ def main(downloads, output_dir, **ignore):
             "url",
             "is cod",
             "tags",
-            "private",
+            "public",
             "requestable",
-            "updated by script",
             "archived",
+            "updated by script",
         )
     ]
-    created_per_month = dict()
-    metadata_updated_per_month = dict()
-    data_updated_per_month = dict()
     for dataset in datasets:
         dataset_id = dataset["id"]
         name = dataset["name"]
@@ -98,7 +101,7 @@ def main(downloads, output_dir, **ignore):
             is_cod = "N"
         tags = dataset.get_tags()
         tags = ", ".join(tags)
-        private = "Y" if dataset["private"] else "N"
+        public = "N" if dataset["private"] else "Y"
         archived = "Y" if dataset["archived"] else "N"
         row = (
             name,
@@ -116,10 +119,10 @@ def main(downloads, output_dir, **ignore):
             url,
             is_cod,
             tags,
-            private,
+            public,
             requestable,
-            updated_by_script,
             archived,
+            updated_by_script,
         )
         rows.append(row)
     if rows:
