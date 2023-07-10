@@ -4,9 +4,10 @@ from os import mkdir
 from os.path import expanduser, join
 from shutil import rmtree
 
-from common import get_dataset_name_to_explorers
+from common import get_dataset_name_to_explorers, get_freshness_by_frequency
 from common.dataset_statistics import DatasetStatistics
 from common.downloads import Downloads
+from hdx.api.configuration import Configuration
 from hdx.facades.keyword_arguments import facade
 from hdx.utilities.dateparse import now_utc
 from hdx.utilities.dictandlist import write_list_to_csv
@@ -20,7 +21,12 @@ def main(downloads, output_dir, **ignore):
     rmtree(output_dir, ignore_errors=True)
     mkdir(output_dir)
 
+    configuration = Configuration.read()
+
     dataset_name_to_explorers = get_dataset_name_to_explorers(downloads)
+    freshness_by_frequency = get_freshness_by_frequency(
+        downloads, configuration["aging_url"]
+    )
     dataset_downloads = downloads.get_mixpanel_downloads(5)
     created_per_month = dict()
     metadata_updated_per_month = dict()
@@ -38,6 +44,7 @@ def main(downloads, output_dir, **ignore):
             "reference period start",
             "reference period end",
             "update frequency",
+            "fresh",
             "organisation",
             "data link",
             "url",
@@ -55,7 +62,7 @@ def main(downloads, output_dir, **ignore):
     ]
     for dataset in downloads.get_all_datasets():
         datasetstats = DatasetStatistics(
-            downloads.today, dataset_name_to_explorers, dataset
+            downloads.today, dataset_name_to_explorers, freshness_by_frequency, dataset
         )
         if datasetstats.last_modified is None:
             continue
@@ -96,6 +103,7 @@ def main(downloads, output_dir, **ignore):
             datasetstats.startdate,
             datasetstats.enddate,
             update_frequency,
+            datasetstats.fresh,
             org,
             datasetstats.data_link,
             url,

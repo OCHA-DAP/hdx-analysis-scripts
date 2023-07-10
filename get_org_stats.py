@@ -5,7 +5,7 @@ from os import mkdir
 from os.path import expanduser, join
 from shutil import rmtree
 
-from common import get_dataset_name_to_explorers
+from common import get_dataset_name_to_explorers, get_freshness_by_frequency
 from common.dataset_statistics import DatasetStatistics
 from common.downloads import Downloads
 from hdx.api.configuration import Configuration
@@ -27,9 +27,12 @@ def main(downloads, output_dir, **ignore):
 
     configuration = Configuration.read()
 
-    url = configuration["org_stats_url"]
-    name_to_type = downloads.get_org_types(url)
+    org_stats_url = configuration["org_stats_url"]
+    name_to_type = downloads.get_org_types(org_stats_url)
     dataset_name_to_explorers = get_dataset_name_to_explorers(downloads)
+    freshness_by_frequency = get_freshness_by_frequency(
+        downloads, configuration["aging_url"]
+    )
     dataset_downloads = downloads.get_mixpanel_downloads(1)
     logger.info("Obtaining organisations data")
     organisations = downloads.get_all_organisations()
@@ -57,7 +60,7 @@ def main(downloads, output_dir, **ignore):
     outdated_lastmodifieds = {}
     for dataset in downloads.get_all_datasets():
         datasetstats = DatasetStatistics(
-            downloads.today, dataset_name_to_explorers, dataset
+            downloads.today, dataset_name_to_explorers, freshness_by_frequency, dataset
         )
         name = dataset["name"]
         organisation_name = dataset["organization"]["name"]

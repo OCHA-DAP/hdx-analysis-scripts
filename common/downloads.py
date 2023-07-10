@@ -5,10 +5,9 @@ from os.path import join
 from dateutil.relativedelta import relativedelta
 from hdx.data.dataset import Dataset
 from hdx.data.organization import Organization
-from hdx.utilities.dictandlist import dict_of_lists_add
 from hdx.utilities.downloader import Download
 from hdx.utilities.loader import load_yaml
-from hdx.utilities.saver import save_json
+from hdx.utilities.saver import save_json, save_yaml
 from mixpanel_utils import MixpanelUtils
 
 logger = logging.getLogger(__name__)
@@ -20,6 +19,7 @@ class Downloads:
     orgtypes_file = "org_types.json"
     packagelinks_file = "package_links.json"
     organisations_file = "organisations.json"
+    aging_file = "aging.yaml"
 
     def __init__(self, today, mixpanel_config_yaml, saved_dir=None):
         self.today = today
@@ -123,3 +123,9 @@ class Downloads:
         if self.saved_dir:
             save_json(organisations, join(self.saved_dir, self.organisations_file))
         return organisations
+
+    def get_aging(self, url):
+        yaml = Download().download_yaml(url)
+        if self.saved_dir:
+            save_yaml(yaml, join(self.saved_dir, self.aging_file))
+        return yaml

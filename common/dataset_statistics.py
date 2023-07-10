@@ -1,7 +1,7 @@
 import logging
 import re
 from collections import UserDict
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from dateutil.parser import ParserError
 from dateutil.relativedelta import relativedelta
@@ -14,11 +14,14 @@ logger = logging.getLogger(__name__)
 class DatasetStatistics(UserDict):
     bracketed_date = re.compile(r"\((.*)\)")
 
-    def __init__(self, today, dataset_name_to_explorers, dataset):
+    def __init__(
+        self, today, dataset_name_to_explorers, freshness_by_frequency, dataset
+    ):
         super().__init__(dataset.data)
         self.today = today
         self.last_quarter = today - relativedelta(months=3)
         self.dataset_name_to_explorers = dataset_name_to_explorers
+        self.freshness_by_frequency = freshness_by_frequency
         self.dataset = dataset
         self.last_modified = None
         self.configuration = Configuration.read()
@@ -29,6 +32,7 @@ class DatasetStatistics(UserDict):
         self.get_updated_by_script()
         self.get_in_explorer_or_grid()
         self.get_tags()
+        self.get_freshness()
 
     def get_status(self):
         self.public = "N" if self["private"] else "Y"
@@ -68,7 +72,6 @@ class DatasetStatistics(UserDict):
             self.enddate = "ongoing"
         else:
             self.enddate = reference_period["enddate_str"]
-        self.update_frequency = self.get("data_update_frequency", "")
 
     def get_updated_by_script(self):
         updated_by_script = self.get("updated_by_script")
@@ -133,6 +136,7 @@ class DatasetStatistics(UserDict):
             self.in_explorer_or_grid = "N"
 
     def get_update_frequency_info(self):
+        self.update_frequency = self.get("data_update_frequency", "")
         update_frequency = self.dataset.get_expected_update_frequency()
         if update_frequency == "Live":
             self.live = "Y"
@@ -147,3 +151,53 @@ class DatasetStatistics(UserDict):
     def get_tags(self):
         tags = self.dataset.get_tags()
         self.tags = ", ".join(tags)
+
+    def calculate_freshness(
+        self, last_modified: datetime, update_frequency: int
+    ) -> int:
+        """Calculate freshness based on a last modified date and the expected update
+        frequency. Returns 0 for fresh, 1 for due, 2 for overdue and 3 for delinquent.
+
+        Args:
+            last_modified (datetime): Last modified date
+            update_frequency (int): Expected update frequency
+
+        Returns:
+            int: 0 for fresh, 1 for due, 2 for overdue and 3 for delinquent
+        """
+        delta = self.today - last_modified
+        if delta >= self.freshness_by_frequency[update_frequency]["Delinquent"]:
+            return "Delinquent"
+        elif delta >= self.freshness_by_frequency[update_frequency]["Overdue"]:
+            return "Overdue"
+        elif delta >= self.freshness_by_frequency[update_frequency]["Due"]:
+            return "Due"
+        return "Fresh"
+
+    def get_freshness(self):
+        self.fresh = ""
+        if not self.last_modified:
+            return
+        review_date = self.get("review_date")
+        if review_date is None:
+            latest_of_modifieds = self.last_modified
+        else:
+            review_date = parse_date(review_date, include_microseconds=True)
+            if review_date > self.last_modified:
+                latest_of_modifieds = review_date
+            else:
+                latest_of_modifieds = self.last_modified
+        if self.updated_by_script and self.updated_by_script > latest_of_modifieds:
+            latest_of_modifieds = self.updated_by_script
+        if self.update_frequency:
+            update_frequency = int(self.update_frequency)
+            if update_frequency == 0:
+                self.fresh = "Fresh"
+            elif update_frequency == -1:
+                self.fresh = "Fresh"
+            elif update_frequency == -2:
+                self.fresh = "Fresh"
+            else:
+                self.fresh = self.calculate_freshness(
+                    latest_of_modifieds, update_frequency
+                )

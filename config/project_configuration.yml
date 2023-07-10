@@ -1,1 +1,2 @@
 org_stats_url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRtlQ4C0ykC_2JCHkH7tQqh_mopvIfz_09xotuYXQ9zNFWBU5SylrJjrPpeZL2EjRMX7prOdJXO5SsK/pub?gid=428662439&single=true&output=csv"
+aging_url: "https://raw.githubusercontent.com/OCHA-DAP/hdx-data-freshness/main/src/hdx/freshness/app/project_configuration.yaml"

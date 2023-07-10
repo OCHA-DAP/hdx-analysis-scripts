@@ -6,7 +6,7 @@ from dateutil.relativedelta import relativedelta
 from hdx.api.configuration import Configuration
 from hdx.data.dataset import Dataset
 from hdx.utilities.dateparse import parse_date
-from hdx.utilities.loader import load_json
+from hdx.utilities.loader import load_json, load_yaml
 from hdx.utilities.useragent import UserAgent
 
 
@@ -79,5 +79,9 @@ def mock_downloads(input_folder):
         @staticmethod
         def get_all_organisations():
             return load_json(join(input_folder, Downloads.organisations_file))
+
+        @staticmethod
+        def get_aging(url):
+            return load_yaml(join(input_folder, Downloads.aging_file))
 
     return MockDownloads()

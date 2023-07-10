@@ -1,0 +1,30 @@
+# Collector specific configuration
+aging:
+  1:
+    Due: 1
+    Overdue: 2
+    Delinquent: 3
+  7:
+    Due: 7
+    Overdue: 14
+    Delinquent: 21
+  14:
+    Due: 14
+    Overdue: 21
+    Delinquent: 28
+  30:
+    Due: 30
+    Overdue: 44
+    Delinquent: 60
+  90:
+    Due: 90
+    Overdue: 120
+    Delinquent: 150
+  180:
+    Due: 180
+    Overdue: 210
+    Delinquent: 240
+  365:
+    Due: 365
+    Overdue: 425
+    Delinquent: 455
