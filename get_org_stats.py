@@ -62,6 +62,7 @@ def main(downloads, output_dir, **ignore):
         name = dataset["name"]
         organisation_name = dataset["organization"]["name"]
         organisation = organisations[organisation_name]
+        is_public_not_requestable_archived = False
         if datasetstats.public == "N":
             organisation["private datasets"] += 1
             continue
@@ -72,6 +73,7 @@ def main(downloads, output_dir, **ignore):
         else:
             organisation["public datasets"] += 1
             total_public += 1
+            is_public_not_requestable_archived = True
         downloads_all_time = dataset["total_res_downloads"]
         organisation["downloads all time"] += downloads_all_time
         downloads_last_year = dataset_downloads.get(dataset["id"], 0)
@@ -81,9 +83,9 @@ def main(downloads, output_dir, **ignore):
             continue
         if datasetstats.updated_last_3_months == "Y":
             organisation["any updated last 3 months"] = "Yes"
-            if datasetstats.public == "Y":
+            if is_public_not_requestable_archived:
                 organisation["any public updated last 3 months"] = "Yes"
-        if datasetstats.public == "Y":
+        if is_public_not_requestable_archived:
             if datasetstats.live == "Y":
                 organisation["public live datasets"] += 1
             if datasetstats.ongoing == "Y":

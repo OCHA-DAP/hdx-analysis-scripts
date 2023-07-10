@@ -59,18 +59,19 @@ class DatasetStatistics(UserDict):
         self.last_modified = parse_date(last_modified, include_microseconds=True)
         if self.last_quarter < self.last_modified <= self.today:
             self.updated_last_3_months = "Y"
-        self.updated_last_3_months = "N"
+        else:
+            self.updated_last_3_months = "N"
 
     def get_updated_by_script(self):
         updated_by_script = self.get("updated_by_script")
-        self.updated_by_script = None
+        self.updated_by_script = updated_by_script
         self.updated_by_noncod_script = "N"
         self.updated_by_cod_script = "N"
         self.old_updated_by_noncod_script = "N"
         self.outdated_lastmodified = "N"
         if not updated_by_script:
             return
-        if self.public == "N":
+        if self.public == "N" or self.requestable == "Y" or self.archived == "Y":
             return
         if "HDXINTERNAL" in updated_by_script:
             if any(x in updated_by_script for x in ("tagbot",)):
