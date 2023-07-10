@@ -79,7 +79,6 @@ def main(downloads, output_dir, **ignore):
         downloads_last_year = dataset_downloads.get(dataset["id"], 0)
         organisation["downloads last year"] += downloads_last_year
         if datasetstats.last_modified is None:
-            logger.error(f"Dataset {name} has no last modified field!")
             continue
         if datasetstats.updated_last_3_months == "Y":
             organisation["any updated last 3 months"] = "Yes"

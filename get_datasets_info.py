@@ -4,8 +4,8 @@ from os import mkdir
 from os.path import expanduser, join
 from shutil import rmtree
 
-from dateutil.relativedelta import relativedelta
-
+from common import get_dataset_name_to_explorers
+from common.dataset_statistics import DatasetStatistics
 from common.downloads import Downloads
 from hdx.facades.keyword_arguments import facade
 from hdx.utilities.dateparse import now_utc
@@ -20,10 +20,8 @@ def main(downloads, output_dir, **ignore):
     rmtree(output_dir, ignore_errors=True)
     mkdir(output_dir)
 
+    dataset_name_to_explorers = get_dataset_name_to_explorers(downloads)
     dataset_downloads = downloads.get_mixpanel_downloads(5)
-
-    datasets = downloads.get_all_datasets()
-    last_quarter = downloads.today - relativedelta(months=3)
     created_per_month = dict()
     metadata_updated_per_month = dict()
     data_updated_per_month = dict()
@@ -47,62 +45,44 @@ def main(downloads, output_dir, **ignore):
             "public",
             "requestable",
             "archived",
-            "updated by script",
+            "updated by cod script",
+            "updated by non-cod script",
+            "date updated by script",
+            "updated_by_script<<last_modified",
+            "last_modified>>updated_by_script",
         )
     ]
-    for dataset in datasets:
+    for dataset in downloads.get_all_datasets():
+        datasetstats = DatasetStatistics(
+            downloads.today, dataset_name_to_explorers, dataset
+        )
+        if datasetstats.last_modified is None:
+            continue
         dataset_id = dataset["id"]
         name = dataset["name"]
         title = dataset["title"]
         downloads_5years = dataset_downloads.get(dataset_id, 0)
         downloads_alltime = dataset.get("total_res_downloads", "")
-        updated_by_script = dataset.get("updated_by_script", "")
         created = dataset["metadata_created"]
         metadata_updated = dataset["metadata_modified"]
-        data_updated = dataset.get("last_modified")
-        if not data_updated:
-            logger.error(f"Dataset {name} has no last modified field!")
-            continue
-        if not updated_by_script:
+        if not datasetstats.updated_by_script:
             year_month = created[:7]
             created_per_month[year_month] = created_per_month.get(year_month, 0) + 1
             year_month = metadata_updated[:7]
             metadata_updated_per_month[year_month] = (
                 metadata_updated_per_month.get(year_month, 0) + 1
             )
-            year_month = data_updated[:7]
+            year_month = datasetstats.last_modified.isoformat()[:7]
             data_updated_per_month[year_month] = (
                 data_updated_per_month.get(year_month, 0) + 1
             )
-        reference_period = dataset.get_reference_period()
-        startdate = reference_period["startdate_str"]
-        if reference_period["ongoing"]:
-            enddate = "ongoing"
-        else:
-            enddate = reference_period["enddate_str"]
         update_frequency = dataset.get("data_update_frequency", "")
         org = dataset.get("organization")
         if org:
             org = org["title"]
         else:
             org = "NONE!"
-        requestable = dataset.is_requestable()
-        if requestable:
-            data_link = ""
-            requestable = "Y"
-        else:
-            data_link = dataset.get_resource()["url"]
-            requestable = "N"
         url = dataset.get_hdx_url()
-        cod_level = dataset.get("cod_level")
-        if cod_level:
-            is_cod = "Y"
-        else:
-            is_cod = "N"
-        tags = dataset.get_tags()
-        tags = ", ".join(tags)
-        public = "N" if dataset["private"] else "Y"
-        archived = "Y" if dataset["archived"] else "N"
         row = (
             name,
             title,
@@ -110,19 +90,23 @@ def main(downloads, output_dir, **ignore):
             downloads_5years,
             created,
             metadata_updated,
-            data_updated,
-            startdate,
-            enddate,
+            datasetstats.last_modified,
+            datasetstats.startdate,
+            datasetstats.enddate,
             update_frequency,
             org,
-            data_link,
+            datasetstats.data_link,
             url,
-            is_cod,
-            tags,
-            public,
-            requestable,
-            archived,
-            updated_by_script,
+            datasetstats.is_cod,
+            datasetstats.tags,
+            datasetstats.public,
+            datasetstats.requestable,
+            datasetstats.archived,
+            datasetstats.updated_by_cod_script,
+            datasetstats.updated_by_noncod_script,
+            datasetstats.updated_by_script,
+            datasetstats.old_updated_by_noncod_script,
+            datasetstats.outdated_lastmodified,
         )
         rows.append(row)
     if rows:

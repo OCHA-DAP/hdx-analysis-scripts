@@ -28,6 +28,7 @@ class DatasetStatistics(UserDict):
         self.get_update_frequency_info()
         self.get_updated_by_script()
         self.get_in_explorer_or_grid()
+        self.get_tags()
 
     def get_status(self):
         self.public = "N" if self["private"] else "Y"
@@ -61,6 +62,13 @@ class DatasetStatistics(UserDict):
             self.updated_last_3_months = "Y"
         else:
             self.updated_last_3_months = "N"
+        reference_period = self.dataset.get_reference_period()
+        self.startdate = reference_period["startdate_str"]
+        if reference_period["ongoing"]:
+            self.enddate = "ongoing"
+        else:
+            self.enddate = reference_period["enddate_str"]
+        self.update_frequency = self.get("data_update_frequency", "")
 
     def get_updated_by_script(self):
         updated_by_script = self.get("updated_by_script")
@@ -135,3 +143,7 @@ class DatasetStatistics(UserDict):
             self.ongoing = "Y"
         else:
             self.ongoing = "N"
+
+    def get_tags(self):
+        tags = self.dataset.get_tags()
+        self.tags = ", ".join(tags)
