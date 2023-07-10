@@ -1,12 +1,11 @@
-from os.path import join, isfile
+from os.path import isfile, join
 
 import pytest
-from dateutil.relativedelta import relativedelta
-from hdx.utilities.dateparse import parse_date
-
 from common.downloads import Downloads
+from dateutil.relativedelta import relativedelta
 from hdx.api.configuration import Configuration
 from hdx.data.dataset import Dataset
+from hdx.utilities.dateparse import parse_date
 from hdx.utilities.loader import load_json
 from hdx.utilities.useragent import UserAgent
 

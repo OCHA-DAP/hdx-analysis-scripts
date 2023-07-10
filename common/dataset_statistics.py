@@ -64,7 +64,7 @@ class DatasetStatistics(UserDict):
 
     def get_updated_by_script(self):
         updated_by_script = self.get("updated_by_script")
-        self.updated_by_script = updated_by_script
+        self.updated_by_script = None
         self.updated_by_noncod_script = "N"
         self.updated_by_cod_script = "N"
         self.old_updated_by_noncod_script = "N"
@@ -85,13 +85,6 @@ class DatasetStatistics(UserDict):
             )
         ):  # Mike maintainer bulk change
             return
-        if (
-            "HDXINTERNAL" in updated_by_script
-            and "CODs" in updated_by_script
-            and "cod_level" in self.data
-        ):
-            self.updated_by_cod_script = "Y"
-            return
         match = self.bracketed_date.search(updated_by_script)
         if match is None:
             return
@@ -100,22 +93,30 @@ class DatasetStatistics(UserDict):
                 self.updated_by_script = parse_date(
                     match.group(1), include_microseconds=True
                 )
-                if self.last_modified:
-                    if self.updated_by_script > self.last_modified:
-                        self.updated_by_noncod_script = "Y"
-                        update_frequency = self.dataset.get_expected_update_frequency()
-                        if update_frequency != "Live":
-                            difference = self.updated_by_script - self.last_modified
-                            if difference > timedelta(hours=1):
-                                self.outdated_lastmodified = "Y"
-                        return
-                    difference = self.last_modified - self.updated_by_script
-                    if difference < timedelta(hours=1):
-                        self.updated_by_noncod_script = "Y"
-                    else:
-                        self.old_updated_by_noncod_script = "Y"
             except ParserError:
-                pass
+                return
+        if (
+            "HDXINTERNAL" in updated_by_script
+            and "CODs" in updated_by_script
+            and "cod_level" in self.data
+        ):
+            self.updated_by_cod_script = "Y"
+            return
+
+        if self.last_modified:
+            if self.updated_by_script > self.last_modified:
+                self.updated_by_noncod_script = "Y"
+                update_frequency = self.dataset.get_expected_update_frequency()
+                if update_frequency != "Live":
+                    difference = self.updated_by_script - self.last_modified
+                    if difference > timedelta(hours=1):
+                        self.outdated_lastmodified = "Y"
+                return
+            difference = self.last_modified - self.updated_by_script
+            if difference < timedelta(hours=1):
+                self.updated_by_noncod_script = "Y"
+            else:
+                self.old_updated_by_noncod_script = "Y"
 
     def get_in_explorer_or_grid(self):
         if self["name"] in self.dataset_name_to_explorers:

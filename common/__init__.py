@@ -7,6 +7,5 @@ def get_dataset_name_to_explorers(downloads):
     for explorergridlink in json["result"]:
         explorergrid = explorergridlink["title"]
         for dataset_name in set(explorergridlink["package_list"].split(",")):
-            dict_of_lists_add(dataset_name_to_explorers, dataset_name,
-                              explorergrid)
+            dict_of_lists_add(dataset_name_to_explorers, dataset_name, explorergrid)
     return dataset_name_to_explorers
