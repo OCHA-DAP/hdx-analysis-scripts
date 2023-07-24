@@ -57,7 +57,7 @@ def main(downloads, output_dir, **ignore):
             "updated by non-cod script",
             "date updated by script",
             "updated_by_script<<last_modified",
-            "last_modified>>updated_by_script",
+            "last_modified<<updated_by_script",
         )
     ]
     for dataset in downloads.get_all_datasets():
