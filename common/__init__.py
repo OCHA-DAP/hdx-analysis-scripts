@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import datetime, timedelta, timezone
 
 from hdx.utilities.dictandlist import dict_of_lists_add
 
@@ -24,3 +24,19 @@ def get_freshness_by_frequency(downloads, url):
             freshness_frequency[status] = timedelta(days=nodays)
         freshness_by_frequency[update_frequency] = freshness_frequency
     return freshness_by_frequency
+
+
+def get_previous_quarter(date):
+    if date.month < 4:
+        start_date = datetime(date.year - 1, 10, 1, 0, 0, tzinfo=timezone.utc)
+        end_date = datetime(date.year - 1, 12, 31, 23, 59, 59, 999999, tzinfo=timezone.utc)
+    elif date.month < 7:
+        start_date = datetime(date.year, 1, 1, 0, 0, tzinfo=timezone.utc)
+        end_date = datetime(date.year, 3, 31, 23, 59, 59, 999999, tzinfo=timezone.utc)
+    elif date.month < 10:
+        start_date = datetime(date.year, 4, 1, 0, 0, tzinfo=timezone.utc)
+        end_date = datetime(date.year, 6, 30, 23, 59, 59, 999999, tzinfo=timezone.utc)
+    else:
+        start_date = datetime(date.year, 7, 1, 0, 0, tzinfo=timezone.utc)
+        end_date = datetime(date.year, 9, 30, 23, 59, 59, 999999, tzinfo=timezone.utc)
+    return start_date, end_date

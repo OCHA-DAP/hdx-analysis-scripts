@@ -53,6 +53,8 @@ def main(downloads, output_dir, **ignore):
         organisation["old updated by script"] = 0
         organisation["any updated last 3 months"] = "No"
         organisation["any public updated last 3 months"] = "No"
+        organisation["any updated previous quarter"] = "No"
+        organisation["any public updated previous quarter"] = "No"
         organisation["public live datasets"] = 0
         organisation["public ongoing datasets"] = 0
         organisation["latest scripted update date"] = default_date
@@ -87,6 +89,10 @@ def main(downloads, output_dir, **ignore):
             organisation["any updated last 3 months"] = "Yes"
             if is_public_not_requestable_archived:
                 organisation["any public updated last 3 months"] = "Yes"
+        if datasetstats.updated_previous_qtr == "Y":
+            organisation["any updated previous quarter"] = "Yes"
+            if is_public_not_requestable_archived:
+                organisation["any public updated previous quarter"] = "Yes"
         if is_public_not_requestable_archived:
             if datasetstats.live == "Y":
                 organisation["public live datasets"] += 1
@@ -126,6 +132,8 @@ def main(downloads, output_dir, **ignore):
         "Followers",
         "Any updated last 3 months",
         "Any public updated last 3 months",
+        "Any updated previous quarter",
+        "Any public updated previous quarter",
         "Latest scripted update date",
         "In explorer or grid",
     ]
@@ -181,6 +189,8 @@ def main(downloads, output_dir, **ignore):
             organisation["num_followers"],
             organisation["any updated last 3 months"],
             organisation["any public updated last 3 months"],
+            organisation["any updated previous quarter"],
+            organisation["any public updated previous quarter"],
             latest_scripted_update_date,
             organisation["in explorer or grid"],
         ]

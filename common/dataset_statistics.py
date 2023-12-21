@@ -8,6 +8,8 @@ from dateutil.relativedelta import relativedelta
 from hdx.api.configuration import Configuration
 from hdx.utilities.dateparse import parse_date
 
+from common import get_previous_quarter
+
 logger = logging.getLogger(__name__)
 
 
@@ -19,7 +21,8 @@ class DatasetStatistics(UserDict):
     ):
         super().__init__(dataset.data)
         self.today = today
-        self.last_quarter = today - relativedelta(months=3)
+        self.last_3_months = today - relativedelta(months=3)
+        self.previous_quarter = get_previous_quarter(today)
         self.dataset_name_to_explorers = dataset_name_to_explorers
         self.freshness_by_frequency = freshness_by_frequency
         self.dataset = dataset
@@ -62,10 +65,14 @@ class DatasetStatistics(UserDict):
             self.updated_last_3_months = ""
             return
         self.last_modified = parse_date(last_modified, include_microseconds=True)
-        if self.last_quarter < self.last_modified <= self.today:
+        if self.last_3_months < self.last_modified <= self.today:
             self.updated_last_3_months = "Y"
         else:
             self.updated_last_3_months = "N"
+        if self.previous_quarter[0] <= self.last_modified <= self.previous_quarter[1]:
+            self.updated_previous_qtr = "Y"
+        else:
+            self.updated_previous_qtr = "N"
         reference_period = self.dataset.get_reference_period()
         self.startdate = reference_period["startdate_str"]
         if reference_period["ongoing"]:
