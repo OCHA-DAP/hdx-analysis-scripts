@@ -198,7 +198,7 @@ def main(downloads, output_dir, **ignore):
     if rows:
         filepath = join(output_dir, "org_stats.csv")
         logger.info(f"Writing rows to {filepath}")
-        write_list_to_csv(filepath, rows, headers)
+        write_list_to_csv(filepath, rows, headers, encoding="utf-8")
 
     if outdated_lastmodifieds:
         message = ["updated_by_script is significantly after last_modified for:\n"]

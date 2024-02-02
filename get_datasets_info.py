@@ -124,7 +124,7 @@ def main(downloads, output_dir, **ignore):
     if rows:
         filepath = join(output_dir, "datasets.csv")
         logger.info(f"Writing rows to {filepath}")
-        write_list_to_csv(filepath, rows, headers=1)
+        write_list_to_csv(filepath, rows, headers=1, encoding="utf-8")
     keys = set(created_per_month.keys())
     keys.update(metadata_updated_per_month.keys())
     keys.update(data_updated_per_month.keys())
@@ -140,7 +140,7 @@ def main(downloads, output_dir, **ignore):
     if rows:
         filepath = join(output_dir, "non_script_updates.csv")
         logger.info(f"Writing rows to {filepath}")
-        write_list_to_csv(filepath, rows, headers=1)
+        write_list_to_csv(filepath, rows, headers=1, encoding="utf-8")
 
 
 if __name__ == "__main__":
