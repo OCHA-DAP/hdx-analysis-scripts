@@ -59,6 +59,9 @@ def main(downloads, output_dir, **ignore):
         organisation["public ongoing datasets"] = 0
         organisation["latest scripted update date"] = default_date
         organisation["in explorer or grid"] = "No"
+        organisation["Marked Inactive"] = (
+            "Yes" if organisation["closed_organization"] else "No"
+        )
     outdated_lastmodifieds = {}
     for dataset in downloads.get_all_datasets():
         datasetstats = DatasetStatistics(
@@ -79,6 +82,7 @@ def main(downloads, output_dir, **ignore):
             organisation["public datasets"] += 1
             total_public += 1
             is_public_not_requestable_archived = True
+
         downloads_all_time = dataset["total_res_downloads"]
         organisation["downloads all time"] += downloads_all_time
         downloads_last_year = dataset_downloads.get(dataset["id"], 0)
@@ -136,6 +140,7 @@ def main(downloads, output_dir, **ignore):
         "Any public updated previous quarter",
         "Latest scripted update date",
         "In explorer or grid",
+        "Marked Inactive",
     ]
     logger.info("Generating rows")
     rows = list()
@@ -166,6 +171,7 @@ def main(downloads, output_dir, **ignore):
             organisation["public datasets"],
             format="%.0f",
         )
+
         latest_scripted_update_date = organisation["latest scripted update date"]
         if latest_scripted_update_date == default_date:
             latest_scripted_update_date = None
@@ -193,6 +199,7 @@ def main(downloads, output_dir, **ignore):
             organisation["any public updated previous quarter"],
             latest_scripted_update_date,
             organisation["in explorer or grid"],
+            organisation["Marked Inactive"],
         ]
         rows.append(row)
     if rows:
@@ -237,7 +244,7 @@ if __name__ == "__main__":
         main,
         hdx_read_only=True,
         hdx_site="prod",
-        user_agent_config_yaml=join(home_folder, ".useragents.yml"),
+        user_agent_config_yaml=join(home_folder, ".useragents.yaml"),
         user_agent_lookup=lookup,
         project_config_yaml=join("config", "project_configuration.yml"),
         downloads=downloads,

@@ -158,7 +158,7 @@ if __name__ == "__main__":
         main,
         hdx_read_only=True,
         hdx_site="prod",
-        user_agent_config_yaml=join(home_folder, ".useragents.yml"),
+        user_agent_config_yaml=join(home_folder, ".useragents.yaml"),
         user_agent_lookup=lookup,
         project_config_yaml=join("config", "project_configuration.yml"),
         downloads=downloads,
