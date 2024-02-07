@@ -1,5 +1,6 @@
 import argparse
 import logging
+import os
 from os import mkdir
 from os.path import expanduser, join
 from shutil import rmtree
@@ -154,11 +155,16 @@ if __name__ == "__main__":
     today = now_utc()
     mixpanel_config_yaml = join(home_folder, ".mixpanel.yml")
     downloads = Downloads(today, mixpanel_config_yaml, args.saved_dir)
+
+    user_agent_config_path = join(home_folder, ".useragents.yaml")
+    if not os.path.exists(user_agent_config_path):
+        user_agent_config_path = join(home_folder, ".useragents.yml")
+
     facade(
         main,
         hdx_read_only=True,
         hdx_site="prod",
-        user_agent_config_yaml=join(home_folder, ".useragents.yaml"),
+        user_agent_config_yaml=user_agent_config_path,
         user_agent_lookup=lookup,
         project_config_yaml=join("config", "project_configuration.yml"),
         downloads=downloads,

@@ -1,6 +1,7 @@
 import argparse
 import logging
 import re
+import os
 from os import mkdir
 from os.path import expanduser, join
 from shutil import rmtree
@@ -59,8 +60,8 @@ def main(downloads, output_dir, **ignore):
         organisation["public ongoing datasets"] = 0
         organisation["latest scripted update date"] = default_date
         organisation["in explorer or grid"] = "No"
-        organisation["Marked Inactive"] = (
-            "Yes" if organisation["closed_organization"] else "No"
+        organisation["marked inactive"] = (
+            "Yes" if organisation.get("closed_organization", False) else "No"
         )
     outdated_lastmodifieds = {}
     for dataset in downloads.get_all_datasets():
@@ -140,7 +141,7 @@ def main(downloads, output_dir, **ignore):
         "Any public updated previous quarter",
         "Latest scripted update date",
         "In explorer or grid",
-        "Marked Inactive",
+        "marked inactive",
     ]
     logger.info("Generating rows")
     rows = list()
@@ -199,7 +200,7 @@ def main(downloads, output_dir, **ignore):
             organisation["any public updated previous quarter"],
             latest_scripted_update_date,
             organisation["in explorer or grid"],
-            organisation["Marked Inactive"],
+            organisation["marked inactive"],
         ]
         rows.append(row)
     if rows:
@@ -240,11 +241,15 @@ if __name__ == "__main__":
     today = now_utc()
     mixpanel_config_yaml = join(home_folder, ".mixpanel.yml")
     downloads = Downloads(today, mixpanel_config_yaml, args.saved_dir)
+
+    user_agent_config_path = join(home_folder, ".useragents.yaml")
+    if not os.path.exists(user_agent_config_path):
+        user_agent_config_path = join(home_folder, ".useragents.yml")
     facade(
         main,
         hdx_read_only=True,
         hdx_site="prod",
-        user_agent_config_yaml=join(home_folder, ".useragents.yaml"),
+        user_agent_config_yaml=user_agent_config_path,
         user_agent_lookup=lookup,
         project_config_yaml=join("config", "project_configuration.yml"),
         downloads=downloads,
