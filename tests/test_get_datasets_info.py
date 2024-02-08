@@ -1,7 +1,7 @@
 from os.path import join
 
 from get_datasets_info import main
-from hdx.utilities.compare import assert_files_same
+from common.compare import assert_files_same
 from hdx.utilities.path import temp_dir
 
 

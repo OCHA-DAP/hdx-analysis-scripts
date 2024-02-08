@@ -96,3 +96,5 @@ ENV/
 
 # setuptools_scm
 _version.py
+
+.vscode/settings.json

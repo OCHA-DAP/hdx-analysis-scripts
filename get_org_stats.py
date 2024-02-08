@@ -1,6 +1,7 @@
 import argparse
 import logging
 import re
+import os
 from os import mkdir
 from os.path import expanduser, join
 from shutil import rmtree
@@ -59,6 +60,9 @@ def main(downloads, output_dir, **ignore):
         organisation["public ongoing datasets"] = 0
         organisation["latest scripted update date"] = default_date
         organisation["in explorer or grid"] = "No"
+        organisation["marked inactive"] = (
+            "Yes" if organisation.get("closed_organization", False) else "No"
+        )
     outdated_lastmodifieds = {}
     for dataset in downloads.get_all_datasets():
         datasetstats = DatasetStatistics(
@@ -79,6 +83,7 @@ def main(downloads, output_dir, **ignore):
             organisation["public datasets"] += 1
             total_public += 1
             is_public_not_requestable_archived = True
+
         downloads_all_time = dataset["total_res_downloads"]
         organisation["downloads all time"] += downloads_all_time
         downloads_last_year = dataset_downloads.get(dataset["id"], 0)
@@ -136,6 +141,7 @@ def main(downloads, output_dir, **ignore):
         "Any public updated previous quarter",
         "Latest scripted update date",
         "In explorer or grid",
+        "marked inactive",
     ]
     logger.info("Generating rows")
     rows = list()
@@ -166,6 +172,7 @@ def main(downloads, output_dir, **ignore):
             organisation["public datasets"],
             format="%.0f",
         )
+
         latest_scripted_update_date = organisation["latest scripted update date"]
         if latest_scripted_update_date == default_date:
             latest_scripted_update_date = None
@@ -193,12 +200,13 @@ def main(downloads, output_dir, **ignore):
             organisation["any public updated previous quarter"],
             latest_scripted_update_date,
             organisation["in explorer or grid"],
+            organisation["marked inactive"],
         ]
         rows.append(row)
     if rows:
         filepath = join(output_dir, "org_stats.csv")
         logger.info(f"Writing rows to {filepath}")
-        write_list_to_csv(filepath, rows, headers)
+        write_list_to_csv(filepath, rows, headers, encoding="utf-8")
 
     if outdated_lastmodifieds:
         message = ["updated_by_script is significantly after last_modified for:\n"]
@@ -233,11 +241,15 @@ if __name__ == "__main__":
     today = now_utc()
     mixpanel_config_yaml = join(home_folder, ".mixpanel.yml")
     downloads = Downloads(today, mixpanel_config_yaml, args.saved_dir)
+
+    user_agent_config_path = join(home_folder, ".useragents.yaml")
+    if not os.path.exists(user_agent_config_path):
+        user_agent_config_path = join(home_folder, ".useragents.yml")
     facade(
         main,
         hdx_read_only=True,
         hdx_site="prod",
-        user_agent_config_yaml=join(home_folder, ".useragents.yml"),
+        user_agent_config_yaml=user_agent_config_path,
         user_agent_lookup=lookup,
         project_config_yaml=join("config", "project_configuration.yml"),
         downloads=downloads,

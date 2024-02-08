@@ -1,5 +1,6 @@
 import argparse
 import logging
+import os
 from os import mkdir
 from os.path import expanduser, join
 from shutil import rmtree
@@ -124,7 +125,7 @@ def main(downloads, output_dir, **ignore):
     if rows:
         filepath = join(output_dir, "datasets.csv")
         logger.info(f"Writing rows to {filepath}")
-        write_list_to_csv(filepath, rows, headers=1)
+        write_list_to_csv(filepath, rows, headers=1, encoding="utf-8")
     keys = set(created_per_month.keys())
     keys.update(metadata_updated_per_month.keys())
     keys.update(data_updated_per_month.keys())
@@ -140,7 +141,7 @@ def main(downloads, output_dir, **ignore):
     if rows:
         filepath = join(output_dir, "non_script_updates.csv")
         logger.info(f"Writing rows to {filepath}")
-        write_list_to_csv(filepath, rows, headers=1)
+        write_list_to_csv(filepath, rows, headers=1, encoding="utf-8")
 
 
 if __name__ == "__main__":
@@ -154,11 +155,16 @@ if __name__ == "__main__":
     today = now_utc()
     mixpanel_config_yaml = join(home_folder, ".mixpanel.yml")
     downloads = Downloads(today, mixpanel_config_yaml, args.saved_dir)
+
+    user_agent_config_path = join(home_folder, ".useragents.yaml")
+    if not os.path.exists(user_agent_config_path):
+        user_agent_config_path = join(home_folder, ".useragents.yml")
+
     facade(
         main,
         hdx_read_only=True,
         hdx_site="prod",
-        user_agent_config_yaml=join(home_folder, ".useragents.yml"),
+        user_agent_config_yaml=user_agent_config_path,
         user_agent_lookup=lookup,
         project_config_yaml=join("config", "project_configuration.yml"),
         downloads=downloads,
