@@ -4,7 +4,7 @@ acaps,ACAPS,Global,53198,13790,17,0,0,0,0,0,6,0,65,140,Yes,Yes,No,No,2024-01-19,
 accion-contra-el-hambre-gis4tech,Acción contra el hambre - GIS4tech,Local,381,739,33,0,0,0,0,0,0,0,27,9,Yes,Yes,Yes,Yes,,No,No
 acf-west-africa,Action Contre la Faim - Regional Office West and Central Africa,Regional,5819,2441,17,0,0,0,0,0,0,0,0,146,Yes,Yes,No,No,,No,No
 acfcolombia,Accion contra el Hambre Colombia (inactive),Local,0,0,0,0,0,0,,,,,,28,No,No,No,No,,No,Yes
-acled,Armed Conflict Location & Event Data Project (ACLED),Global,79342,130321,246,0,0,0,0,100,0,0,0,526,Yes,Yes,No,No,2024-02-14,Yes,No
+acled,Armed Conflict Location & Event Data Project (ACLED),Global,79342,130323,246,0,0,0,0,100,0,0,0,526,Yes,Yes,No,No,2024-02-14,Yes,No
 acu,Assistance Coordination Unit,Local,9303,3161,11,1,0,0,0,0,0,0,0,118,Yes,Yes,Yes,Yes,,No,No
 adeso,Adeso (inactive),Global,994,445,0,0,0,1,,,,,,106,No,No,No,No,,No,Yes
 adfhaiti,ADF Haiti,Local,127,240,2,0,0,0,0,0,0,0,50,25,No,No,No,No,,No,No
@@ -52,7 +52,7 @@ cred,Centre for Research on the Epidemiology of Disasters,Global,2757,3358,1,0,0
 crs-waro,Catholic Relief Services (WARO),Regional,391,391,2,0,0,0,0,0,0,0,0,143,No,No,No,No,,No,No
 dalberg,Dalberg (inactive),Global,2221,84,0,0,0,1,,,,,,42,No,No,No,No,,No,Yes
 danish-refugee-council,Danish Refugee Council,Global,241,415,1,0,0,0,0,0,0,0,100,26,No,No,No,No,,No,No
-dhs,The DHS Program,Global,300722,601994,175,0,0,0,0,100,0,0,0,348,Yes,Yes,Yes,Yes,2024-01-20,No,No
+dhs,The DHS Program,Global,300722,601995,175,0,0,0,0,100,0,0,0,348,Yes,Yes,Yes,Yes,2024-01-20,No,No
 drew-university,Drew University,Global,2024,461,5,0,0,2,0,0,0,0,0,81,No,No,No,No,,No,No
 eaa,Education Above All Foundation,Global,95,156,1,0,0,0,0,0,0,0,0,121,No,No,No,No,,No,No
 ecb,Emergency Capacity Building (ECB) Indonesia (inactive),Local,128,79,0,0,0,1,,,,,,73,No,No,No,No,,No,Yes
@@ -104,7 +104,7 @@ ground-truth-solutions,Ground Truth Solutions,Global,0,0,0,6,0,0,,,,,,192,No,No,
 gsi,"Geographic Services, Inc.",Global,659,122,1,0,0,0,0,0,0,0,0,232,No,No,No,No,,No,No
 gtmi,GTMI Venezuela,Local,0,0,0,0,0,0,,,,,,64,No,No,No,No,,No,No
 harvard-humanitarian-initiative,Harvard Humanitarian Initiative,Global,0,0,0,0,0,0,,,,,,325,No,No,No,No,,No,No
-hdx,HDX,Global,322991,141746,208,0,0,150,0,62,0,5,7,1806,Yes,Yes,Yes,Yes,2024-02-03,Yes,No
+hdx,HDX,Global,322991,141748,208,0,0,150,0,62,0,5,7,1806,Yes,Yes,Yes,Yes,2024-02-03,Yes,No
 hdx-collaboration,HDX Collaboration,Global,0,0,0,0,0,0,,,,,,5,No,No,No,No,,No,No
 health-cluster,Health Cluster,Global,2192,3238,15,3,0,1,0,0,0,0,47,63,Yes,Yes,Yes,Yes,,No,No
 healthsites,Global Healthsites Mapping Project,Global,94833,62998,205,1,0,1,0,99,0,6,0,634,Yes,Yes,No,No,2024-02-08,No,No
@@ -115,7 +115,7 @@ hera-humanitarian-emergency-response-africa,HERA - Humanitarian Emergency Respon
 hi,Humanity & Inclusion / Handicap International,Global,1018,463,2,0,0,0,0,0,0,0,0,132,No,No,No,No,,No,No
 himalayan-disaster-relief-volunteer-group,Himalayan Disaster Relief Volunteer Group (inactive),Local,79,81,0,0,0,1,,,,,,1,No,No,No,No,,No,Yes
 hla,Hub Latin America,Regional,2524,1339,115,0,0,0,0,0,0,0,5,93,No,No,No,No,,No,No
-hot,Humanitarian OpenStreetMap Team (HOT),Global,254976,79447,4357,0,0,6,0,100,0,8,0,1229,Yes,Yes,Yes,No,2024-02-16,Yes,No
+hot,Humanitarian OpenStreetMap Team (HOT),Global,254976,79448,4357,0,0,6,0,100,0,8,0,1229,Yes,Yes,Yes,No,2024-02-16,Yes,No
 hrf-cambodia,Humanitarian Response Forum (HRF) - Cambodia,Local,0,0,0,0,0,0,,,,,,2,No,No,No,No,,No,No
 hrrp-nepal,Housing recovery and reconstruction platform (HRRP) - Nepal (inactive),Local,5173,1018,0,0,0,4,,,,,,128,No,No,No,No,,No,Yes
 hxl,Humanitarian Exchange Language (#HXL),Global,301,57,3,0,0,0,0,0,0,33,67,76,Yes,Yes,No,No,,No,No
@@ -137,10 +137,10 @@ inter-sector-coordination-group,Inter Sector Coordination Group,Local,32867,1415
 interaction,InterAction,Global,2757,5529,65,0,0,0,0,100,0,0,0,394,Yes,Yes,No,No,2024-02-13,No,No
 intermedia,InterMedia Survey Institute (inactive),Global,0,0,0,0,0,0,,,,,,125,No,No,No,No,,No,Yes
 international-displacement-monitoring-centre-idmc,Internal Displacement Monitoring Centre (IDMC),Global,42523,66324,421,0,0,0,0,100,0,0,0,588,Yes,Yes,No,No,2024-02-15,No,No
-international-organization-for-migration,International Organization for Migration (IOM),Global,172880,152148,154,7,0,29,0,0,0,0,1,1022,Yes,Yes,Yes,Yes,,Yes,No
+international-organization-for-migration,International Organization for Migration (IOM),Global,172880,152205,154,7,0,29,0,0,0,0,1,1022,Yes,Yes,Yes,Yes,,Yes,No
 internews,Internews,Global,1929,614,2,1,0,5,0,0,0,0,0,189,No,No,No,No,,No,No
 iom-missing-migrants-project,IOM Missing Migrants Project,Global,918,440,1,0,0,0,0,0,0,0,100,239,Yes,Yes,No,No,,No,No
-ipc,Integrated Food Security Phase Classification (IPC),Global,16382,27825,56,0,0,0,0,95,0,0,0,123,Yes,Yes,Yes,Yes,2024-02-14,Yes,No
+ipc,Integrated Food Security Phase Classification (IPC),Global,16382,27826,56,0,0,0,0,95,0,0,0,123,Yes,Yes,Yes,Yes,2024-02-14,Yes,No
 ipc-cluster-guinea,IPC Cluster Guinea (inactive),Local,63,10,0,0,0,2,,,,,,2,No,No,No,No,,No,Yes
 ipis,International Peace Information Service (IPIS),Global,141,28,3,0,0,0,0,0,0,33,33,114,No,No,No,No,,No,No
 iraq-shelter-cluster,Iraq Shelter Cluster (inactive),Local,105,137,0,0,0,1,,,,,,24,No,No,No,No,,No,Yes
@@ -170,7 +170,7 @@ majidata,Majidata (inactive),Local,981,1058,0,0,0,7,,,,,,71,No,No,No,No,,No,Yes
 map-kibera,Map Kibera,Local,1152,118,0,0,0,17,,,,,,102,No,No,No,No,,No,No
 mapaction,MapAction,Global,1173,541,2,0,0,10,0,0,0,50,0,416,No,No,No,No,,No,No
 meers,Middle East Education Research Training and Support (inactive),Regional,1028,1371,0,0,0,2,,,,,,75,No,No,No,No,,No,Yes
-meta,Data for Good at Meta,Global,484713,160260,220,0,0,0,0,0,0,0,4,553,Yes,Yes,Yes,Yes,,No,No
+meta,Data for Good at Meta,Global,484713,160261,220,0,0,0,0,0,0,0,4,553,Yes,Yes,Yes,Yes,,No,No
 mimu,Myanmar Information Management Unit (MIMU),Local,3987,2147,65,0,0,0,0,94,0,0,3,237,No,No,No,No,2023-06-18,Yes,No
 mit-government-lab,MIT Governance Lab (inactive),Global,0,0,0,0,0,0,,,,,,3,No,No,No,No,,No,Yes
 moving-energy-initiative,Moving Energy Initiative,Global,2480,676,1,0,0,0,0,0,0,0,0,130,No,No,No,No,,No,No
@@ -184,18 +184,18 @@ nethope,NetHope,Global,356,289,3,0,0,0,0,0,0,0,0,98,No,No,No,No,,No,No
 observatory-of-conflict-and-violence-prevention-ocvp,Observatory of Conflict and Violence Prevention (inactive),Global,681,951,0,0,0,11,,,,,,161,No,No,No,No,,No,Yes
 ocha-afghanistan,OCHA Afghanistan,Local,27175,21265,60,6,0,12,2,2,0,0,0,308,Yes,Yes,Yes,Yes,2024-01-03,Yes,No
 ocha-bgss1,OCHA BGSS,,0,0,0,0,0,0,,,,,,0,No,No,No,No,,No,No
-ocha-burkina,OCHA Burkina Faso,Local,13953,8759,10,1,0,0,30,0,0,0,0,73,Yes,Yes,Yes,Yes,2023-04-04,Yes,No
+ocha-burkina,OCHA Burkina Faso,Local,13953,8762,10,1,0,0,30,0,0,0,0,73,Yes,Yes,Yes,Yes,2023-04-04,Yes,No
 ocha-burundi,OCHA Burundi,Local,3867,3600,11,0,0,0,9,0,0,0,0,118,No,No,Yes,Yes,2020-04-28,Yes,No
 ocha-cameroon,OCHA Cameroon,Local,10551,5381,11,0,0,0,9,0,0,0,0,120,Yes,Yes,Yes,Yes,2023-04-04,Yes,No
 ocha-car,OCHA Central African Republic,Local,15887,10212,20,0,0,4,35,0,0,0,0,217,Yes,Yes,Yes,Yes,2023-04-04,Yes,No
-ocha-chad,OCHA Chad,Local,17059,9349,14,1,0,1,21,7,0,0,7,184,Yes,Yes,Yes,Yes,2023-04-04,Yes,No
+ocha-chad,OCHA Chad,Local,17059,9351,14,1,0,1,21,7,0,0,7,184,Yes,Yes,Yes,Yes,2023-04-04,Yes,No
 ocha-colombia,OCHA Colombia,Local,13626,16380,36,0,0,60,0,0,0,0,0,295,Yes,Yes,Yes,Yes,,Yes,No
 ocha-crs,OCHA CRS,Global,0,0,0,0,0,0,,,,,,113,No,No,No,No,,No,No
 ocha-dr-congo,OCHA Democratic Republic of the Congo (DRC),Local,40732,18837,22,0,0,7,32,0,0,0,18,255,Yes,Yes,Yes,Yes,2024-01-01,Yes,No
 ocha-ds,OCHA Digital Services,Global,1040,416,4,0,0,0,0,0,0,25,25,58,Yes,Yes,Yes,Yes,,No,No
 ocha-eritrea,OCHA Eritrea,Local,128,129,2,1,0,0,0,0,0,0,0,106,No,No,No,No,,No,No
 ocha-ethiopia,OCHA Ethiopia,Local,53294,23045,35,0,0,10,14,0,0,0,3,248,Yes,Yes,Yes,Yes,2024-01-26,Yes,No
-ocha-fiss,OCHA Field Information Services Section (FISS),Global,181671,84875,133,0,0,0,83,11,0,0,77,210,Yes,Yes,Yes,Yes,2024-02-05,Yes,No
+ocha-fiss,OCHA Field Information Services Section (FISS),Global,181671,84877,133,0,0,0,83,11,0,0,77,210,Yes,Yes,Yes,Yes,2024-02-05,Yes,No
 ocha-fts,OCHA Financial Tracking System (FTS),Global,487518,320008,278,0,0,2,0,81,0,18,17,740,Yes,Yes,Yes,Yes,2024-02-16,Yes,No
 ocha-guinea,OCHA Guinea (inactive),Local,185,235,0,0,0,2,,,,,,31,No,No,No,No,,No,Yes
 ocha-haiti,OCHA Haiti,Local,11625,6844,18,1,0,7,33,0,0,0,6,216,Yes,Yes,Yes,Yes,2024-01-10,Yes,No
@@ -205,14 +205,14 @@ ocha-jordan,OCHA Jordan,Local,0,0,0,0,0,0,,,,,,208,No,No,No,No,,No,No
 ocha-lebanon,OCHA Lebanon,Local,11465,2133,15,0,0,0,87,0,0,0,0,221,No,No,No,No,2020-10-09,No,No
 ocha-liberia,OCHA Liberia (inactive),Local,886,273,0,0,0,8,,,,,,160,No,No,No,No,,No,Yes
 ocha-libya,OCHA Libya,Local,2723,2073,7,0,0,0,14,0,0,0,14,66,No,No,No,No,2021-07-28,Yes,No
-ocha-mali,OCHA Mali,Local,28184,14002,26,0,0,11,31,0,0,0,8,231,Yes,Yes,Yes,Yes,2023-06-30,Yes,No
+ocha-mali,OCHA Mali,Local,28184,14004,26,0,0,11,31,0,0,0,8,231,Yes,Yes,Yes,Yes,2023-06-30,Yes,No
 ocha-mozambique-hat,OCHA Mozambique,Local,9018,4645,27,0,0,0,0,0,0,22,0,76,Yes,Yes,Yes,Yes,,Yes,No
 ocha-myanmar,OCHA Myanmar,Local,1302,1075,8,0,0,0,0,0,0,0,0,197,Yes,Yes,No,No,,Yes,No
 ocha-naas,OCHA Needs Assessment and Analysis Section (NAAS),Global,723,435,0,0,0,2,,,,,,2,No,No,No,No,,No,No
 ocha-nepal,OCHA Nepal (inactive),Local,4285,1416,0,0,0,12,,,,,,157,No,No,No,No,,No,Yes
 ocha-niger,OCHA Niger,Local,16188,9577,17,2,0,2,24,0,0,0,0,191,Yes,Yes,Yes,Yes,2024-01-04,Yes,No
-ocha-nigeria,OCHA Nigeria,Local,41310,15408,33,0,0,2,27,0,0,0,6,260,Yes,Yes,Yes,Yes,2023-04-04,Yes,No
-ocha-opt,OCHA occupied Palestinian territory (oPt),Local,17683,11093,34,0,0,3,12,0,0,0,3,200,Yes,Yes,Yes,Yes,2023-10-20,Yes,No
+ocha-nigeria,OCHA Nigeria,Local,41310,15411,33,0,0,2,27,0,0,0,6,260,Yes,Yes,Yes,Yes,2023-04-04,Yes,No
+ocha-opt,OCHA occupied Palestinian territory (oPt),Local,17683,11094,34,0,0,3,12,0,0,0,3,200,Yes,Yes,Yes,Yes,2023-10-20,Yes,No
 ocha-pakistan,OCHA Pakistan,Local,9068,2555,13,0,0,5,15,0,0,0,0,231,Yes,Yes,No,No,2018-11-23,No,No
 ocha-philippines,OCHA Philippines,Local,72453,28417,25,0,0,49,16,0,0,0,8,353,No,No,Yes,Yes,2023-11-13,No,No
 ocha-roap,OCHA Regional Office for Asia and the Pacific (ROAP),Regional,231727,64741,102,0,0,18,76,1,0,0,19,473,No,No,No,No,2023-07-12,No,No
@@ -223,12 +223,12 @@ ocha-rop,OCHA Office of the Pacific Islands,Regional,5824,4785,6,0,0,2,83,0,0,0,
 ocha-rosa,OCHA ROSA (inactive),Regional,17822,4273,6,0,0,7,100,0,0,0,17,172,No,No,No,No,2023-07-12,No,Yes
 ocha-rosc,OCHA Syria,Local,27578,9986,13,2,0,9,23,0,0,0,0,172,Yes,Yes,Yes,Yes,2023-04-04,Yes,No
 ocha-rosea,OCHA Regional Office for Southern and Eastern Africa (ROSEA),Regional,154191,52357,88,0,0,36,44,0,0,0,19,391,Yes,Yes,Yes,Yes,2024-01-19,Yes,No
-ocha-rowca,OCHA West and Central Africa (ROWCA),Regional,111207,40140,103,0,0,11,60,0,0,0,15,341,Yes,Yes,Yes,Yes,2023-12-20,Yes,No
+ocha-rowca,OCHA West and Central Africa (ROWCA),Regional,111207,40143,103,0,0,11,60,0,0,0,15,341,Yes,Yes,Yes,Yes,2023-12-20,Yes,No
 ocha-somalia,OCHA Somalia,Local,20629,14341,27,3,0,6,4,0,0,0,4,250,Yes,Yes,Yes,Yes,2022-09-22,Yes,No
 ocha-south-sudan,OCHA South Sudan,Local,26471,15335,24,0,0,10,12,0,0,0,12,276,Yes,Yes,No,No,2023-09-05,Yes,No
 ocha-sudan,OCHA Sudan,Local,16532,11012,72,0,0,18,4,0,0,0,4,276,Yes,Yes,Yes,Yes,2021-07-12,Yes,No
 ocha-turkey,OCHA Türkiye,Local,8697,6056,28,0,0,0,0,0,0,0,4,275,Yes,Yes,No,No,,Yes,No
-ocha-ukraine,OCHA Ukraine,Local,10559,8218,6,1,0,10,17,0,0,0,17,189,Yes,Yes,No,No,2024-01-19,Yes,No
+ocha-ukraine,OCHA Ukraine,Local,10559,8221,6,1,0,10,17,0,0,0,17,189,Yes,Yes,No,No,2024-01-19,Yes,No
 ocha-yemen,OCHA Yemen,Local,30179,13115,14,2,0,1,36,0,0,0,0,270,Yes,Yes,Yes,Yes,2024-02-06,Yes,No
 ochavenezuela,OCHA Venezuela,Local,7177,2681,21,4,0,0,10,0,0,0,62,85,Yes,Yes,Yes,Yes,2023-06-30,Yes,No
 olds,Observatorio Latioamericano de Desarrollo Sostenible,Regional,2143,1218,9,0,0,1,0,0,0,0,11,107,No,No,No,No,,No,No
@@ -332,17 +332,17 @@ vsf_b,Vétérinaires Sans Frontières - Belgium,Global,96,102,1,0,0,0,0,0,0,0,0,
 wash-cluster-guinea,WASH Cluster Guinea (inactive),Local,658,356,0,0,0,2,,,,,,136,No,No,No,No,,No,Yes
 wash-cluster-south-sudan,WASH Cluster South Sudan,Local,149,51,0,0,0,1,,,,,,89,No,No,No,No,,No,No
 washwatch,WASHwatch (inactive),Global,144,76,0,0,0,1,,,,,,178,No,No,No,No,,No,Yes
-water-point-data-exchange,Water Point Data Exchange,Global,1407,6433,18,0,0,1,0,100,0,0,89,306,Yes,Yes,No,No,2024-02-11,No,No
+water-point-data-exchange,Water Point Data Exchange,Global,1407,6437,18,0,0,1,0,100,0,0,89,306,Yes,Yes,No,No,2024-02-11,No,No
 wcaro,UNICEF West and Central Africa (WCARO),Regional,889,657,8,0,0,1,0,0,0,0,0,117,No,No,No,No,,No,No
 wellcome,Wellcome,Global,415,322,1,0,0,0,0,0,0,0,0,40,No,No,No,No,,No,No
 weworld,WeWorld,Global,0,0,0,0,0,0,,,,,,70,No,No,No,No,,No,No
-wfp,WFP - World Food Programme,Global,174934,173265,464,0,0,15,0,92,0,2,1,1227,Yes,Yes,Yes,Yes,2024-02-13,Yes,No
+wfp,WFP - World Food Programme,Global,174934,173267,464,0,0,15,0,92,0,2,1,1227,Yes,Yes,Yes,Yes,2024-02-13,Yes,No
 wfp-lebanon,World Food Programme - Country office in Lebanon (inactive),Local,198,141,0,0,0,2,,,,,,2,No,No,No,No,,No,Yes
 what3words,what3words,Global,1001,636,0,0,0,5,,,,,,11,Yes,No,Yes,No,,No,No
-world-bank-group,World Bank Group,Global,756309,1119424,4668,0,0,0,0,100,0,0,0,555,Yes,Yes,Yes,Yes,2024-01-27,No,No
-world-health-organization,World Health Organization,Global,739261,1157619,241,0,0,7,0,96,0,1,0,769,Yes,Yes,Yes,Yes,2024-02-16,Yes,No
+world-bank-group,World Bank Group,Global,756309,1119425,4668,0,0,0,0,100,0,0,0,555,Yes,Yes,Yes,Yes,2024-01-27,No,No
+world-health-organization,World Health Organization,Global,739261,1157631,241,0,0,7,0,96,0,1,0,769,Yes,Yes,Yes,Yes,2024-02-16,Yes,No
 world-resources-institute-wri,World Resources Institute,Global,609,431,0,0,0,5,,,,,,235,No,No,No,No,,No,No
-worldpop,WorldPop,Global,102526,39453,1081,0,0,1,0,98,0,0,1,829,Yes,Yes,Yes,Yes,2020-11-24,Yes,No
+worldpop,WorldPop,Global,102526,39454,1081,0,0,1,0,98,0,0,1,829,Yes,Yes,Yes,Yes,2020-11-24,Yes,No
 wvi-haiti,World Vision International - Haiti,Local,21,35,2,0,0,0,0,0,0,0,0,6,No,No,Yes,Yes,,No,No
 xchange,xchange,Global,572,206,2,0,0,0,0,0,0,0,0,129,No,No,No,No,,No,No
 yale-school-of-public-health,Yale School of Public Health,Global,13,23,1,0,0,0,0,0,0,0,0,7,Yes,Yes,Yes,Yes,,No,No
