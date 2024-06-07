@@ -116,12 +116,11 @@ class Downloads:
 
     def get_all_organisations(self):
         logger.info("Obtaining organisations data")
-        organisation_names = Organization.get_all_organization_names(
-            include_users=True)
-        organisations = dict()
-        for organisation_name in organisation_names:
-            organisation = Organization.read_from_hdx(organisation_name)
-            organisations[organisation_name] = organisation.data
+        organisation_list = Organization.get_all_organization_names(
+            all_fields=True, include_users=True)
+        organisations = {}
+        for organisation in organisation_list:
+            organisations[organisation["name"]] = organisation
         if self.saved_dir:
             save_json(organisations,
                       join(self.saved_dir, self.organisations_file))
