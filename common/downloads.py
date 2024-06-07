@@ -83,7 +83,8 @@ class Downloads:
                 nonlocal n
 
                 if n >= 0:
-                    filename = self.datasets_file.replace(".json", f"_{n}.json")
+                    filename = self.datasets_file.replace(".json",
+                                                          f"_{n}.json")
                     save_json(datasets_list, join(self.saved_dir, filename))
                     datasets_list.clear()
                 n += 1
@@ -115,13 +116,15 @@ class Downloads:
 
     def get_all_organisations(self):
         logger.info("Obtaining organisations data")
-        organisation_names = Organization.get_all_organization_names()
+        organisation_names = Organization.get_all_organization_names(
+            include_users=True)
         organisations = dict()
         for organisation_name in organisation_names:
             organisation = Organization.read_from_hdx(organisation_name)
             organisations[organisation_name] = organisation.data
         if self.saved_dir:
-            save_json(organisations, join(self.saved_dir, self.organisations_file))
+            save_json(organisations,
+                      join(self.saved_dir, self.organisations_file))
         return organisations
 
     def get_aging(self, url):
