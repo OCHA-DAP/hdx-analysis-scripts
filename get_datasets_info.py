@@ -162,7 +162,6 @@ if __name__ == "__main__":
 
     facade(
         main,
-        hdx_read_only=True,
         hdx_site="prod",
         user_agent_config_yaml=user_agent_config_path,
         user_agent_lookup=lookup,
