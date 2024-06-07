@@ -122,6 +122,7 @@ def main(downloads, output_dir, **ignore):
     headers = [
         "Organisation name",
         "Organisation title",
+        "Organisation acronym",
         "Org type",
         "Downloads all time",
         "Downloads last year",
@@ -181,6 +182,7 @@ def main(downloads, output_dir, **ignore):
         row = [
             organisation_name,
             organisation["title"],
+            organisation.get("org_acronym", ""),
             organisation["orgtype"],
             organisation["downloads all time"],
             organisation["downloads last year"],
