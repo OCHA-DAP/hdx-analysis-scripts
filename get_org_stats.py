@@ -43,6 +43,11 @@ def main(downloads, output_dir, **ignore):
     for organisation_name, organisation in organisations.items():
         organisation_type = name_to_type.get(organisation_name, "")
         organisation["orgtype"] = organisation_type
+        admins = 0
+        for user in organisation.get("users", []):
+            if user["capacity"] == "admin":
+                admins += 1
+        organisation["number of admins"] = admins
         organisation["downloads all time"] = 0
         organisation["downloads last year"] = 0
         organisation["public datasets"] = 0
@@ -66,7 +71,8 @@ def main(downloads, output_dir, **ignore):
     outdated_lastmodifieds = {}
     for dataset in downloads.get_all_datasets():
         datasetstats = DatasetStatistics(
-            downloads.today, dataset_name_to_explorers, freshness_by_frequency, dataset
+            downloads.today, dataset_name_to_explorers, freshness_by_frequency,
+            dataset
         )
         name = dataset["name"]
         organisation_name = dataset["organization"]["name"]
@@ -109,13 +115,16 @@ def main(downloads, output_dir, **ignore):
             organisation["updated by cod script"] += 1
             total_updated_by_cod += 1
         if datasetstats.updated_by_script:
-            if datasetstats.last_modified > organisation["latest scripted update date"]:
-                organisation["latest scripted update date"] = datasetstats.last_modified
+            if datasetstats.last_modified > organisation[
+                "latest scripted update date"]:
+                organisation[
+                    "latest scripted update date"] = datasetstats.last_modified
             if datasetstats.updated_by_noncod_script == "Y":
                 organisation["updated by script"] += 1
                 total_updated_by_script += 1
             if datasetstats.outdated_lastmodified == "Y":
-                dict_of_lists_add(outdated_lastmodifieds, organisation_name, name)
+                dict_of_lists_add(outdated_lastmodifieds, organisation_name,
+                                  name)
             if datasetstats.old_updated_by_noncod_script == "Y":
                 organisation["old updated by script"] += 1
 
@@ -124,6 +133,7 @@ def main(downloads, output_dir, **ignore):
         "Organisation title",
         "Organisation acronym",
         "Org type",
+        "Number of admins",
         "Downloads all time",
         "Downloads last year",
         "Public datasets",
@@ -174,7 +184,8 @@ def main(downloads, output_dir, **ignore):
             format="%.0f",
         )
 
-        latest_scripted_update_date = organisation["latest scripted update date"]
+        latest_scripted_update_date = organisation[
+            "latest scripted update date"]
         if latest_scripted_update_date == default_date:
             latest_scripted_update_date = None
         else:
@@ -184,6 +195,7 @@ def main(downloads, output_dir, **ignore):
             organisation["title"],
             organisation.get("org_acronym", ""),
             organisation["orgtype"],
+            organisation["number of admins"],
             organisation["downloads all time"],
             organisation["downloads last year"],
             organisation["public datasets"],
@@ -211,12 +223,14 @@ def main(downloads, output_dir, **ignore):
         write_list_to_csv(filepath, rows, headers, encoding="utf-8")
 
     if outdated_lastmodifieds:
-        message = ["updated_by_script is significantly after last_modified for:\n"]
+        message = [
+            "updated_by_script is significantly after last_modified for:\n"]
         for organisation_name, dataset_names in outdated_lastmodifieds.items():
             message.append(f"organisation {organisation_name} with ")
             no_names = len(dataset_names)
             if no_names > 6:
-                message.append(f"{no_names} datasets such as {dataset_names[0]}")
+                message.append(
+                    f"{no_names} datasets such as {dataset_names[0]}")
             else:
                 message.append("datasets: ")
                 for dataset_name in dataset_names:
@@ -234,7 +248,8 @@ def main(downloads, output_dir, **ignore):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Org Stats script")
-    parser.add_argument("-od", "--output_dir", default="output", help="Output folder")
+    parser.add_argument("-od", "--output_dir", default="output",
+                        help="Output folder")
     parser.add_argument(
         "-sd", "--saved_dir", default=None, help="Dir for downloaded data"
     )
