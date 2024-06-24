@@ -17,7 +17,8 @@ class DatasetStatistics(UserDict):
     bracketed_date = re.compile(r"\((.*)\)")
 
     def __init__(
-        self, today, dataset_name_to_explorers, freshness_by_frequency, dataset
+            self, today, dataset_name_to_explorers, freshness_by_frequency,
+            dataset
     ):
         super().__init__(dataset.data)
         self.today = today
@@ -64,12 +65,14 @@ class DatasetStatistics(UserDict):
             self.last_modified = None
             self.updated_last_3_months = ""
             return
-        self.last_modified = parse_date(last_modified, include_microseconds=True)
+        self.last_modified = parse_date(last_modified,
+                                        include_microseconds=True)
         if self.last_3_months < self.last_modified <= self.today:
             self.updated_last_3_months = "Y"
         else:
             self.updated_last_3_months = "N"
-        if self.previous_quarter[0] <= self.last_modified <= self.previous_quarter[1]:
+        if self.previous_quarter[0] <= self.last_modified <= \
+                self.previous_quarter[1]:
             self.updated_previous_qtr = "Y"
         else:
             self.updated_previous_qtr = "N"
@@ -95,12 +98,12 @@ class DatasetStatistics(UserDict):
             if any(x in updated_by_script for x in ("tagbot",)):
                 return
         if any(
-            x in updated_by_script
-            for x in (
-                "HDXPythonLibrary/5.5.6-test (2022-03-15",
-                "HDXPythonLibrary/5.4.8-test (2022-01-04",
-                "HDXPythonLibrary/5.4.1-test (2021-11-17",
-            )
+                x in updated_by_script
+                for x in (
+                        "HDXPythonLibrary/5.5.6-test (2022-03-15",
+                        "HDXPythonLibrary/5.4.8-test (2022-01-04",
+                        "HDXPythonLibrary/5.4.1-test (2021-11-17",
+                )
         ):  # Mike maintainer bulk change
             return
         match = self.bracketed_date.search(updated_by_script)
@@ -114,9 +117,9 @@ class DatasetStatistics(UserDict):
             except ParserError:
                 return
         if (
-            "HDXINTERNAL" in updated_by_script
-            and "CODs" in updated_by_script
-            and "cod_level" in self.data
+                "HDXINTERNAL" in updated_by_script
+                and "CODs" in updated_by_script
+                and "cod_level" in self.data
         ):
             self.updated_by_cod_script = "Y"
             return
@@ -159,8 +162,12 @@ class DatasetStatistics(UserDict):
         tags = self.dataset.get_tags()
         self.tags = ", ".join(tags)
 
+    def add_tags_to_set(self, tagset):
+        tags = self.dataset.get_tags()
+        tagset.update(tags)
+
     def calculate_freshness(
-        self, last_modified: datetime, update_frequency: int
+            self, last_modified: datetime, update_frequency: int
     ) -> int:
         """Calculate freshness based on a last modified date and the expected update
         frequency. Returns 0 for fresh, 1 for due, 2 for overdue and 3 for delinquent.
@@ -173,7 +180,8 @@ class DatasetStatistics(UserDict):
             int: 0 for fresh, 1 for due, 2 for overdue and 3 for delinquent
         """
         delta = self.today - last_modified
-        if delta >= self.freshness_by_frequency[update_frequency]["Delinquent"]:
+        if delta >= self.freshness_by_frequency[update_frequency][
+            "Delinquent"]:
             return "Delinquent"
         elif delta >= self.freshness_by_frequency[update_frequency]["Overdue"]:
             return "Overdue"

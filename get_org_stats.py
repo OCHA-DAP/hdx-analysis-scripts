@@ -68,6 +68,7 @@ def main(downloads, output_dir, **ignore):
         organisation["marked inactive"] = (
             "Yes" if organisation.get("closed_organization", False) else "No"
         )
+        organisation["tags"] = set()
     outdated_lastmodifieds = {}
     for dataset in downloads.get_all_datasets():
         datasetstats = DatasetStatistics(
@@ -127,6 +128,7 @@ def main(downloads, output_dir, **ignore):
                                   name)
             if datasetstats.old_updated_by_noncod_script == "Y":
                 organisation["old updated by script"] += 1
+        datasetstats.add_tags_to_set(organisation["tags"])
 
     headers = [
         "Organisation name",
@@ -152,7 +154,8 @@ def main(downloads, output_dir, **ignore):
         "Any public updated previous quarter",
         "Latest scripted update date",
         "In explorer or grid",
-        "marked inactive",
+        "Marked inactive",
+        "Tags"
     ]
     logger.info("Generating rows")
     rows = list()
@@ -215,6 +218,7 @@ def main(downloads, output_dir, **ignore):
             latest_scripted_update_date,
             organisation["in explorer or grid"],
             organisation["marked inactive"],
+            ",".join(sorted(organisation["tags"])),
         ]
         rows.append(row)
     if rows:
