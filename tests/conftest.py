@@ -77,6 +77,10 @@ def mock_downloads(input_folder):
             return load_json(join(input_folder, Downloads.packagelinks_file))
 
         @staticmethod
+        def get_requests():
+            return load_json(join(input_folder, Downloads.hdxconnect_file))
+
+        @staticmethod
         def get_all_organisations():
             return load_json(join(input_folder, Downloads.organisations_file))
 

@@ -18,6 +18,7 @@ class Downloads:
     datasets_file = "datasets.json"
     orgtypes_file = "org_types.json"
     packagelinks_file = "package_links.json"
+    hdxconnect_file = "hdxconnect.json"
     organisations_file = "organisations.json"
     aging_file = "aging.yaml"
 
@@ -114,6 +115,15 @@ class Downloads:
             save_json(json, join(self.saved_dir, self.packagelinks_file))
         return json
 
+    def get_requests(self):
+        logger.info("Downloading HDX Connect requests")
+        json = Download().download_json(
+            "https://data.humdata.org/ckan-admin/requests_data/download?format=csv"
+        )
+        if self.saved_dir:
+            save_json(json, join(self.saved_dir, self.hdxconnect_file))
+        return json
+
     def get_all_organisations(self):
         logger.info("Obtaining organisations data")
         organisation_list = Organization.get_all_organization_names(
@@ -131,3 +141,4 @@ class Downloads:
         if self.saved_dir:
             save_yaml(yaml, join(self.saved_dir, self.aging_file))
         return yaml
+

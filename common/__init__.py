@@ -5,7 +5,7 @@ from hdx.utilities.dictandlist import dict_of_lists_add
 
 def get_dataset_name_to_explorers(downloads):
     json = downloads.get_package_links()
-    dataset_name_to_explorers = dict()
+    dataset_name_to_explorers = {}
     for explorergridlink in json["result"]:
         explorergrid = explorergridlink["title"]
         for dataset_name in set(explorergridlink["package_list"].split(",")):
@@ -13,12 +13,19 @@ def get_dataset_name_to_explorers(downloads):
     return dataset_name_to_explorers
 
 
+def get_dataset_id_to_requests(downloads):
+    dataset_id_to_requests = {}
+    for request in downloads.get_requests():
+        dict_of_lists_add(dataset_id_to_requests, request["package_id"], request)
+    return dataset_id_to_requests
+
+
 def get_freshness_by_frequency(downloads, url):
     yaml = downloads.get_aging(url)
-    freshness_by_frequency = dict()
+    freshness_by_frequency = {}
     for key, value in yaml["aging"].items():
         update_frequency = int(key)
-        freshness_frequency = dict()
+        freshness_frequency = {}
         for status in value:
             nodays = value[status]
             freshness_frequency[status] = timedelta(days=nodays)

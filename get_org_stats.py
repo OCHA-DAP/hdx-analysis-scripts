@@ -6,7 +6,8 @@ from os import mkdir
 from os.path import expanduser, join
 from shutil import rmtree
 
-from common import get_dataset_name_to_explorers, get_freshness_by_frequency
+from common import get_dataset_name_to_explorers, get_freshness_by_frequency, \
+    get_dataset_id_to_requests
 from common.dataset_statistics import DatasetStatistics
 from common.downloads import Downloads
 from hdx.api.configuration import Configuration
@@ -31,6 +32,7 @@ def main(downloads, output_dir, **ignore):
     org_stats_url = configuration["org_stats_url"]
     name_to_type = downloads.get_org_types(org_stats_url)
     dataset_name_to_explorers = get_dataset_name_to_explorers(downloads)
+    dataset_id_to_requests = get_dataset_id_to_requests(downloads)
     freshness_by_frequency = get_freshness_by_frequency(
         downloads, configuration["aging_url"]
     )
@@ -69,10 +71,15 @@ def main(downloads, output_dir, **ignore):
             "Yes" if organisation.get("closed_organization", False) else "No"
         )
         organisation["tags"] = set()
+        organisation["new requests"] = 0
+        organisation["open requests"] = 0
+        organisation["shared requests"] = 0
+        organisation["rejected requests"] = 0
     outdated_lastmodifieds = {}
     for dataset in downloads.get_all_datasets():
         datasetstats = DatasetStatistics(
-            downloads.today, dataset_name_to_explorers, freshness_by_frequency,
+            downloads.today, dataset_name_to_explorers, dataset_id_to_requests,
+            freshness_by_frequency,
             dataset
         )
         name = dataset["name"]
@@ -115,6 +122,10 @@ def main(downloads, output_dir, **ignore):
         if datasetstats.updated_by_cod_script == "Y":
             organisation["updated by cod script"] += 1
             total_updated_by_cod += 1
+        organisation["new requests"] += datasetstats.new_requests
+        organisation["open requests"] += datasetstats.open_requests
+        organisation["shared requests"] += datasetstats.shared_requests
+        organisation["rejected requests"] += datasetstats.rejected_requests
         if datasetstats.updated_by_script:
             if datasetstats.last_modified > organisation[
                 "latest scripted update date"]:
@@ -155,7 +166,11 @@ def main(downloads, output_dir, **ignore):
         "Latest scripted update date",
         "In explorer or grid",
         "Marked inactive",
-        "Tags"
+        "New requests",
+        "Open requests",
+        "Shared requests",
+        "Rejected requests",
+        "Tags",
     ]
     logger.info("Generating rows")
     rows = list()
@@ -218,6 +233,10 @@ def main(downloads, output_dir, **ignore):
             latest_scripted_update_date,
             organisation["in explorer or grid"],
             organisation["marked inactive"],
+            organisation["new requests"],
+            organisation["open requests"],
+            organisation["shared requests"],
+            organisation["rejected requests"],
             ",".join(sorted(organisation["tags"])),
         ]
         rows.append(row)

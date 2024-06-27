@@ -17,7 +17,7 @@ class DatasetStatistics(UserDict):
     bracketed_date = re.compile(r"\((.*)\)")
 
     def __init__(
-            self, today, dataset_name_to_explorers, freshness_by_frequency,
+            self, today, dataset_name_to_explorers, dataset_id_to_requests, freshness_by_frequency,
             dataset
     ):
         super().__init__(dataset.data)
@@ -25,6 +25,7 @@ class DatasetStatistics(UserDict):
         self.last_3_months = today - relativedelta(months=3)
         self.previous_quarter = get_previous_quarter(today)
         self.dataset_name_to_explorers = dataset_name_to_explorers
+        self.dataset_id_to_requests = dataset_id_to_requests
         self.freshness_by_frequency = freshness_by_frequency
         self.dataset = dataset
         self.last_modified = None
@@ -35,6 +36,7 @@ class DatasetStatistics(UserDict):
         self.get_update_frequency_info()
         self.get_updated_by_script()
         self.get_in_explorer_or_grid()
+        self.get_requests()
         self.get_tags()
         self.get_freshness()
 
@@ -216,3 +218,19 @@ class DatasetStatistics(UserDict):
                 self.fresh = self.calculate_freshness(
                     latest_of_modifieds, update_frequency
                 )
+
+    def get_requests(self):
+        self.new_requests = 0
+        self.open_requests = 0
+        self.shared_requests = 0
+        self.rejected_requests = 0
+        for request in self.dataset_id_to_requests.get(self["id"], []):
+            if request["state"] == "new":
+                self.new_requests += 1
+            elif request["state"] == "open":
+                self.open_requests += 1
+            else:
+                if request["data_shared"]:
+                    self.shared_requests += 1
+                elif request["rejected"]:
+                    self.rejected_requests += 1

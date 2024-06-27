@@ -5,7 +5,8 @@ from os import mkdir
 from os.path import expanduser, join
 from shutil import rmtree
 
-from common import get_dataset_name_to_explorers, get_freshness_by_frequency
+from common import get_dataset_name_to_explorers, get_freshness_by_frequency, \
+    get_dataset_id_to_requests
 from common.dataset_statistics import DatasetStatistics
 from common.downloads import Downloads
 from hdx.api.configuration import Configuration
@@ -25,13 +26,14 @@ def main(downloads, output_dir, **ignore):
     configuration = Configuration.read()
 
     dataset_name_to_explorers = get_dataset_name_to_explorers(downloads)
+    dataset_id_to_requests = get_dataset_id_to_requests(downloads)
     freshness_by_frequency = get_freshness_by_frequency(
         downloads, configuration["aging_url"]
     )
     dataset_downloads = downloads.get_mixpanel_downloads(5)
-    created_per_month = dict()
-    metadata_updated_per_month = dict()
-    data_updated_per_month = dict()
+    created_per_month = {}
+    metadata_updated_per_month = {}
+    data_updated_per_month = {}
     rows = [
         (
             "name",
@@ -64,7 +66,7 @@ def main(downloads, output_dir, **ignore):
     ]
     for dataset in downloads.get_all_datasets():
         datasetstats = DatasetStatistics(
-            downloads.today, dataset_name_to_explorers, freshness_by_frequency, dataset
+            downloads.today, dataset_name_to_explorers, dataset_id_to_requests, freshness_by_frequency, dataset
         )
         if datasetstats.last_modified is None:
             continue
