@@ -24,6 +24,7 @@ def main(downloads, output_dir, **ignore):
     mkdir(output_dir)
 
     configuration = Configuration.read()
+    downloads.set_api_key(configuration.get_api_key())
 
     dataset_name_to_explorers = get_dataset_name_to_explorers(downloads)
     dataset_id_to_requests = get_dataset_id_to_requests(downloads)

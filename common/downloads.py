@@ -25,7 +25,11 @@ class Downloads:
     def __init__(self, today, mixpanel_config_yaml, saved_dir=None):
         self.today = today
         self.mixpanel_config_yaml = mixpanel_config_yaml
+        self.headers = {}
         self.saved_dir = saved_dir
+
+    def set_api_key(self, api_key):
+        self.headers = {"Authorization": api_key}
 
     def get_mixpanel_downloads(self, years_ago):
         end_date = self.today
@@ -117,8 +121,8 @@ class Downloads:
 
     def get_requests(self):
         logger.info("Downloading HDX Connect requests")
-        json = Download().download_json(
-            "https://data.humdata.org/ckan-admin/requests_data/download?format=csv"
+        json = Download(headers=self.headers).download_json(
+            "https://data.humdata.org/ckan-admin/requests_data/download?format=json"
         )
         if self.saved_dir:
             save_json(json, join(self.saved_dir, self.hdxconnect_file))

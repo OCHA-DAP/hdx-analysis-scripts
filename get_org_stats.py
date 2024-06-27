@@ -29,6 +29,7 @@ def main(downloads, output_dir, **ignore):
 
     configuration = Configuration.read()
 
+    downloads.set_api_key(configuration.get_api_key())
     org_stats_url = configuration["org_stats_url"]
     name_to_type = downloads.get_org_types(org_stats_url)
     dataset_name_to_explorers = get_dataset_name_to_explorers(downloads)

@@ -38,6 +38,10 @@ def mock_downloads(input_folder):
         today = parse_date("2023-06-02 02:30:00")
 
         @classmethod
+        def set_api_key(cls, api_key):
+            pass
+
+        @classmethod
         def get_mixpanel_downloads(cls, years_ago):
             end_date = cls.today
             start_date = end_date - relativedelta(years=years_ago)
