@@ -47,11 +47,10 @@ def main(downloads, output_dir, **ignore):
         organisation_type = name_to_type.get(organisation_name, "")
         organisation["orgtype"] = organisation_type
         admins = 0
-        for user in organisation.get("users", []):
+        for user in organisation["users"]:
             if user["capacity"] == "admin":
                 admins += 1
         organisation["number of admins"] = admins
-        organisation["downloads all time"] = 0
         organisation["downloads last year"] = 0
         organisation["public datasets"] = 0
         organisation["requestable datasets"] = 0
@@ -69,7 +68,7 @@ def main(downloads, output_dir, **ignore):
         organisation["latest scripted update date"] = default_date
         organisation["in explorer or grid"] = "No"
         organisation["marked inactive"] = (
-            "Yes" if organisation.get("closed_organization", False) else "No"
+            "Yes" if organisation["closed_organization"] else "No"
         )
         organisation["tags"] = set()
         organisation["new requests"] = 0
@@ -99,8 +98,6 @@ def main(downloads, output_dir, **ignore):
             total_public += 1
             is_public_not_requestable_archived = True
 
-        downloads_all_time = dataset["total_res_downloads"]
-        organisation["downloads all time"] += downloads_all_time
         downloads_last_year = dataset_downloads.get(dataset["id"], 0)
         organisation["downloads last year"] += downloads_last_year
         if datasetstats.last_modified is None:
@@ -148,7 +145,6 @@ def main(downloads, output_dir, **ignore):
         "Organisation acronym",
         "Org type",
         "Number of admins",
-        "Downloads all time",
         "Downloads last year",
         "Public datasets",
         "Requestable datasets",
@@ -166,7 +162,7 @@ def main(downloads, output_dir, **ignore):
         "Any public updated previous quarter",
         "Latest scripted update date",
         "In explorer or grid",
-        "Marked inactive",
+        "Closed",
         "New requests",
         "Open requests",
         "Shared requests",
@@ -215,7 +211,6 @@ def main(downloads, output_dir, **ignore):
             organisation.get("org_acronym", ""),
             organisation["orgtype"],
             organisation["number of admins"],
-            organisation["downloads all time"],
             organisation["downloads last year"],
             organisation["public datasets"],
             organisation["requestable datasets"],
@@ -291,7 +286,7 @@ if __name__ == "__main__":
         hdx_site="prod",
         user_agent_config_yaml=user_agent_config_path,
         user_agent_lookup=lookup,
-        project_config_yaml=join("config", "project_configuration.yml"),
+        project_config_yaml=join("config", "project_configuration.yaml"),
         downloads=downloads,
         output_dir=args.output_dir,
     )

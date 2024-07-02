@@ -131,7 +131,7 @@ class Downloads:
     def get_all_organisations(self):
         logger.info("Obtaining organisations data")
         organisation_list = Organization.get_all_organization_names(
-            all_fields=True, include_users=True)
+            all_fields=True, include_extras=True, include_users=True)
         organisations = {}
         for organisation in organisation_list:
             organisations[organisation["name"]] = organisation

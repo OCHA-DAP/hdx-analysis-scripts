@@ -16,7 +16,7 @@ def configuration():
         hdx_read_only=True,
         hdx_site="prod",
         user_agent="test",
-        project_config_yaml=join("config", "project_configuration.yml"),
+        project_config_yaml=join("config", "project_configuration.yaml"),
     )
     UserAgent.set_global("test")
     return Configuration.read()
@@ -35,7 +35,7 @@ def input_folder(fixtures):
 @pytest.fixture(scope="session")
 def mock_downloads(input_folder):
     class MockDownloads:
-        today = parse_date("2023-06-02 02:30:00")
+        today = parse_date("2024-07-02 14:20:00")
 
         @classmethod
         def set_api_key(cls, api_key):

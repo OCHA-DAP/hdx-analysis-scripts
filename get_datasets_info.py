@@ -168,7 +168,7 @@ if __name__ == "__main__":
         hdx_site="prod",
         user_agent_config_yaml=user_agent_config_path,
         user_agent_lookup=lookup,
-        project_config_yaml=join("config", "project_configuration.yml"),
+        project_config_yaml=join("config", "project_configuration.yaml"),
         downloads=downloads,
         output_dir=args.output_dir,
     )
