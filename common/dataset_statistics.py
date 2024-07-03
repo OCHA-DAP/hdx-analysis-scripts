@@ -222,15 +222,17 @@ class DatasetStatistics(UserDict):
     def get_requests(self):
         self.new_requests = 0
         self.open_requests = 0
+        self.archived_requests = 0
         self.shared_requests = 0
-        self.rejected_requests = 0
+        self.denied_requests = 0
         for request in self.dataset_id_to_requests.get(self["id"], []):
             if request["state"] == "new":
                 self.new_requests += 1
             elif request["state"] == "open":
                 self.open_requests += 1
             else:
+                self.archived_requests += 1
                 if request["data_shared"]:
                     self.shared_requests += 1
-                elif request["rejected"]:
-                    self.rejected_requests += 1
+                else:
+                    self.denied_requests += 1

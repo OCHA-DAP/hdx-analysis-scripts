@@ -65,16 +65,21 @@ def main(downloads, output_dir, **ignore):
         organisation["any public updated previous quarter"] = "No"
         organisation["public live datasets"] = 0
         organisation["public ongoing datasets"] = 0
+        organisation["fresh datasets"] = 0
+        organisation["due datasets"] = 0
+        organisation["overdue datasets"] = 0
+        organisation["delinquent datasets"] = 0
         organisation["latest scripted update date"] = default_date
         organisation["in explorer or grid"] = "No"
-        organisation["marked inactive"] = (
+        organisation["closed"] = (
             "Yes" if organisation["closed_organization"] else "No"
         )
         organisation["tags"] = set()
         organisation["new requests"] = 0
         organisation["open requests"] = 0
+        organisation["archived requests"] = 0
         organisation["shared requests"] = 0
-        organisation["rejected requests"] = 0
+        organisation["denied requests"] = 0
     outdated_lastmodifieds = {}
     for dataset in downloads.get_all_datasets():
         datasetstats = DatasetStatistics(
@@ -115,6 +120,15 @@ def main(downloads, output_dir, **ignore):
                 organisation["public live datasets"] += 1
             if datasetstats.ongoing == "Y":
                 organisation["public ongoing datasets"] += 1
+        match datasetstats.fresh:
+            case "Fresh":
+                organisation["fresh datasets"] += 1
+            case "Due":
+                organisation["due datasets"] += 1
+            case "Overdue":
+                organisation["overdue datasets"] += 1
+            case "Delinquent":
+                organisation["delinquent datasets"] += 1
         if datasetstats.in_explorer_or_grid == "Y":
             organisation["in explorer or grid"] = "Yes"
         if datasetstats.updated_by_cod_script == "Y":
@@ -122,8 +136,9 @@ def main(downloads, output_dir, **ignore):
             total_updated_by_cod += 1
         organisation["new requests"] += datasetstats.new_requests
         organisation["open requests"] += datasetstats.open_requests
+        organisation["archived requests"] += datasetstats.archived_requests
         organisation["shared requests"] += datasetstats.shared_requests
-        organisation["rejected requests"] += datasetstats.rejected_requests
+        organisation["denied requests"] += datasetstats.denied_requests
         if datasetstats.updated_by_script:
             if datasetstats.last_modified > organisation[
                 "latest scripted update date"]:
@@ -160,13 +175,18 @@ def main(downloads, output_dir, **ignore):
         "Any public updated last 3 months",
         "Any updated previous quarter",
         "Any public updated previous quarter",
+        "Fresh datasets",
+        "Due datasets",
+        "Overdue datasets",
+        "Delinquent datasets",
         "Latest scripted update date",
         "In explorer or grid",
         "Closed",
         "New requests",
         "Open requests",
+        "Total archived requests",
         "Shared requests",
-        "Rejected requests",
+        "Denied requests",
         "Tags",
     ]
     logger.info("Generating rows")
@@ -226,13 +246,18 @@ def main(downloads, output_dir, **ignore):
             organisation["any public updated last 3 months"],
             organisation["any updated previous quarter"],
             organisation["any public updated previous quarter"],
+            organisation["fresh datasets"],
+            organisation["due datasets"],
+            organisation["overdue datasets"],
+            organisation["delinquent datasets"],
             latest_scripted_update_date,
             organisation["in explorer or grid"],
-            organisation["marked inactive"],
+            organisation["closed"],
             organisation["new requests"],
             organisation["open requests"],
+            organisation["archived requests"],
             organisation["shared requests"],
-            organisation["rejected requests"],
+            organisation["denied requests"],
             ",".join(sorted(organisation["tags"])),
         ]
         rows.append(row)
