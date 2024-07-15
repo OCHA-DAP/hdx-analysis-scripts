@@ -12,11 +12,48 @@ from mixpanel_utils import MixpanelUtils
 
 logger = logging.getLogger(__name__)
 
+COMMON_HEADER = """
+const BOT_STRINGS = ['bot', 'crawler', 'spider', 'hxl-proxy', 'hdxinternal', 'data\.world', 'opendataportalwatch', 'microsoft\ office', 'turnitin']
+const regex = new RegExp(BOT_STRINGS.join('|'), 'i')
+function containsAny(value) {{
+  if (value) {{
+    return regex.test(value)
+  }}
+}}
+"""
+
+COMMON_FILTER = """
+    .filter(event => event.properties['org name'] && event.properties['org name'] != 'None')
+    .filter(event => event.properties['user agent'] != '' && !containsAny(event.properties['user agent']) && !containsAny(event.properties['$browser']))
+"""
+
+query_template = COMMON_HEADER + \
+                 """
+                 function main() {{
+                   return Events({{
+                     from_date: '{}',
+                     to_date: '{}',
+                     event_selectors: [{{event: "resource download"}}]
+                   }})
+                   """ + COMMON_FILTER + \
+                 """
+                 .groupByUser(["properties.resource id","properties.dataset id",mixpanel.numeric_bucket('time',mixpanel.daily_time_buckets)],mixpanel.reducer.null())
+                 .groupBy(["key.2"], mixpanel.reducer.count())
+                   .map(function(r){{
+                   return {{
+                     dataset_id: r.key[0],
+                     value: r.value
+                   }};
+                 }});
+               }}
+               """
+
 
 class Downloads:
     mixpanel_file = "mixpanel.json"
     datasets_file = "datasets.json"
-    orgtypes_file = "org_types.json"
+    geospatiality_file = "geospatiality.json"
+    locations_file = "locations.json"
     packagelinks_file = "package_links.json"
     hdxconnect_file = "hdxconnect.json"
     organisations_file = "organisations.json"
@@ -31,9 +68,9 @@ class Downloads:
     def set_api_key(self, api_key):
         self.headers = {"Authorization": api_key}
 
-    def get_mixpanel_downloads(self, years_ago):
+    def get_mixpanel_downloads(self, months_ago):
         end_date = self.today
-        start_date = end_date - relativedelta(years=years_ago)
+        start_date = end_date - relativedelta(months=months_ago)
         logger.info("Getting downloads from MixPanel")
         try:
             mixpanel_config = load_yaml(self.mixpanel_config_yaml)
@@ -51,21 +88,7 @@ class Downloads:
         )
         start_date_str = start_date.strftime("%Y-%m-%d")
         end_date_str = end_date.strftime("%Y-%m-%d")
-        jql_query = """
-        function main() {
-          return Events({
-            from_date: '%s',
-            to_date: '%s',
-            event_selectors: [{event: "resource download"}]
-          })
-          .groupByUser(["properties.resource id","properties.dataset id",mixpanel.numeric_bucket('time',mixpanel.daily_time_buckets)],mixpanel.reducer.null())
-          .groupBy(["key.2"], mixpanel.reducer.count())
-            .map(function(r){
-            return [
-              r.key[0], r.value
-            ];
-          });
-        }""" % (
+        jql_query = query_template.format(
             start_date_str,
             end_date_str,
         )
@@ -79,7 +102,7 @@ class Downloads:
 
     def get_all_datasets(self):
         logger.info("Examining all datasets")
-        datasets = Dataset.get_all_datasets()
+        datasets = Dataset.get_all_datasets(include_private=True)
         if self.saved_dir:
             datasets_list = []
             n = -1
@@ -102,13 +125,15 @@ class Downloads:
 
         return datasets
 
-    def get_org_types(self, url):
-        logger.info("Downloading organisation type lookup")
+    def get_geospatiality_locations(self, url):
+        logger.info("Downloading organisation geospatiality and location lookup")
         lookups = Download().download_tabular_cols_as_dicts(url)
-        orgs_types = lookups["Org type"]
+        geospatiality = lookups["Geospatiality"]
+        locations = lookups["Location (ISO 3)"]
         if self.saved_dir:
-            save_json(orgs_types, join(self.saved_dir, self.orgtypes_file))
-        return orgs_types
+            save_json(geospatiality, join(self.saved_dir, self.geospatiality_file))
+            save_json(locations, join(self.saved_dir, self.locations_file))
+        return geospatiality, locations
 
     def get_package_links(self):
         logger.info("Downloading links to data explorers and grids")
@@ -145,4 +170,3 @@ class Downloads:
         if self.saved_dir:
             save_yaml(yaml, join(self.saved_dir, self.aging_file))
         return yaml
-

@@ -38,6 +38,7 @@ class DatasetStatistics(UserDict):
         self.get_in_explorer_or_grid()
         self.get_requests()
         self.get_tags()
+        self.crisis_tag = False
         self.get_freshness()
 
     def get_status(self):
@@ -61,6 +62,7 @@ class DatasetStatistics(UserDict):
             self.is_cod = "N"
 
     def get_date_info(self):
+        self.created = parse_date(self["metadata_created"], include_microseconds=True)
         last_modified = self.get("last_modified")
         if not last_modified:
             logger.error(f"Dataset {self['name']} has no last modified field!")
@@ -78,12 +80,20 @@ class DatasetStatistics(UserDict):
             self.updated_previous_qtr = "Y"
         else:
             self.updated_previous_qtr = "N"
-        reference_period = self.dataset.get_reference_period()
-        self.startdate = reference_period["startdate_str"]
-        if reference_period["ongoing"]:
-            self.enddate = "ongoing"
+        try:
+            time_period = self.dataset.get_time_period()
+        except ParserError:
+            time_period = None
+        if time_period:
+            self.startdate = time_period["startdate_str"]
+            if time_period["ongoing"]:
+                self.enddate = "ongoing"
+            else:
+                self.enddate = time_period["enddate_str"]
         else:
-            self.enddate = reference_period["enddate_str"]
+            self.startdate = ""
+            self.enddate = ""
+            logger.error(f"Dataset {self['name']} has no time period!")
 
     def get_updated_by_script(self):
         updated_by_script = self.get("updated_by_script")
@@ -154,15 +164,24 @@ class DatasetStatistics(UserDict):
             self.live = "Y"
         else:
             self.live = "N"
-        reference_period = self.dataset.get_reference_period()
-        if reference_period["ongoing"]:
-            self.ongoing = "Y"
+        try:
+            time_period = self.dataset.get_time_period()
+        except ParserError:
+            time_period = None
+        if time_period:
+            if time_period["ongoing"]:
+                self.ongoing = "Y"
+            else:
+                self.ongoing = "N"
         else:
-            self.ongoing = "N"
+            self.ongoing = ""
 
     def get_tags(self):
         tags = self.dataset.get_tags()
         self.tags = ", ".join(tags)
+        for tag in tags:
+            if tag[:7] == "crisis_":
+                self.crisis_tag = True
 
     def add_tags_to_set(self, tagset):
         tags = self.dataset.get_tags()
@@ -234,5 +253,5 @@ class DatasetStatistics(UserDict):
                 self.archived_requests += 1
                 if request["data_shared"]:
                     self.shared_requests += 1
-                else:
+                elif request["rejected"]:
                     self.denied_requests += 1

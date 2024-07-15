@@ -35,16 +35,16 @@ def input_folder(fixtures):
 @pytest.fixture(scope="session")
 def mock_downloads(input_folder):
     class MockDownloads:
-        today = parse_date("2024-07-02 14:20:00")
+        today = parse_date("2024-07-14 23:20:00")
 
         @classmethod
         def set_api_key(cls, api_key):
             pass
 
         @classmethod
-        def get_mixpanel_downloads(cls, years_ago):
+        def get_mixpanel_downloads(cls, months_ago):
             end_date = cls.today
-            start_date = end_date - relativedelta(years=years_ago)
+            start_date = end_date - relativedelta(months=months_ago)
             start_date_str = start_date.strftime("%Y-%m-%d")
             end_date_str = end_date.strftime("%Y-%m-%d")
             filename = Downloads.mixpanel_file.replace(
@@ -68,13 +68,18 @@ def mock_downloads(input_folder):
             for dataset_dict in dataset_dict_list:
                 dataset = Dataset()
                 dataset.data = dataset_dict
-                dataset.separate_resources()
+                try:
+                    dataset.separate_resources()
+                except KeyError:
+                    pass
                 dataset_list.append(dataset)
             return dataset_list
 
         @staticmethod
-        def get_org_types(url):
-            return load_json(join(input_folder, Downloads.orgtypes_file))
+        def get_geospatiality_locations(url):
+            geospatiality = load_json(join(input_folder, Downloads.geospatiality_file))
+            locations = load_json(join(input_folder, Downloads.locations_file))
+            return geospatiality, locations
 
         @staticmethod
         def get_package_links():

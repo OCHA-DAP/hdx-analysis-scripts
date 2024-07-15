@@ -6,6 +6,8 @@ from os import mkdir
 from os.path import expanduser, join
 from shutil import rmtree
 
+from hdx.location.country import Country
+
 from common import get_dataset_name_to_explorers, get_freshness_by_frequency, \
     get_dataset_id_to_requests
 from common.dataset_statistics import DatasetStatistics
@@ -31,26 +33,49 @@ def main(downloads, output_dir, **ignore):
 
     downloads.set_api_key(configuration.get_api_key())
     org_stats_url = configuration["org_stats_url"]
-    name_to_type = downloads.get_org_types(org_stats_url)
+    name_to_geospatiality, name_to_location = downloads.get_geospatiality_locations(org_stats_url)
     dataset_name_to_explorers = get_dataset_name_to_explorers(downloads)
     dataset_id_to_requests = get_dataset_id_to_requests(downloads)
     freshness_by_frequency = get_freshness_by_frequency(
         downloads, configuration["aging_url"]
     )
-    dataset_downloads = downloads.get_mixpanel_downloads(1)
+    dataset_3m_downloads = downloads.get_mixpanel_downloads(3)
+    dataset_1y_downloads = downloads.get_mixpanel_downloads(12)
     logger.info("Obtaining organisations data")
     organisations = downloads.get_all_organisations()
     total_public = 0
     total_updated_by_cod = 0
     total_updated_by_script = 0
     for organisation_name, organisation in organisations.items():
-        organisation_type = name_to_type.get(organisation_name, "")
-        organisation["orgtype"] = organisation_type
+        geospatiality = name_to_geospatiality.get(organisation_name, "")
+        organisation["geospatiality"] = geospatiality
+        organisation_location = name_to_location.get(organisation_name, "")
+        organisation["location"] = organisation_location
+        latitude, longitude = "", ""
+        if organisation_location and len(organisation_location) == 3:
+            country_info = Country.get_country_info_from_iso3(organisation_location)
+            if country_info:
+                latitude = country_info["#geo+lat"]
+                longitude = country_info["#geo+lon"]
+        organisation["latitude"] = latitude
+        organisation["longitude"] = longitude
         admins = 0
+        editors = 0
+        members = 0
         for user in organisation["users"]:
-            if user["capacity"] == "admin":
-                admins += 1
+            match user["capacity"]:
+                case "admin":
+                    admins += 1
+                case "editor":
+                    editors += 1
+                case "member":
+                    members += 1
+                case x:
+                    raise ValueError(f"Unknown capacity {x}!")
         organisation["number of admins"] = admins
+        organisation["number of editors"] = editors
+        organisation["number of members"] = members
+        organisation["downloads last 3 months"] = 0
         organisation["downloads last year"] = 0
         organisation["public datasets"] = 0
         organisation["requestable datasets"] = 0
@@ -69,17 +94,19 @@ def main(downloads, output_dir, **ignore):
         organisation["due datasets"] = 0
         organisation["overdue datasets"] = 0
         organisation["delinquent datasets"] = 0
+        organisation["latest created dataset date"] = default_date
         organisation["latest scripted update date"] = default_date
         organisation["in explorer or grid"] = "No"
         organisation["closed"] = (
             "Yes" if organisation["closed_organization"] else "No"
         )
-        organisation["tags"] = set()
         organisation["new requests"] = 0
         organisation["open requests"] = 0
         organisation["archived requests"] = 0
         organisation["shared requests"] = 0
         organisation["denied requests"] = 0
+        organisation["tags"] = set()
+        organisation["has crisis"] = "N"
     outdated_lastmodifieds = {}
     for dataset in downloads.get_all_datasets():
         datasetstats = DatasetStatistics(
@@ -103,7 +130,9 @@ def main(downloads, output_dir, **ignore):
             total_public += 1
             is_public_not_requestable_archived = True
 
-        downloads_last_year = dataset_downloads.get(dataset["id"], 0)
+        downloads_last_3months = dataset_3m_downloads.get(dataset["id"], 0)
+        organisation["downloads last 3 months"] += downloads_last_3months
+        downloads_last_year = dataset_1y_downloads.get(dataset["id"], 0)
         organisation["downloads last year"] += downloads_last_year
         if datasetstats.last_modified is None:
             continue
@@ -139,6 +168,8 @@ def main(downloads, output_dir, **ignore):
         organisation["archived requests"] += datasetstats.archived_requests
         organisation["shared requests"] += datasetstats.shared_requests
         organisation["denied requests"] += datasetstats.denied_requests
+        if datasetstats.created > organisation["latest created dataset date"]:
+            organisation["latest created dataset date"] = datasetstats.created
         if datasetstats.updated_by_script:
             if datasetstats.last_modified > organisation[
                 "latest scripted update date"]:
@@ -153,13 +184,22 @@ def main(downloads, output_dir, **ignore):
             if datasetstats.old_updated_by_noncod_script == "Y":
                 organisation["old updated by script"] += 1
         datasetstats.add_tags_to_set(organisation["tags"])
+        if datasetstats.crisis_tag:
+            organisation["has crisis"] = "Y"
 
     headers = [
         "Organisation name",
         "Organisation title",
         "Organisation acronym",
-        "Org type",
+        "Organisation type",
+        "Geospatiality",
+        "Location",
+        "Latitude",
+        "Longitude",
         "Number of admins",
+        "Number of editors",
+        "Number of members",
+        "Downloads last 3 months",
         "Downloads last year",
         "Public datasets",
         "Requestable datasets",
@@ -179,6 +219,7 @@ def main(downloads, output_dir, **ignore):
         "Due datasets",
         "Overdue datasets",
         "Delinquent datasets",
+        "Latest created dataset date",
         "Latest scripted update date",
         "In explorer or grid",
         "Closed",
@@ -188,6 +229,7 @@ def main(downloads, output_dir, **ignore):
         "Shared requests",
         "Denied requests",
         "Tags",
+        "Has crisis"
     ]
     logger.info("Generating rows")
     rows = list()
@@ -219,6 +261,12 @@ def main(downloads, output_dir, **ignore):
             format="%.0f",
         )
 
+        latest_created_dataset_date = organisation[
+            "latest created dataset date"]
+        if latest_created_dataset_date == default_date:
+            latest_created_dataset_date = None
+        else:
+            latest_created_dataset_date = latest_created_dataset_date.date().isoformat()
         latest_scripted_update_date = organisation[
             "latest scripted update date"]
         if latest_scripted_update_date == default_date:
@@ -229,8 +277,15 @@ def main(downloads, output_dir, **ignore):
             organisation_name,
             organisation["title"],
             organisation.get("org_acronym", ""),
-            organisation["orgtype"],
+            organisation["hdx_org_type"],
+            organisation["geospatiality"],
+            organisation["location"],
+            organisation["latitude"],
+            organisation["longitude"],
             organisation["number of admins"],
+            organisation["number of editors"],
+            organisation["number of members"],
+            organisation["downloads last 3 months"],
             organisation["downloads last year"],
             organisation["public datasets"],
             organisation["requestable datasets"],
@@ -250,6 +305,7 @@ def main(downloads, output_dir, **ignore):
             organisation["due datasets"],
             organisation["overdue datasets"],
             organisation["delinquent datasets"],
+            latest_created_dataset_date,
             latest_scripted_update_date,
             organisation["in explorer or grid"],
             organisation["closed"],
@@ -259,6 +315,7 @@ def main(downloads, output_dir, **ignore):
             organisation["shared requests"],
             organisation["denied requests"],
             ",".join(sorted(organisation["tags"])),
+            organisation["has crisis"],
         ]
         rows.append(row)
     if rows:

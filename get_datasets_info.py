@@ -31,7 +31,7 @@ def main(downloads, output_dir, **ignore):
     freshness_by_frequency = get_freshness_by_frequency(
         downloads, configuration["aging_url"]
     )
-    dataset_downloads = downloads.get_mixpanel_downloads(5)
+    dataset_downloads = downloads.get_mixpanel_downloads(60)
     created_per_month = {}
     metadata_updated_per_month = {}
     data_updated_per_month = {}
