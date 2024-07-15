@@ -357,7 +357,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     home_folder = expanduser("~")
     today = now_utc()
-    mixpanel_config_yaml = join(home_folder, ".mixpanel.yml")
+    mixpanel_config_yaml = join(home_folder, ".mixpanel.yaml")
     downloads = Downloads(today, mixpanel_config_yaml, args.saved_dir)
 
     user_agent_config_path = join(home_folder, ".useragents.yaml")

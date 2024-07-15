@@ -39,7 +39,6 @@ def main(downloads, output_dir, **ignore):
         (
             "name",
             "title",
-            "downloads all time",
             "downloads last 5 years",
             "date created",
             "date metadata updated",
@@ -75,7 +74,6 @@ def main(downloads, output_dir, **ignore):
         name = dataset["name"]
         title = dataset["title"]
         downloads_5years = dataset_downloads.get(dataset_id, 0)
-        downloads_alltime = dataset.get("total_res_downloads", "")
         created = dataset["metadata_created"]
         metadata_updated = dataset["metadata_modified"]
         if not datasetstats.updated_by_script:
@@ -99,7 +97,6 @@ def main(downloads, output_dir, **ignore):
         row = (
             name,
             title,
-            downloads_alltime,
             downloads_5years,
             created,
             metadata_updated,
@@ -156,7 +153,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     home_folder = expanduser("~")
     today = now_utc()
-    mixpanel_config_yaml = join(home_folder, ".mixpanel.yml")
+    mixpanel_config_yaml = join(home_folder, ".mixpanel.yaml")
     downloads = Downloads(today, mixpanel_config_yaml, args.saved_dir)
 
     user_agent_config_path = join(home_folder, ".useragents.yaml")

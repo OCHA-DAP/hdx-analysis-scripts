@@ -23,30 +23,27 @@ function containsAny(value) {{
 """
 
 COMMON_FILTER = """
-    .filter(event => event.properties['org name'] && event.properties['org name'] != 'None')
-    .filter(event => event.properties['user agent'] != '' && !containsAny(event.properties['user agent']) && !containsAny(event.properties['$browser']))
+  .filter(event => event.properties['org name'] && event.properties['org name'] != 'None')
+  .filter(event => event.properties['user agent'] != '' && !containsAny(event.properties['user agent']) && !containsAny(event.properties['$browser']))
 """
 
-query_template = COMMON_HEADER + \
-                 """
-                 function main() {{
-                   return Events({{
-                     from_date: '{}',
-                     to_date: '{}',
-                     event_selectors: [{{event: "resource download"}}]
-                   }})
-                   """ + COMMON_FILTER + \
-                 """
-                 .groupByUser(["properties.resource id","properties.dataset id",mixpanel.numeric_bucket('time',mixpanel.daily_time_buckets)],mixpanel.reducer.null())
-                 .groupBy(["key.2"], mixpanel.reducer.count())
-                   .map(function(r){{
-                   return {{
-                     dataset_id: r.key[0],
-                     value: r.value
-                   }};
-                 }});
-               }}
-               """
+query_template = COMMON_HEADER + """
+function main() {{
+  return Events({{
+    from_date: '{}',
+    to_date: '{}',
+    event_selectors: [{{event: "resource download"}}]
+  }})""" + COMMON_FILTER + """
+  .groupByUser(["properties.resource id","properties.dataset id",mixpanel.numeric_bucket('time',mixpanel.daily_time_buckets)],mixpanel.reducer.null())
+  .groupBy(["key.2"], mixpanel.reducer.count())
+  .map(function(r){{
+    return [
+      r.key[0],
+      r.value
+    ];
+  }});
+}}
+"""
 
 
 class Downloads:
