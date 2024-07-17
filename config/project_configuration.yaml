@@ -1,2 +1,13 @@
 org_stats_url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRtlQ4C0ykC_2JCHkH7tQqh_mopvIfz_09xotuYXQ9zNFWBU5SylrJjrPpeZL2EjRMX7prOdJXO5SsK/pub?gid=428662439&single=true&output=csv"
 aging_url: "https://raw.githubusercontent.com/OCHA-DAP/hdx-data-freshness/main/src/hdx/freshness/app/project_configuration.yaml"
+org_type_mapping:
+  "academic_research": "Academia"
+  "united_nations": "United Nations"
+  "government": "Government"
+  "international_org": "International Organisation"
+  "national_ngo": "National NGO"
+  "other": "Other"
+  "private_sector": "Private Sector"
+  "red_cross_red_crescent": "Red Cross and Red Crescent"
+  "international_ngo": "International NGO"
+  "military": "Military"

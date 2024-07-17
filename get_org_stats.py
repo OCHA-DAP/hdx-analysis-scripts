@@ -32,6 +32,7 @@ def main(downloads, output_dir, **ignore):
     configuration = Configuration.read()
 
     downloads.set_api_key(configuration.get_api_key())
+    org_type_mapping = configuration["org_type_mapping"]
     org_stats_url = configuration["org_stats_url"]
     name_to_geospatiality, name_to_location = downloads.get_geospatiality_locations(org_stats_url)
     dataset_name_to_explorers = get_dataset_name_to_explorers(downloads)
@@ -236,6 +237,7 @@ def main(downloads, output_dir, **ignore):
     rows = list()
     for organisation_name in sorted(organisations):
         organisation = organisations[organisation_name]
+        organisation_type = org_type_mapping[organisation["hdx_org_type"]]
         percentage_cod = get_fraction_str(
             organisation["updated by cod script"] * 100,
             organisation["public datasets"],
@@ -279,7 +281,7 @@ def main(downloads, output_dir, **ignore):
             organisation["title"],
             organisation.get("org_acronym", ""),
             organisation["id"],
-            organisation["hdx_org_type"],
+            organisation_type,
             organisation["geospatiality"],
             organisation["location"],
             organisation["latitude"],
