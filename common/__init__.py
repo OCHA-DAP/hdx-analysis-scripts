@@ -13,11 +13,13 @@ def get_dataset_name_to_explorers(downloads):
     return dataset_name_to_explorers
 
 
-def get_dataset_id_to_requests(downloads):
+def get_requests_mappings(downloads):
     dataset_id_to_requests = {}
+    organisation_name_to_requests = {}
     for request in downloads.get_requests():
         dict_of_lists_add(dataset_id_to_requests, request["package_id"], request)
-    return dataset_id_to_requests
+        dict_of_lists_add(organisation_name_to_requests, request["pkg_organization_name"], request)
+    return dataset_id_to_requests, organisation_name_to_requests
 
 
 def get_freshness_by_frequency(downloads, url):

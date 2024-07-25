@@ -180,7 +180,7 @@ class DatasetStatistics(UserDict):
         tags = self.dataset.get_tags()
         self.tags = ", ".join(tags)
         for tag in tags:
-            if tag[:7] == "crisis_":
+            if tag[:7] == "crisis-":
                 self.crisis_tag = True
 
     def add_tags_to_set(self, tagset):

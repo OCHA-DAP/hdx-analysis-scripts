@@ -9,7 +9,7 @@ from shutil import rmtree
 from hdx.location.country import Country
 
 from common import get_dataset_name_to_explorers, get_freshness_by_frequency, \
-    get_dataset_id_to_requests
+    get_requests_mappings
 from common.dataset_statistics import DatasetStatistics
 from common.downloads import Downloads
 from hdx.api.configuration import Configuration
@@ -36,7 +36,7 @@ def main(downloads, output_dir, **ignore):
     org_stats_url = configuration["org_stats_url"]
     name_to_geospatiality, name_to_location = downloads.get_geospatiality_locations(org_stats_url)
     dataset_name_to_explorers = get_dataset_name_to_explorers(downloads)
-    dataset_id_to_requests = get_dataset_id_to_requests(downloads)
+    dataset_id_to_requests, organisation_name_to_requests = get_requests_mappings(downloads)
     freshness_by_frequency = get_freshness_by_frequency(
         downloads, configuration["aging_url"]
     )
@@ -76,8 +76,8 @@ def main(downloads, output_dir, **ignore):
         organisation["number of admins"] = admins
         organisation["number of editors"] = editors
         organisation["number of members"] = members
-        organisation["downloads last 3 months"] = 0
-        organisation["downloads last year"] = 0
+        organisation["downloads last 90 days"] = 0
+        organisation["downloads last 12 months"] = 0
         organisation["public datasets"] = 0
         organisation["requestable datasets"] = 0
         organisation["private datasets"] = 0
@@ -101,11 +101,28 @@ def main(downloads, output_dir, **ignore):
         organisation["closed"] = (
             "Yes" if organisation["closed_organization"] else "No"
         )
-        organisation["new requests"] = 0
-        organisation["open requests"] = 0
-        organisation["archived requests"] = 0
-        organisation["shared requests"] = 0
-        organisation["denied requests"] = 0
+
+        new_requests = 0
+        open_requests = 0
+        archived_requests = 0
+        shared_requests = 0
+        denied_requests = 0
+        for request in organisation_name_to_requests.get(organisation_name, []):
+            if request["state"] == "new":
+                new_requests += 1
+            elif request["state"] == "open":
+                open_requests += 1
+            else:
+                archived_requests += 1
+                if request["data_shared"]:
+                    shared_requests += 1
+                elif request["rejected"]:
+                    denied_requests += 1
+        organisation["new requests"] = new_requests
+        organisation["open requests"] = open_requests
+        organisation["archived requests"] = archived_requests
+        organisation["shared requests"] = shared_requests
+        organisation["denied requests"] = denied_requests
         organisation["tags"] = set()
         organisation["has crisis"] = "N"
     outdated_lastmodifieds = {}
@@ -132,9 +149,9 @@ def main(downloads, output_dir, **ignore):
             is_public_not_requestable_archived = True
 
         downloads_last_3months = dataset_3m_downloads.get(dataset["id"], 0)
-        organisation["downloads last 3 months"] += downloads_last_3months
+        organisation["downloads last 90 days"] += downloads_last_3months
         downloads_last_year = dataset_1y_downloads.get(dataset["id"], 0)
-        organisation["downloads last year"] += downloads_last_year
+        organisation["downloads last 12 months"] += downloads_last_year
         if datasetstats.last_modified is None:
             continue
         if datasetstats.updated_last_3_months == "Y":
@@ -164,11 +181,6 @@ def main(downloads, output_dir, **ignore):
         if datasetstats.updated_by_cod_script == "Y":
             organisation["updated by cod script"] += 1
             total_updated_by_cod += 1
-        organisation["new requests"] += datasetstats.new_requests
-        organisation["open requests"] += datasetstats.open_requests
-        organisation["archived requests"] += datasetstats.archived_requests
-        organisation["shared requests"] += datasetstats.shared_requests
-        organisation["denied requests"] += datasetstats.denied_requests
         if datasetstats.created > organisation["latest created dataset date"]:
             organisation["latest created dataset date"] = datasetstats.created
         if datasetstats.updated_by_script:
@@ -201,16 +213,21 @@ def main(downloads, output_dir, **ignore):
         "Number of admins",
         "Number of editors",
         "Number of members",
-        "Downloads last 3 months",
-        "Downloads last year",
+        "Downloads last 90 days",
+        "Downloads last 12 months",
         "Public datasets",
         "Requestable datasets",
         "Private datasets",
         "Archived datasets",
+        "Public API (non-cod scripted)",
+        "% of public API (non-cod scripted)",
+        "Public cod scripted",
         "% of public cod scripted",
-        "% of public non-cod scripted",
+        "Public previous scripted",
         "% of public previous scripted",
+        "Public live",
         "% of public live",
+        "Public ongoing",
         "% of public ongoing",
         "Followers",
         "Any updated last 3 months",
@@ -233,36 +250,28 @@ def main(downloads, output_dir, **ignore):
         "Tags",
         "Has crisis"
     ]
+
+    def get_number_percentage(organisation, key):
+        number = organisation[key]
+        if number == "":
+            return "", ""
+        percentage = get_fraction_str(
+            number * 100,
+            organisation["public datasets"],
+            format="%.0f",
+        )
+        return number, percentage
+
     logger.info("Generating rows")
     rows = list()
     for organisation_name in sorted(organisations):
         organisation = organisations[organisation_name]
         organisation_type = org_type_mapping[organisation["hdx_org_type"]]
-        percentage_cod = get_fraction_str(
-            organisation["updated by cod script"] * 100,
-            organisation["public datasets"],
-            format="%.0f",
-        )
-        percentage_api = get_fraction_str(
-            organisation["updated by script"] * 100,
-            organisation["public datasets"],
-            format="%.0f",
-        )
-        percentage_old_api = get_fraction_str(
-            organisation["old updated by script"] * 100,
-            organisation["public datasets"],
-            format="%.0f",
-        )
-        percentage_live = get_fraction_str(
-            organisation["public live datasets"] * 100,
-            organisation["public datasets"],
-            format="%.0f",
-        )
-        percentage_ongoing = get_fraction_str(
-            organisation["public ongoing datasets"] * 100,
-            organisation["public datasets"],
-            format="%.0f",
-        )
+        updated_by_cod_script, percentage_cod = get_number_percentage(organisation, "updated by cod script")
+        updated_by_api, percentage_api = get_number_percentage(organisation, "updated by script")
+        old_updated_by_script, percentage_old_script = get_number_percentage(organisation, "old updated by script")
+        live_datasets, percentage_live = get_number_percentage(organisation, "public live datasets")
+        ongoing_datasets, percentage_ongoing = get_number_percentage(organisation, "public ongoing datasets")
 
         latest_created_dataset_date = organisation[
             "latest created dataset date"]
@@ -289,16 +298,21 @@ def main(downloads, output_dir, **ignore):
             organisation["number of admins"],
             organisation["number of editors"],
             organisation["number of members"],
-            organisation["downloads last 3 months"],
-            organisation["downloads last year"],
+            organisation["downloads last 90 days"],
+            organisation["downloads last 12 months"],
             organisation["public datasets"],
             organisation["requestable datasets"],
             organisation["private datasets"],
             organisation["archived datasets"],
-            percentage_cod,
+            updated_by_api,
             percentage_api,
-            percentage_old_api,
+            updated_by_cod_script,
+            percentage_cod,
+            old_updated_by_script,
+            percentage_old_script,
+            live_datasets,
             percentage_live,
+            ongoing_datasets,
             percentage_ongoing,
             organisation["num_followers"],
             organisation["any updated last 3 months"],

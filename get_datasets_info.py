@@ -6,7 +6,7 @@ from os.path import expanduser, join
 from shutil import rmtree
 
 from common import get_dataset_name_to_explorers, get_freshness_by_frequency, \
-    get_dataset_id_to_requests
+    get_requests_mappings
 from common.dataset_statistics import DatasetStatistics
 from common.downloads import Downloads
 from hdx.api.configuration import Configuration
@@ -27,7 +27,7 @@ def main(downloads, output_dir, **ignore):
     downloads.set_api_key(configuration.get_api_key())
 
     dataset_name_to_explorers = get_dataset_name_to_explorers(downloads)
-    dataset_id_to_requests = get_dataset_id_to_requests(downloads)
+    dataset_id_to_requests, _ = get_requests_mappings(downloads)
     freshness_by_frequency = get_freshness_by_frequency(
         downloads, configuration["aging_url"]
     )

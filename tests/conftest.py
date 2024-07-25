@@ -35,7 +35,7 @@ def input_folder(fixtures):
 @pytest.fixture(scope="session")
 def mock_downloads(input_folder):
     class MockDownloads:
-        today = parse_date("2024-07-15 02:30:00")
+        today = parse_date("2024-07-25 02:03:00")
 
         @classmethod
         def set_api_key(cls, api_key):
