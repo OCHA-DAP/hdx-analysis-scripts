@@ -37,8 +37,8 @@ class DatasetStatistics(UserDict):
         self.get_updated_by_script()
         self.get_in_explorer_or_grid()
         self.get_requests()
-        self.get_tags()
         self.crisis_tag = False
+        self.get_tags()
         self.get_freshness()
 
     def get_status(self):
