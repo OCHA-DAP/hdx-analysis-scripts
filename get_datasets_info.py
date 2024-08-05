@@ -39,6 +39,7 @@ def main(downloads, output_dir, **ignore):
         (
             "name",
             "title",
+            "id",
             "downloads last 5 years",
             "date created",
             "date metadata updated",
@@ -97,6 +98,7 @@ def main(downloads, output_dir, **ignore):
         row = (
             name,
             title,
+            dataset_id,
             downloads_5years,
             created,
             metadata_updated,
