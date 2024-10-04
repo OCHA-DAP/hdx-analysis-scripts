@@ -10,5 +10,5 @@ org_type_mapping:
   "private_sector": "Private Sector"
   "red_cross_red_crescent": "Red Cross and Red Crescent"
   "international_ngo": "International NGO"
-  "military": "Military"
-  "religious": "Religious"
+  "military": "Government"
+  "religious": "Other"
