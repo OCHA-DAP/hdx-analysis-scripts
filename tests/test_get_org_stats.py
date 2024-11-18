@@ -18,3 +18,5 @@ class TestGetOrgStats:
             assert total_updated_by_script == 16594
             filename = "org_stats.csv"
             assert_files_same(join(fixtures, filename), join(folder, filename))
+            filename = "total_stats.csv"
+            assert_files_same(join(fixtures, filename), join(folder, filename))

@@ -178,7 +178,7 @@ def main(downloads, output_dir, **ignore):
                 organisation["delinquent datasets"] += 1
         if datasetstats.in_explorer_or_grid == "Y":
             organisation["in explorer or grid"] = "Yes"
-        if datasetstats.updated_by_cod_script == "Y":
+        if datasetstats.updated_by_cod_script == "Y" and is_public_not_requestable_archived:
             organisation["updated by cod script"] += 1
             total_updated_by_cod += 1
         if datasetstats.created > organisation["latest created dataset date"]:
@@ -188,7 +188,7 @@ def main(downloads, output_dir, **ignore):
                 "latest scripted update date"]:
                 organisation[
                     "latest scripted update date"] = datasetstats.last_modified
-            if datasetstats.updated_by_noncod_script == "Y":
+            if datasetstats.updated_by_noncod_script == "Y" and is_public_not_requestable_archived:
                 organisation["updated by script"] += 1
                 total_updated_by_script += 1
             if datasetstats.outdated_lastmodified == "Y":
@@ -357,11 +357,22 @@ def main(downloads, output_dir, **ignore):
             message.append("\n")
         logger.warning("".join(message))
 
-    logger.info(f"Total public datasets = {total_public}")
+    logger.info(f"Total public datasets (excluding requestable, archived) = {total_public}")
     logger.info(f"Total public updated by cod script = {total_updated_by_cod}")
     logger.info(
         f"Total public updated by all other scripts = {total_updated_by_script}"
     )
+    quarterly_okr = get_fraction_str(
+        total_updated_by_script * 100,
+        total_public,
+        format="%.0f",
+    )
+    logger.info(f"Quarterly OKR = {quarterly_okr}")
+    filepath = join(output_dir, "total_stats.csv")
+    logger.info(f"Writing totals to {filepath}")
+    headers = ["Public - request & archive", "Updated by COD", "Updated by Script", "Quarterly OKR"]
+    rows = [[total_public, total_updated_by_cod, total_updated_by_script, quarterly_okr]]
+    write_list_to_csv(filepath, rows, headers, encoding="utf-8")
     return total_public, total_updated_by_cod, total_updated_by_script
 
 
