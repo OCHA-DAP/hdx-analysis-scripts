@@ -44,6 +44,7 @@ class DatasetStatistics(UserDict):
     def get_status(self):
         self.public = "N" if self["private"] else "Y"
         self.data_link = ""
+        self.data_type = ""
         requestable = self.dataset.is_requestable()
         if requestable:
             self.requestable = "Y"
@@ -51,7 +52,9 @@ class DatasetStatistics(UserDict):
             self.requestable = "N"
             resources = self.dataset.get_resources()
             if resources:
-                self.data_link = resources[0]["url"]
+                resource = resources[0]
+                self.data_link = resource["url"]
+                self.data_type = resource["url_type"]
         self.archived = "Y" if self["archived"] else "N"
 
     def get_cod(self):
