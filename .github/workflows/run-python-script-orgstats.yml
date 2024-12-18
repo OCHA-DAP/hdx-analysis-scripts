@@ -21,9 +21,9 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Run script
       env:
-        HDX_KEY: ${{ secrets.ADMIN_API_TOKEN }}
-        PREPREFIX: ${{ secrets.PREPREFIX }}
-        USER_AGENT: ${{ secrets.USER_AGENT }}
+        HDX_KEY: ${{ secrets.HDX_BOT_SCRAPERS_API_TOKEN }}
+        PREPREFIX: ${{ vars.HDX_USER_AGENT_PREPREFIX }}
+        USER_AGENT: ${{ vars.USER_AGENT }}
         MIXPANEL_API_SECRET: ${{ secrets.MIXPANEL_API_SECRET }}
         MIXPANEL_PROJECT_ID: ${{ secrets.MIXPANEL_PROJECT_ID }}
         MIXPANEL_TOKEN: ${{ secrets.MIXPANEL_TOKEN }}
@@ -40,11 +40,12 @@ jobs:
       if: failure()
       uses: dawidd6/action-send-mail@v3
       with:
-        server_address: ${{secrets.EMAIL_SERVER}}
-        server_port: ${{secrets.EMAIL_PORT}}
-        username: ${{secrets.EMAIL_USERNAME}}
-        password: ${{secrets.EMAIL_PASSWORD}}
+        server_address: ${{secrets.HDX_PIPELINE_EMAIL_SERVER}}
+        server_port: ${{secrets.HDX_PIPELINE_EMAIL_PORT}}
+        username: ${{secrets.HDX_PIPELINE_EMAIL_USERNAME}}
+        password: ${{secrets.HDX_PIPELINE_EMAIL_PASSWORD}}
         subject: "FAILED: ${{github.repository}} run job"
         body: GitHub Actions run job for ${{github.repository}} failed!
-        to: ${{secrets.EMAIL_LIST}}
-        from: ${{secrets.EMAIL_FROM}}
+        to: ${{vars.HDX_PIPELINE_EMAIL_LIST}}
+        from: ${{secrets.HDX_PIPELINE_EMAIL_FROM}}
+        content_type: text/html
