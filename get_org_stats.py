@@ -403,12 +403,20 @@ def main(downloads, output_dir, **ignore):
         format="%.0f",
     )
     logger.info(f"Quarterly % API OKR = {quarterly_api_okr}")
+
+    logger.info(f"Total fresh datasets (using last modified) = {total_lm_fresh}")
+    logger.info(
+        f"Total non-fresh datasets (using last modified) = {total_lm_not_fresh}"
+    )
     quarterly_lm_fresh_okr = get_fraction_str(
         total_lm_fresh * 100,
         (total_lm_fresh + total_lm_not_fresh),
         format="%.0f",
     )
     logger.info(f"Quarterly % last modified fresh OKR = {quarterly_lm_fresh_okr}")
+
+    logger.info(f"Total up to date datasets (using end date) = {total_ed_uptodate}")
+    logger.info(f"Total out of date datasets (using end date) = {total_ed_outofdate}")
     quarterly_ed_uptodate_okr = get_fraction_str(
         total_ed_uptodate * 100,
         (total_ed_uptodate + total_ed_outofdate),
