@@ -7,7 +7,7 @@ from hdx.data.dataset import Dataset
 from hdx.data.organization import Organization
 from hdx.utilities.downloader import Download
 from hdx.utilities.loader import load_yaml
-from hdx.utilities.saver import save_json, save_yaml
+from hdx.utilities.saver import save_json
 from mixpanel_utils import MixpanelUtils
 
 logger = logging.getLogger(__name__)
@@ -27,13 +27,17 @@ COMMON_FILTER = """
   .filter(event => event.properties['user agent'] != '' && !containsAny(event.properties['user agent']) && !containsAny(event.properties['$browser']))
 """
 
-query_template = COMMON_HEADER + """
+query_template = (
+    COMMON_HEADER
+    + """
 function main() {{
   return Events({{
     from_date: '{}',
     to_date: '{}',
     event_selectors: [{{event: "resource download"}}]
-  }})""" + COMMON_FILTER + """
+  }})"""
+    + COMMON_FILTER
+    + """
   .groupByUser(["properties.resource id","properties.dataset id",mixpanel.numeric_bucket('time',mixpanel.daily_time_buckets)],mixpanel.reducer.null())
   .groupBy(["key.2"], mixpanel.reducer.count())
   .map(function(r){{
@@ -44,6 +48,7 @@ function main() {{
   }});
 }}
 """
+)
 
 
 class Downloads:
@@ -108,8 +113,7 @@ class Downloads:
                 nonlocal n
 
                 if n >= 0:
-                    filename = self.datasets_file.replace(".json",
-                                                          f"_{n}.json")
+                    filename = self.datasets_file.replace(".json", f"_{n}.json")
                     save_json(datasets_list, join(self.saved_dir, filename))
                     datasets_list.clear()
                 n += 1
@@ -153,17 +157,14 @@ class Downloads:
     def get_all_organisations(self):
         logger.info("Obtaining organisations data")
         organisation_list = Organization.get_all_organization_names(
-            all_fields=True, include_extras=True, include_users=True, include_followers=True)
+            all_fields=True,
+            include_extras=True,
+            include_users=True,
+            include_followers=True,
+        )
         organisations = {}
         for organisation in organisation_list:
             organisations[organisation["name"]] = organisation
         if self.saved_dir:
-            save_json(organisations,
-                      join(self.saved_dir, self.organisations_file))
+            save_json(organisations, join(self.saved_dir, self.organisations_file))
         return organisations
-
-    def get_aging(self, url):
-        yaml = Download().download_yaml(url)
-        if self.saved_dir:
-            save_yaml(yaml, join(self.saved_dir, self.aging_file))
-        return yaml
