@@ -44,23 +44,16 @@ last_modified_aging:
 
 end_date_aging:
   1:
-    UpToDate: 1
-    OutOfDate: 2
+    OutOfDate: 1
   7:
-    UpToDate: 7
-    OutOfDate: 14
+    OutOfDate: 7
   14:
-    UpToDate: 14
-    OutOfDate: 28
+    OutOfDate: 14
   30:
-    UpToDate: 30
-    OutOfDate: 60
+    OutOfDate: 30
   90:
-    UpToDate: 90
-    OutOfDate: 180
+    OutOfDate: 90
   180:
-    UpToDate: 180
-    OutOfDate: 360
+    OutOfDate: 180
   365:
-    UpToDate: 365
-    OutOfDate: 730
+    OutOfDate: 365
