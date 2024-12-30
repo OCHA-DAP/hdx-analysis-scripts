@@ -18,27 +18,30 @@ def get_requests_mappings(downloads):
     organisation_name_to_requests = {}
     for request in downloads.get_requests():
         dict_of_lists_add(dataset_id_to_requests, request["package_id"], request)
-        dict_of_lists_add(organisation_name_to_requests, request["pkg_organization_name"], request)
+        dict_of_lists_add(
+            organisation_name_to_requests, request["pkg_organization_name"], request
+        )
     return dataset_id_to_requests, organisation_name_to_requests
 
 
-def get_freshness_by_frequency(downloads, url):
-    yaml = downloads.get_aging(url)
-    freshness_by_frequency = {}
-    for key, value in yaml["aging"].items():
+def get_aging(aging_config):
+    aging = {}
+    for key, value in aging_config.items():
         update_frequency = int(key)
         freshness_frequency = {}
         for status in value:
             nodays = value[status]
             freshness_frequency[status] = timedelta(days=nodays)
-        freshness_by_frequency[update_frequency] = freshness_frequency
-    return freshness_by_frequency
+        aging[update_frequency] = freshness_frequency
+    return aging
 
 
 def get_previous_quarter(date):
     if date.month < 4:
         start_date = datetime(date.year - 1, 10, 1, 0, 0, tzinfo=timezone.utc)
-        end_date = datetime(date.year - 1, 12, 31, 23, 59, 59, 999999, tzinfo=timezone.utc)
+        end_date = datetime(
+            date.year - 1, 12, 31, 23, 59, 59, 999999, tzinfo=timezone.utc
+        )
     elif date.month < 7:
         start_date = datetime(date.year, 1, 1, 0, 0, tzinfo=timezone.utc)
         end_date = datetime(date.year, 3, 31, 23, 59, 59, 999999, tzinfo=timezone.utc)

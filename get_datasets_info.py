@@ -5,8 +5,7 @@ from os import mkdir
 from os.path import expanduser, join
 from shutil import rmtree
 
-from common import get_dataset_name_to_explorers, get_freshness_by_frequency, \
-    get_requests_mappings
+from common import get_dataset_name_to_explorers, get_aging, get_requests_mappings
 from common.dataset_statistics import DatasetStatistics
 from common.downloads import Downloads
 from hdx.api.configuration import Configuration
@@ -28,9 +27,8 @@ def main(downloads, output_dir, **ignore):
 
     dataset_name_to_explorers = get_dataset_name_to_explorers(downloads)
     dataset_id_to_requests, _ = get_requests_mappings(downloads)
-    freshness_by_frequency = get_freshness_by_frequency(
-        downloads, configuration["aging_url"]
-    )
+    last_modified_aging = get_aging(configuration["last_modified_aging"])
+    end_date_aging = get_aging(configuration["end_date_aging"])
     dataset_downloads = downloads.get_mixpanel_downloads(60)
     created_per_month = {}
     metadata_updated_per_month = {}
@@ -49,7 +47,8 @@ def main(downloads, output_dir, **ignore):
             "reference period start",
             "reference period end",
             "update frequency",
-            "fresh",
+            "last modified fresh",
+            "end date up to date",
             "organisation",
             "data link",
             "data type",
@@ -68,7 +67,12 @@ def main(downloads, output_dir, **ignore):
     ]
     for dataset in downloads.get_all_datasets():
         datasetstats = DatasetStatistics(
-            downloads.today, dataset_name_to_explorers, dataset_id_to_requests, freshness_by_frequency, dataset
+            downloads.today,
+            dataset_name_to_explorers,
+            dataset_id_to_requests,
+            last_modified_aging,
+            end_date_aging,
+            dataset,
         )
         if datasetstats.last_modified is None:
             continue
@@ -109,7 +113,8 @@ def main(downloads, output_dir, **ignore):
             datasetstats.startdate,
             datasetstats.enddate,
             update_frequency,
-            datasetstats.fresh,
+            datasetstats.last_modified_fresh,
+            datasetstats.end_date_uptodate,
             org,
             datasetstats.data_link,
             datasetstats.data_type,
