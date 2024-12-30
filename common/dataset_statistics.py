@@ -289,14 +289,16 @@ class DatasetStatistics(UserDict):
         self.end_date_uptodate = ""
         if self.exclude_from_stats == "Y":
             return
-        if self.enddate == "ongoing":
-            self.end_date_uptodate = "UpToDate"
-            return
         if self.update_frequency:
             update_frequency = int(self.update_frequency)
+            if update_frequency < 0:
+                return
             if update_frequency == 0:
                 self.end_date_uptodate = "UpToDate"
             elif update_frequency > 0:
+                if self.enddate == "ongoing":
+                    self.end_date_uptodate = "UpToDate"
+                    return
                 enddate = parse_date(self.enddate)
                 self.end_date_uptodate = self.calculate_ed_uptodate(
                     enddate, update_frequency
