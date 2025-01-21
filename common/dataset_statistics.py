@@ -50,6 +50,8 @@ class DatasetStatistics(UserDict):
 
     def get_status(self):
         self.public = "N" if self["private"] else "Y"
+        self.internal_resources = 0
+        self.external_resources = 0
         self.data_link = ""
         self.data_type = ""
         requestable = self.dataset.is_requestable()
@@ -62,6 +64,11 @@ class DatasetStatistics(UserDict):
                 resource = resources[0]
                 self.data_link = resource["url"]
                 self.data_type = resource["url_type"]
+                for resource in resources:
+                    if resource["url_type"] == "api":
+                        self.external_resources += 1
+                    else:
+                        self.internal_resources += 1
         self.archived = "Y" if self["archived"] else "N"
         if self.public == "N" or self.requestable == "Y" or self.archived == "Y":
             self.exclude_from_stats = "Y"
