@@ -90,6 +90,8 @@ def main(downloads, output_dir, **ignore):
         organisation["requestable datasets"] = 0
         organisation["private datasets"] = 0
         organisation["archived datasets"] = 0
+        organisation["public internal resources"] = 0
+        organisation["public external resources"] = 0
         organisation["updated by cod script"] = 0
         organisation["updated by script"] = 0
         organisation["old updated by script"] = 0
@@ -158,6 +160,8 @@ def main(downloads, output_dir, **ignore):
             organisation["public datasets"] += 1
             total_public += 1
             is_public_not_requestable_archived = True
+            organisation["public internal resources"] += datasetstats.internal_resources
+            organisation["public external resources"] += datasetstats.external_resources
             total_public_internal += datasetstats.internal_resources
             total_public_external += datasetstats.external_resources
 
@@ -246,6 +250,8 @@ def main(downloads, output_dir, **ignore):
         "Requestable datasets",
         "Private datasets",
         "Archived datasets",
+        "Public Internal Resources",
+        "Public External Resources",
         "Public API (non-cod scripted)",
         "% of public API (non-cod scripted)",
         "Public cod scripted",
@@ -341,6 +347,8 @@ def main(downloads, output_dir, **ignore):
             organisation["requestable datasets"],
             organisation["private datasets"],
             organisation["archived datasets"],
+            organisation["public internal resources"],
+            organisation["public external resources"],
             updated_by_api,
             percentage_api,
             updated_by_cod_script,
