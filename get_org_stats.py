@@ -47,6 +47,8 @@ def main(downloads, output_dir, **ignore):
     logger.info("Obtaining organisations data")
     organisations = downloads.get_all_organisations()
     total_public = 0
+    total_public_internal = 0
+    total_public_external = 0
     total_updated_by_cod = 0
     total_updated_by_script = 0
     total_lm_fresh = 0
@@ -156,6 +158,8 @@ def main(downloads, output_dir, **ignore):
             organisation["public datasets"] += 1
             total_public += 1
             is_public_not_requestable_archived = True
+            total_public_internal += datasetstats.internal_resources
+            total_public_external += datasetstats.external_resources
 
         downloads_last_3months = dataset_3m_downloads.get(dataset["id"], 0)
         organisation["downloads last 90 days"] += downloads_last_3months
@@ -426,7 +430,9 @@ def main(downloads, output_dir, **ignore):
     filepath = join(output_dir, "total_stats.csv")
     logger.info(f"Writing totals to {filepath}")
     headers = [
-        "Public - request & archive",
+        "Public - Request & Archive",
+        "Public Internal Resources",
+        "Public External Resources",
         "Updated by COD",
         "Updated by Script",
         "Quarterly % API OKR",
@@ -440,6 +446,8 @@ def main(downloads, output_dir, **ignore):
     rows = [
         [
             total_public,
+            total_public_internal,
+            total_public_external,
             total_updated_by_cod,
             total_updated_by_script,
             quarterly_api_okr,
