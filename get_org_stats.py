@@ -93,6 +93,7 @@ def main(downloads, output_dir, **ignore):
         organisation["public internal resources"] = 0
         organisation["public external resources"] = 0
         organisation["updated by cod script"] = 0
+        organisation["formerly updated by cod script"] = 0
         organisation["updated by script"] = 0
         organisation["old updated by script"] = 0
         organisation["any updated last 3 months"] = "No"
@@ -212,6 +213,11 @@ def main(downloads, output_dir, **ignore):
         ):
             organisation["updated by cod script"] += 1
             total_updated_by_cod += 1
+        if (
+            datasetstats.old_updated_by_cod_script == "Y"
+            and is_public_not_requestable_archived
+        ):
+            organisation["formerly updated by cod script"] += 1
         if datasetstats.created > organisation["latest created dataset date"]:
             organisation["latest created dataset date"] = datasetstats.created
         if datasetstats.updated_by_script:
@@ -256,6 +262,8 @@ def main(downloads, output_dir, **ignore):
         "% of public API (non-cod scripted)",
         "Public cod scripted",
         "% of public cod scripted",
+        "Public formerly cod scripted",
+        "% of public formerly cod scripted",
         "Public previous scripted",
         "% of public previous scripted",
         "Public live",
@@ -305,6 +313,9 @@ def main(downloads, output_dir, **ignore):
         updated_by_cod_script, percentage_cod = get_number_percentage(
             organisation, "updated by cod script"
         )
+        old_updated_by_cod_script, old_percentage_cod = get_number_percentage(
+            organisation, "formerly updated by cod script"
+        )
         updated_by_api, percentage_api = get_number_percentage(
             organisation, "updated by script"
         )
@@ -353,6 +364,8 @@ def main(downloads, output_dir, **ignore):
             percentage_api,
             updated_by_cod_script,
             percentage_cod,
+            old_updated_by_cod_script,
+            old_percentage_cod,
             old_updated_by_script,
             percentage_old_script,
             live_datasets,

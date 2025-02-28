@@ -174,6 +174,7 @@ class DatasetStatistics(UserDict):
         self.updated_by_noncod_script = "N"
         self.updated_by_cod_script = "N"
         self.old_updated_by_noncod_script = "N"
+        self.old_updated_by_cod_script = "N"
         self.outdated_lastmodified = "N"
         if not updated_by_script:
             return
@@ -204,9 +205,12 @@ class DatasetStatistics(UserDict):
         if (
             "HDXINTERNAL" in updated_by_script
             and "CODs" in updated_by_script
-            and "cod_level" in self.data
         ):
-            self.updated_by_cod_script = "Y"
+            if "cod_level" in self.data:
+                self.updated_by_cod_script = "Y"
+            else:
+                # no longer updated by COD script
+                self.old_updated_by_cod_script = "Y"
             return
 
         if self.last_modified:
