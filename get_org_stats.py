@@ -218,7 +218,6 @@ def main(downloads, output_dir, **ignore):
             and is_public_not_requestable_archived
         ):
             organisation["formerly updated by cod script"] += 1
-            total_updated_by_cod += 1
         if datasetstats.created > organisation["latest created dataset date"]:
             organisation["latest created dataset date"] = datasetstats.created
         if datasetstats.updated_by_script:
