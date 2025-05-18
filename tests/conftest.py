@@ -1,12 +1,14 @@
 from os.path import isfile, join
 
 import pytest
-from common.downloads import Downloads
 from dateutil.relativedelta import relativedelta
+
+from hdx.analysis_scripts.common.downloads import Downloads
 from hdx.api.configuration import Configuration
 from hdx.data.dataset import Dataset
 from hdx.utilities.dateparse import parse_date
 from hdx.utilities.loader import load_json, load_yaml
+from hdx.utilities.path import script_dir_plus_file
 from hdx.utilities.useragent import UserAgent
 
 
@@ -16,7 +18,9 @@ def configuration():
         hdx_read_only=True,
         hdx_site="prod",
         user_agent="test",
-        project_config_yaml=join("config", "project_configuration.yaml"),
+        project_config_yaml=script_dir_plus_file(
+            join("config", "project_configuration.yaml"), Downloads
+        ),
     )
     UserAgent.set_global("test")
     return Configuration.read()

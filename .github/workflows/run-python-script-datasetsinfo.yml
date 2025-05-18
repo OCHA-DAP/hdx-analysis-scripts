@@ -9,7 +9,6 @@ on:
 
 jobs:
   run:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -17,11 +16,12 @@ jobs:
     - name: Set up Python 3.x
       uses: actions/setup-python@v5
       with:
-        python-version: 3.x
+        python-version: "3.x"
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        pip install .
     - name: Run script
       env:
         HDX_KEY: ${{ secrets.HDX_BOT_SCRAPERS_API_TOKEN }}
@@ -31,7 +31,7 @@ jobs:
         MIXPANEL_PROJECT_ID: ${{ secrets.MIXPANEL_PROJECT_ID }}
         MIXPANEL_TOKEN: ${{ secrets.MIXPANEL_TOKEN }}
       run: |
-        python get_datasets_info.py --output_dir=datasets_info
+        python -m hdx.analysis_script.datasets --output_dir=datasets_info
     - name: Deploy 🚀
       if: always()
       uses: JamesIves/github-pages-deploy-action@v4
