@@ -17,6 +17,10 @@ last_modified_aging:
     Due: 1
     Overdue: 2
     Delinquent: 3
+  2:
+    Due: 2
+    Overdue: 4
+    Delinquent: 6
   7:
     Due: 7
     Overdue: 14
@@ -29,31 +33,57 @@ last_modified_aging:
     Due: 30
     Overdue: 44
     Delinquent: 60
+  60:
+    Due: 60
+    Overdue: 84
+    Delinquent: 108
   90:
     Due: 90
     Overdue: 120
     Delinquent: 150
+  120:
+    Due: 120
+    Overdue: 147
+    Delinquent: 174
   180:
     Due: 180
     Overdue: 210
     Delinquent: 240
+  300:
+    Due: 300
+    Overdue: 342
+    Delinquent: 384
   365:
     Due: 365
     Overdue: 425
     Delinquent: 455
+  730:
+    Due: 730
+    Overdue: 425
+    Delinquent: 840
 
 end_date_aging:
   1:
     OutOfDate: 1
+  2:
+    OutOfDate: 2
   7:
     OutOfDate: 7
   14:
     OutOfDate: 14
   30:
     OutOfDate: 30
+  60:
+    OutOfDate: 60
   90:
     OutOfDate: 90
+  120:
+    OutOfDate: 120
   180:
     OutOfDate: 180
+  300:
+    OutOfDate: 300
   365:
     OutOfDate: 365
+  730:
+    OutOfDate: 730
