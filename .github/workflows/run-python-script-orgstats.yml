@@ -31,7 +31,7 @@ jobs:
         MIXPANEL_PROJECT_ID: ${{ secrets.MIXPANEL_PROJECT_ID }}
         MIXPANEL_TOKEN: ${{ secrets.MIXPANEL_TOKEN }}
       run: |
-        python -m hdx.analysis_script.orgs --output_dir=org_stats
+        python -m hdx.analysis_scripts.orgs --output_dir=org_stats
     - name: Deploy 🚀
       if: always()
       uses: JamesIves/github-pages-deploy-action@v4
