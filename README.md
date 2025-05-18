@@ -34,7 +34,7 @@ pip install -r requirements.txt
 pip install -r test-requirements.txt
 ```
 
-`hdx-analysis-scripts` uses the `hdx-python-api` library, configuration for which is done in the usual way [described here](https://hdx-python-api.readthedocs.io/en/latest/). 
+`hdx-analysis-scripts` uses the `hdx-python-api` library, configuration for which is done in the usual way [described here](https://hdx-python-api.readthedocs.io/en/latest/).
 
 For local use the user agent (`AnalysisScripts`) is specified in the `~/.useragents.yaml` file.
 ```yaml
@@ -52,5 +52,3 @@ MIXPANEL_TOKEN
 ```
 
 Mixpanel accounts for users authenticate by sending a login email to registered users on login request.
-
-

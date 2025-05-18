@@ -1,0 +1,59 @@
+org_stats_url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRtlQ4C0ykC_2JCHkH7tQqh_mopvIfz_09xotuYXQ9zNFWBU5SylrJjrPpeZL2EjRMX7prOdJXO5SsK/pub?gid=428662439&single=true&output=csv"
+org_type_mapping:
+  "academic_research": "Academia"
+  "united_nations": "United Nations"
+  "government": "Government"
+  "international_org": "International Organisation"
+  "national_ngo": "National NGO"
+  "other": "Other"
+  "private_sector": "Private Sector"
+  "red_cross_red_crescent": "Red Cross and Red Crescent"
+  "international_ngo": "International NGO"
+  "military": "Government"
+  "religious": "Other"
+
+last_modified_aging:
+  1:
+    Due: 1
+    Overdue: 2
+    Delinquent: 3
+  7:
+    Due: 7
+    Overdue: 14
+    Delinquent: 21
+  14:
+    Due: 14
+    Overdue: 21
+    Delinquent: 28
+  30:
+    Due: 30
+    Overdue: 44
+    Delinquent: 60
+  90:
+    Due: 90
+    Overdue: 120
+    Delinquent: 150
+  180:
+    Due: 180
+    Overdue: 210
+    Delinquent: 240
+  365:
+    Due: 365
+    Overdue: 425
+    Delinquent: 455
+
+end_date_aging:
+  1:
+    OutOfDate: 1
+  7:
+    OutOfDate: 7
+  14:
+    OutOfDate: 14
+  30:
+    OutOfDate: 30
+  90:
+    OutOfDate: 90
+  180:
+    OutOfDate: 180
+  365:
+    OutOfDate: 365

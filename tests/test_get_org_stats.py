@@ -1,7 +1,7 @@
 from os.path import join
 
-from get_org_stats import main
-from common.compare import assert_files_same
+from hdx.analysis_scripts.orgs.__main__ import main
+from hdx.utilities.compare import assert_files_same
 from hdx.utilities.path import temp_dir
 
 

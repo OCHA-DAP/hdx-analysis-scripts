@@ -1,4 +1,4 @@
-# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# This workflow will install Python dependencies, lint and run tests
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
 name: Run tests
@@ -8,14 +8,18 @@ on:
   push:
     branches-ignore:
       - gh-pages
+      - 'dependabot/**'
   pull_request:
     branches-ignore:
       - gh-pages
 
-
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    permissions:
+      checks: write
+      pull-requests: write
 
     steps:
     - uses: actions/checkout@v4
@@ -26,25 +30,24 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install flake8 coveralls
-        if [ -f test-requirements.txt ]; then pip install  --upgrade -r test-requirements.txt; fi
-    - name: Lint with flake8
+    - name: Install Hatch
+      uses: pypa/hatch@install
+    - name: Test with hatch/pytest
       run: |
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Test with pytest
+        hatch test
+    - name: Check styling
+      if: always()
       run: |
-        pytest --junitxml=junit/test-results.xml --cov-config .coveragerc --cov-report= --cov=.
-    - name: Publish in Coveralls
-      uses: AndreMiras/coveralls-python-action@develop
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        flag-name: tests
+        hatch fmt --check
     - name: Publish Unit Test Results
       uses: EnricoMi/publish-unit-test-result-action@v2
       if: always()
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        junit_files: junit/*.xml
+        junit_files: test-results.xml
+    - name: Publish in Coveralls
+      uses: coverallsapp/github-action@v2
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        flag-name: tests
+        format: lcov

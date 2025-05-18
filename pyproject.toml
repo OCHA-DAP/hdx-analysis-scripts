@@ -1,0 +1,57 @@
+#########################
+# Project Configuration #
+#########################
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "hdx-analysis-scripts"
+description = "HPC HNO Scraper"
+authors = [{ name = "Michael Rans", email = "rans@email.com" }]
+license = { text = "MIT" }
+keywords = ["HDX", "analysis"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: Unix",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+]
+requires-python = ">=3.8"
+
+dependencies = [
+    "hdx-python-api>= 6.3.9",
+    "hdx-python-country>= 3.9.4",
+    "hdx-python-utilities>= 3.8.7",
+    "mixpanel-utils",
+]
+dynamic = ["version"]
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[project.urls]
+Homepage = "https://github.com/OCHA-DAP/hdx-analysis-scripts"
+
+[project.optional-dependencies]
+test = ["pytest", "pytest-check", "pytest-cov"]
+dev = ["pre-commit"]
+
+[project.scripts]
+run_dataset = "hdx.analysis_scripts.datasets.__main__:main"
+run_org = "hdx.analysis_scripts.orgs.__main__:main"
