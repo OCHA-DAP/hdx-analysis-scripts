@@ -59,7 +59,7 @@ last_modified_aging:
     Delinquent: 455
   730:
     Due: 730
-    Overdue: 425
+    Overdue: 785
     Delinquent: 840
 
 end_date_aging:
