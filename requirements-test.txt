@@ -62,7 +62,7 @@ frictionless==5.18.1
     # via
     #   -c requirements.txt
     #   hdx-python-utilities
-hdx-python-api==6.3.9
+hdx-python-api==6.4.0
     # via
     #   -c requirements.txt
     #   hdx-analysis-scripts (pyproject.toml)
