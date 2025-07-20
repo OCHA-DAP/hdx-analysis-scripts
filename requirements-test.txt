@@ -11,7 +11,7 @@ attrs==25.3.0
     #   jsonlines
     #   jsonschema
     #   referencing
-certifi==2025.4.26
+certifi==2025.7.14
     # via
     #   -c requirements.txt
     #   requests
@@ -27,13 +27,15 @@ ckanapi==4.8
     # via
     #   -c requirements.txt
     #   hdx-python-api
-click==8.1.8
+click==8.2.1
     # via
     #   -c requirements.txt
     #   typer
-coverage==7.8.0
+coverage==7.9.2
     # via pytest-cov
-defopt==6.4.0
+cydifflib==1.2.0
+    # via hdx-analysis-scripts (pyproject.toml)
+defopt==7.0.0
     # via
     #   -c requirements.txt
     #   hdx-python-api
@@ -62,16 +64,16 @@ frictionless==5.18.1
     # via
     #   -c requirements.txt
     #   hdx-python-utilities
-hdx-python-api==6.4.0
+hdx-python-api==6.4.5
     # via
     #   -c requirements.txt
     #   hdx-analysis-scripts (pyproject.toml)
-hdx-python-country==3.9.4
+hdx-python-country==3.9.6
     # via
     #   -c requirements.txt
     #   hdx-analysis-scripts (pyproject.toml)
     #   hdx-python-api
-hdx-python-utilities==3.8.7
+hdx-python-utilities==3.8.8
     # via
     #   -c requirements.txt
     #   hdx-analysis-scripts (pyproject.toml)
@@ -112,7 +114,7 @@ jsonpath-ng==1.7.0
     # via
     #   -c requirements.txt
     #   libhxl
-jsonschema==4.23.0
+jsonschema==4.25.0
     # via
     #   -c requirements.txt
     #   frictionless
@@ -138,7 +140,7 @@ markdown-it-py==3.0.0
     # via
     #   -c requirements.txt
     #   rich
-marko==2.1.3
+marko==2.1.4
     # via
     #   -c requirements.txt
     #   frictionless
@@ -168,12 +170,14 @@ openpyxl==3.1.5
     #   hdx-python-utilities
 packaging==25.0
     # via pytest
-petl==1.7.16
+petl==1.7.17
     # via
     #   -c requirements.txt
     #   frictionless
 pluggy==1.6.0
-    # via pytest
+    # via
+    #   pytest
+    #   pytest-cov
 ply==3.11
     # via
     #   -c requirements.txt
@@ -183,7 +187,7 @@ pockets==0.9.1
     # via
     #   -c requirements.txt
     #   sphinxcontrib-napoleon
-pydantic==2.11.4
+pydantic==2.11.7
     # via
     #   -c requirements.txt
     #   frictionless
@@ -191,22 +195,23 @@ pydantic-core==2.33.2
     # via
     #   -c requirements.txt
     #   pydantic
-pygments==2.19.1
+pygments==2.19.2
     # via
     #   -c requirements.txt
+    #   pytest
     #   rich
 pyphonetics==0.5.3
     # via
     #   -c requirements.txt
     #   hdx-python-utilities
-pytest==8.3.5
+pytest==8.4.1
     # via
     #   hdx-analysis-scripts (pyproject.toml)
     #   pytest-check
     #   pytest-cov
 pytest-check==2.5.3
     # via hdx-analysis-scripts (pyproject.toml)
-pytest-cov==6.1.1
+pytest-cov==6.2.1
     # via hdx-analysis-scripts (pyproject.toml)
 python-dateutil==2.9.0.post0
     # via
@@ -241,7 +246,7 @@ referencing==0.36.2
     #   -c requirements.txt
     #   jsonschema
     #   jsonschema-specifications
-requests==2.32.3
+requests==2.32.4
     # via
     #   -c requirements.txt
     #   ckanapi
@@ -261,16 +266,20 @@ rich==14.0.0
     # via
     #   -c requirements.txt
     #   typer
-rpds-py==0.25.0
+rpds-py==0.26.0
     # via
     #   -c requirements.txt
     #   jsonschema
     #   referencing
-ruamel-yaml==0.18.10
+ruamel-yaml==0.18.14
     # via
     #   -c requirements.txt
     #   hdx-python-utilities
-setuptools==80.7.1
+ruamel-yaml-clib==0.2.12
+    # via
+    #   -c requirements.txt
+    #   ruamel-yaml
+setuptools==80.9.0
     # via
     #   -c requirements.txt
     #   ckanapi
@@ -297,7 +306,7 @@ sphinxcontrib-napoleon==0.7
     # via
     #   -c requirements.txt
     #   defopt
-structlog==25.3.0
+structlog==25.4.0
     # via
     #   -c requirements.txt
     #   libhxl
@@ -317,15 +326,15 @@ text-unidecode==1.3
     # via
     #   -c requirements.txt
     #   python-slugify
-typeguard==4.4.2
+typeguard==4.4.4
     # via
     #   -c requirements.txt
     #   inflect
-typer==0.15.4
+typer==0.16.0
     # via
     #   -c requirements.txt
     #   frictionless
-typing-extensions==4.13.2
+typing-extensions==4.14.1
     # via
     #   -c requirements.txt
     #   frictionless
@@ -334,7 +343,7 @@ typing-extensions==4.13.2
     #   typeguard
     #   typer
     #   typing-inspection
-typing-inspection==0.4.0
+typing-inspection==0.4.1
     # via
     #   -c requirements.txt
     #   pydantic
@@ -343,7 +352,7 @@ unidecode==1.4.0
     #   -c requirements.txt
     #   libhxl
     #   pyphonetics
-urllib3==2.4.0
+urllib3==2.5.0
     # via
     #   -c requirements.txt
     #   libhxl
@@ -356,7 +365,7 @@ wheel==0.45.1
     # via
     #   -c requirements.txt
     #   libhxl
-xlrd==2.0.1
+xlrd==2.0.2
     # via
     #   -c requirements.txt
     #   hdx-python-utilities
@@ -368,7 +377,7 @@ xlsx2csv==0.8.4
     # via
     #   -c requirements.txt
     #   hdx-python-utilities
-xlsxwriter==3.2.3
+xlsxwriter==3.2.5
     # via
     #   -c requirements.txt
     #   tableschema-to-template
