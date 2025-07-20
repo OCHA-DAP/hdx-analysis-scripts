@@ -59,7 +59,10 @@ def main(downloads, output_dir, **ignore):
     total_lm_not_fresh = 0
     total_ed_uptodate = 0
     total_ed_outofdate = 0
-    for organisation_name, organisation in organisations.items():
+    organisation_name_to_id = {}
+    for organisation_id, organisation in organisations.items():
+        organisation_name = organisation["name"]
+        organisation_name_to_id[organisation_name] = organisation_id
         geospatiality = name_to_geospatiality.get(organisation_name, "")
         organisation["geospatiality"] = geospatiality
         organisation_location = name_to_location.get(organisation_name, "")
@@ -151,8 +154,8 @@ def main(downloads, output_dir, **ignore):
             dataset,
         )
         name = dataset["name"]
-        organisation_name = dataset["organization"]["name"]
-        organisation = organisations[organisation_name]
+        organisation_id = dataset["organization"]["id"]
+        organisation = organisations[organisation_id]
         is_public_not_requestable_archived = False
         if datasetstats.public == "N":
             organisation["private datasets"] += 1
@@ -234,7 +237,7 @@ def main(downloads, output_dir, **ignore):
                 organisation["updated by script"] += 1
                 total_updated_by_script += 1
             if datasetstats.outdated_lastmodified == "Y":
-                dict_of_lists_add(outdated_lastmodifieds, organisation_name, name)
+                dict_of_lists_add(outdated_lastmodifieds, organisation["name"], name)
             if datasetstats.old_updated_by_noncod_script == "Y":
                 organisation["old updated by script"] += 1
         datasetstats.add_tags_to_set(organisation["tags"])
@@ -311,8 +314,8 @@ def main(downloads, output_dir, **ignore):
 
     logger.info("Generating rows")
     rows = list()
-    for organisation_name in sorted(organisations):
-        organisation = organisations[organisation_name]
+    for organisation_name in sorted(organisation_name_to_id):
+        organisation = organisations[organisation_name_to_id[organisation_name]]
         organisation_type = org_type_mapping[organisation["hdx_org_type"]]
         updated_by_cod_script, percentage_cod = get_number_percentage(
             organisation, "updated by cod script"

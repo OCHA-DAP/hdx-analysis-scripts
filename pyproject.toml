@@ -31,12 +31,12 @@ classifiers = [
     "Operating System :: MacOS",
     "Operating System :: Microsoft :: Windows",
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 
 dependencies = [
-    "hdx-python-api>= 6.4.0",
-    "hdx-python-country>= 3.9.4",
-    "hdx-python-utilities>= 3.8.7",
+    "hdx-python-api>= 6.4.5",
+    "hdx-python-country>= 3.9.6",
+    "hdx-python-utilities>= 3.8.8",
     "mixpanel-utils",
 ]
 dynamic = ["version"]
@@ -49,7 +49,7 @@ content-type = "text/markdown"
 Homepage = "https://github.com/OCHA-DAP/hdx-analysis-scripts"
 
 [project.optional-dependencies]
-test = ["pytest", "pytest-check", "pytest-cov"]
+test = ["pytest", "pytest-check", "pytest-cov", "cydifflib"]
 dev = ["pre-commit"]
 
 [project.scripts]

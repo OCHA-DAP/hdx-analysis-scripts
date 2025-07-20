@@ -165,7 +165,7 @@ class Downloads:
         )
         organisations = {}
         for organisation in organisation_list:
-            organisations[organisation["name"]] = organisation
+            organisations[organisation["id"]] = organisation
         if self.saved_dir:
             save_json(organisations, join(self.saved_dir, self.organisations_file))
         return organisations
