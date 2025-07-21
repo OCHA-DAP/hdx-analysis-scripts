@@ -69,6 +69,7 @@ def main(downloads, output_dir, **ignore):
             "date updated by script",
             "updated_by_script<<last_modified",
             "last_modified<<updated_by_script",
+            "has quickcharts",
         )
     ]
     for dataset in downloads.get_all_datasets():
@@ -136,6 +137,7 @@ def main(downloads, output_dir, **ignore):
             datasetstats.updated_by_script,
             datasetstats.old_updated_by_noncod_script,
             datasetstats.outdated_lastmodified,
+            datasetstats.has_quickcharts,
         )
         rows.append(row)
     if rows:
