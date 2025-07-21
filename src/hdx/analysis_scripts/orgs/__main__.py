@@ -143,6 +143,7 @@ def main(downloads, output_dir, **ignore):
         organisation["denied requests"] = denied_requests
         organisation["tags"] = set()
         organisation["has crisis"] = "N"
+        organisation["has quickcharts"] = "N"
     outdated_lastmodifieds = {}
     for dataset in downloads.get_all_datasets():
         datasetstats = DatasetStatistics(
@@ -241,8 +242,10 @@ def main(downloads, output_dir, **ignore):
             if datasetstats.old_updated_by_noncod_script == "Y":
                 organisation["old updated by script"] += 1
         datasetstats.add_tags_to_set(organisation["tags"])
-        if datasetstats.crisis_tag:
+        if datasetstats.crisis_tag == "Y":
             organisation["has crisis"] = "Y"
+        if datasetstats.has_quickcharts == "Y":
+            organisation["has quickcharts"] = "Y"
 
     headers = [
         "Organisation name",
@@ -299,6 +302,7 @@ def main(downloads, output_dir, **ignore):
         "Denied requests",
         "Tags",
         "Has crisis",
+        "Has quickcharts",
     ]
 
     def get_number_percentage(organisation, key):
@@ -401,6 +405,7 @@ def main(downloads, output_dir, **ignore):
             organisation["denied requests"],
             ",".join(sorted(organisation["tags"])),
             organisation["has crisis"],
+            organisation["has quickcharts"],
         ]
         rows.append(row)
     if rows:

@@ -47,6 +47,7 @@ class DatasetStatistics(UserDict):
         self.get_updated_by_script()
         self.get_last_modified_freshness()
         self.get_end_date_freshness()
+        self.get_quickcharts()
 
     def get_status(self):
         self.public = "N" if self["private"] else "Y"
@@ -162,7 +163,9 @@ class DatasetStatistics(UserDict):
         self.tags = ", ".join(tags)
         for tag in tags:
             if tag[:7] == "crisis-":
-                self.crisis_tag = True
+                self.crisis_tag = "Y"
+                return
+        self.crisis_tag = "N"
 
     def add_tags_to_set(self, tagset):
         tags = self.dataset.get_tags()
@@ -311,3 +314,8 @@ class DatasetStatistics(UserDict):
                 self.end_date_uptodate = self.calculate_ed_uptodate(
                     enddate, update_frequency
                 )
+    def get_quickcharts(self):
+        if self.dataset["has_quickcharts"]:
+            self.has_quickcharts = "Y"
+        else:
+            self.has_quickcharts = "N"
