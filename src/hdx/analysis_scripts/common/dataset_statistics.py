@@ -314,6 +314,7 @@ class DatasetStatistics(UserDict):
                 self.end_date_uptodate = self.calculate_ed_uptodate(
                     enddate, update_frequency
                 )
+
     def get_quickcharts(self):
         if self.dataset["has_quickcharts"]:
             self.has_quickcharts = "Y"
