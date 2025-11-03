@@ -34,10 +34,10 @@ classifiers = [
 requires-python = ">=3.10"
 
 dependencies = [
-    "hdx-python-api>= 6.4.5",
-    "hdx-python-country>= 3.9.6",
-    "hdx-python-utilities>= 3.8.8",
-    "mixpanel-utils",
+  "hdx-python-api>= 6.5.2",
+  "hdx-python-country>= 3.9.8",
+  "hdx-python-utilities>= 3.9.5",
+  "mixpanel-utils",
 ]
 dynamic = ["version"]
 

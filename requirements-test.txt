@@ -4,14 +4,14 @@ annotated-types==0.7.0
     # via
     #   -c requirements.txt
     #   pydantic
-attrs==25.3.0
+attrs==25.4.0
     # via
     #   -c requirements.txt
     #   frictionless
     #   jsonlines
     #   jsonschema
     #   referencing
-certifi==2025.7.14
+certifi==2025.10.5
     # via
     #   -c requirements.txt
     #   requests
@@ -19,7 +19,7 @@ chardet==5.2.0
     # via
     #   -c requirements.txt
     #   frictionless
-charset-normalizer==3.4.2
+charset-normalizer==3.4.4
     # via
     #   -c requirements.txt
     #   requests
@@ -27,11 +27,11 @@ ckanapi==4.8
     # via
     #   -c requirements.txt
     #   hdx-python-api
-click==8.2.1
+click==8.3.0
     # via
     #   -c requirements.txt
     #   typer
-coverage==7.9.2
+coverage==7.11.0
     # via pytest-cov
 cydifflib==1.2.0
     # via hdx-analysis-scripts (pyproject.toml)
@@ -39,7 +39,7 @@ defopt==7.0.0
     # via
     #   -c requirements.txt
     #   hdx-python-api
-dnspython==2.7.0
+dnspython==2.8.0
     # via
     #   -c requirements.txt
     #   email-validator
@@ -48,11 +48,11 @@ docopt==0.6.2
     #   -c requirements.txt
     #   ckanapi
     #   num2words
-docutils==0.21.2
+docutils==0.22.2
     # via
     #   -c requirements.txt
     #   defopt
-email-validator==2.2.0
+email-validator==2.3.0
     # via
     #   -c requirements.txt
     #   hdx-python-api
@@ -64,31 +64,31 @@ frictionless==5.18.1
     # via
     #   -c requirements.txt
     #   hdx-python-utilities
-hdx-python-api==6.4.5
+hdx-python-api==6.5.2
     # via
     #   -c requirements.txt
     #   hdx-analysis-scripts (pyproject.toml)
-hdx-python-country==3.9.6
+hdx-python-country==3.9.8
     # via
     #   -c requirements.txt
     #   hdx-analysis-scripts (pyproject.toml)
     #   hdx-python-api
-hdx-python-utilities==3.8.8
+hdx-python-utilities==3.9.5
     # via
     #   -c requirements.txt
     #   hdx-analysis-scripts (pyproject.toml)
     #   hdx-python-api
     #   hdx-python-country
-humanize==4.12.3
+humanize==4.14.0
     # via
     #   -c requirements.txt
     #   frictionless
-idna==3.10
+idna==3.11
     # via
     #   -c requirements.txt
     #   email-validator
     #   requests
-ijson==3.4.0
+ijson==3.4.0.post0
     # via
     #   -c requirements.txt
     #   hdx-python-utilities
@@ -96,7 +96,7 @@ inflect==7.5.0
     # via
     #   -c requirements.txt
     #   quantulum3
-iniconfig==2.1.0
+iniconfig==2.3.0
     # via pytest
 isodate==0.7.2
     # via
@@ -114,12 +114,12 @@ jsonpath-ng==1.7.0
     # via
     #   -c requirements.txt
     #   libhxl
-jsonschema==4.25.0
+jsonschema==4.25.1
     # via
     #   -c requirements.txt
     #   frictionless
     #   tableschema-to-template
-jsonschema-specifications==2025.4.1
+jsonschema-specifications==2025.9.1
     # via
     #   -c requirements.txt
     #   jsonschema
@@ -136,15 +136,15 @@ makefun==1.16.0
     # via
     #   -c requirements.txt
     #   hdx-python-api
-markdown-it-py==3.0.0
+markdown-it-py==4.0.0
     # via
     #   -c requirements.txt
     #   rich
-marko==2.1.4
+marko==2.2.1
     # via
     #   -c requirements.txt
     #   frictionless
-markupsafe==3.0.2
+markupsafe==3.0.3
     # via
     #   -c requirements.txt
     #   jinja2
@@ -156,7 +156,7 @@ mixpanel-utils==2.2.7
     # via
     #   -c requirements.txt
     #   hdx-analysis-scripts (pyproject.toml)
-more-itertools==10.7.0
+more-itertools==10.8.0
     # via
     #   -c requirements.txt
     #   inflect
@@ -187,11 +187,11 @@ pockets==0.9.1
     # via
     #   -c requirements.txt
     #   sphinxcontrib-napoleon
-pydantic==2.11.7
+pydantic==2.12.3
     # via
     #   -c requirements.txt
     #   frictionless
-pydantic-core==2.33.2
+pydantic-core==2.41.4
     # via
     #   -c requirements.txt
     #   pydantic
@@ -204,14 +204,14 @@ pyphonetics==0.5.3
     # via
     #   -c requirements.txt
     #   hdx-python-utilities
-pytest==8.4.1
+pytest==8.4.2
     # via
     #   hdx-analysis-scripts (pyproject.toml)
     #   pytest-check
     #   pytest-cov
-pytest-check==2.5.3
+pytest-check==2.6.0
     # via hdx-analysis-scripts (pyproject.toml)
-pytest-cov==6.2.1
+pytest-cov==7.0.0
     # via hdx-analysis-scripts (pyproject.toml)
 python-dateutil==2.9.0.post0
     # via
@@ -228,7 +228,7 @@ python-slugify==8.0.4
     #   -c requirements.txt
     #   ckanapi
     #   frictionless
-pyyaml==6.0.2
+pyyaml==6.0.3
     # via
     #   -c requirements.txt
     #   frictionless
@@ -241,12 +241,12 @@ ratelimit==2.2.1
     # via
     #   -c requirements.txt
     #   hdx-python-utilities
-referencing==0.36.2
+referencing==0.37.0
     # via
     #   -c requirements.txt
     #   jsonschema
     #   jsonschema-specifications
-requests==2.32.4
+requests==2.32.5
     # via
     #   -c requirements.txt
     #   ckanapi
@@ -254,7 +254,7 @@ requests==2.32.4
     #   hdx-python-api
     #   libhxl
     #   requests-file
-requests-file==2.1.0
+requests-file==3.0.1
     # via
     #   -c requirements.txt
     #   hdx-python-utilities
@@ -262,20 +262,20 @@ rfc3986==2.0.0
     # via
     #   -c requirements.txt
     #   frictionless
-rich==14.0.0
+rich==14.2.0
     # via
     #   -c requirements.txt
     #   typer
-rpds-py==0.26.0
+rpds-py==0.28.0
     # via
     #   -c requirements.txt
     #   jsonschema
     #   referencing
-ruamel-yaml==0.18.14
+ruamel-yaml==0.18.16
     # via
     #   -c requirements.txt
     #   hdx-python-utilities
-ruamel-yaml-clib==0.2.12
+ruamel-yaml-clib==0.2.14
     # via
     #   -c requirements.txt
     #   ruamel-yaml
@@ -291,7 +291,7 @@ simpleeval==1.0.3
     # via
     #   -c requirements.txt
     #   frictionless
-simplejson==3.20.1
+simplejson==3.20.2
     # via
     #   -c requirements.txt
     #   ckanapi
@@ -306,7 +306,7 @@ sphinxcontrib-napoleon==0.7
     # via
     #   -c requirements.txt
     #   defopt
-structlog==25.4.0
+structlog==25.5.0
     # via
     #   -c requirements.txt
     #   libhxl
@@ -330,11 +330,11 @@ typeguard==4.4.4
     # via
     #   -c requirements.txt
     #   inflect
-typer==0.16.0
+typer==0.20.0
     # via
     #   -c requirements.txt
     #   frictionless
-typing-extensions==4.14.1
+typing-extensions==4.15.0
     # via
     #   -c requirements.txt
     #   frictionless
@@ -343,7 +343,7 @@ typing-extensions==4.14.1
     #   typeguard
     #   typer
     #   typing-inspection
-typing-inspection==0.4.1
+typing-inspection==0.4.2
     # via
     #   -c requirements.txt
     #   pydantic
@@ -377,7 +377,7 @@ xlsx2csv==0.8.4
     # via
     #   -c requirements.txt
     #   hdx-python-utilities
-xlsxwriter==3.2.5
+xlsxwriter==3.2.9
     # via
     #   -c requirements.txt
     #   tableschema-to-template
