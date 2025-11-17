@@ -18,6 +18,8 @@ class DatasetStatistics(UserDict):
 
     def __init__(
         self,
+        organisations,
+        users,
         today,
         dataset_name_to_explorers,
         dataset_id_to_requests,
@@ -26,6 +28,8 @@ class DatasetStatistics(UserDict):
         dataset,
     ):
         super().__init__(dataset.data)
+        self.organisations = organisations
+        self.users = users
         self.today = today
         self.last_3_months = today - relativedelta(months=3)
         self.previous_quarter = get_previous_quarter(today)
@@ -48,6 +52,7 @@ class DatasetStatistics(UserDict):
         self.get_last_modified_freshness()
         self.get_end_date_freshness()
         self.get_quickcharts()
+        self.get_maintainer()
 
     def get_status(self):
         self.public = "N" if self["private"] else "Y"
@@ -320,3 +325,20 @@ class DatasetStatistics(UserDict):
             self.has_quickcharts = "Y"
         else:
             self.has_quickcharts = "N"
+
+    def get_maintainer(self):
+        self.valid_maintainer = "N"
+        maintainer_id = self["maintainer"]
+        maintainer = self.users.get(maintainer_id)
+        if not maintainer:
+            return
+        if maintainer["sysadmin"]:
+            self.valid_maintainer = "Y"
+            return
+        organisation_id = self["organization"]["id"]
+        organisation = self.organisations[organisation_id]
+        for user in organisation.get("users", []):
+            if user["id"] == maintainer_id:
+                if user["capacity"] in ("admin", "editor"):
+                    self.valid_maintainer = "Y"
+                return

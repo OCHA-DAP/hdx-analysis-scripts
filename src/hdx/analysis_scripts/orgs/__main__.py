@@ -48,8 +48,8 @@ def main(downloads, output_dir, **ignore):
     end_date_aging = get_aging(configuration["end_date_aging"])
     dataset_3m_downloads = downloads.get_mixpanel_downloads(3)
     dataset_1y_downloads = downloads.get_mixpanel_downloads(12)
-    logger.info("Obtaining organisations data")
     organisations = downloads.get_all_organisations()
+    users = downloads.get_all_users()
     total_public = 0
     total_public_internal = 0
     total_public_external = 0
@@ -144,9 +144,12 @@ def main(downloads, output_dir, **ignore):
         organisation["tags"] = set()
         organisation["has crisis"] = "N"
         organisation["has quickcharts"] = "N"
+        organisation["valid maintainers"] = "Y"
     outdated_lastmodifieds = {}
     for dataset in downloads.get_all_datasets():
         datasetstats = DatasetStatistics(
+            organisations,
+            users,
             downloads.today,
             dataset_name_to_explorers,
             dataset_id_to_requests,
@@ -246,6 +249,8 @@ def main(downloads, output_dir, **ignore):
             organisation["has crisis"] = "Y"
         if datasetstats.has_quickcharts == "Y":
             organisation["has quickcharts"] = "Y"
+        if datasetstats.valid_maintainer == "N":
+            organisation["valid maintainers"] = "N"
 
     headers = [
         "Organisation name",
@@ -303,6 +308,7 @@ def main(downloads, output_dir, **ignore):
         "Tags",
         "Has crisis",
         "Has quickcharts",
+        "Maintainers valid",
     ]
 
     def get_number_percentage(organisation, key):
@@ -406,6 +412,7 @@ def main(downloads, output_dir, **ignore):
             ",".join(sorted(organisation["tags"])),
             organisation["has crisis"],
             organisation["has quickcharts"],
+            organisation["valid maintainers"],
         ]
         rows.append(row)
     if rows:

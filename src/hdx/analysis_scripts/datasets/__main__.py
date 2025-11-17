@@ -35,6 +35,8 @@ def main(downloads, output_dir, **ignore):
     last_modified_aging = get_aging(configuration["last_modified_aging"])
     end_date_aging = get_aging(configuration["end_date_aging"])
     dataset_downloads = downloads.get_mixpanel_downloads(60)
+    organisations = downloads.get_all_organisations()
+    users = downloads.get_all_users()
     created_per_month = {}
     metadata_updated_per_month = {}
     data_updated_per_month = {}
@@ -70,10 +72,13 @@ def main(downloads, output_dir, **ignore):
             "updated_by_script<<last_modified",
             "last_modified<<updated_by_script",
             "has quickcharts",
+            "valid maintainer",
         )
     ]
     for dataset in downloads.get_all_datasets():
         datasetstats = DatasetStatistics(
+            organisations,
+            users,
             downloads.today,
             dataset_name_to_explorers,
             dataset_id_to_requests,
@@ -138,6 +143,7 @@ def main(downloads, output_dir, **ignore):
             datasetstats.old_updated_by_noncod_script,
             datasetstats.outdated_lastmodified,
             datasetstats.has_quickcharts,
+            datasetstats.valid_maintainer,
         )
         rows.append(row)
     if rows:
