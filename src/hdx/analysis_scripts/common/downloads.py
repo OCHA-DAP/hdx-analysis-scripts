@@ -7,6 +7,7 @@ from mixpanel_utils import MixpanelUtils
 
 from hdx.data.dataset import Dataset
 from hdx.data.organization import Organization
+from hdx.data.user import User
 from hdx.utilities.downloader import Download
 from hdx.utilities.loader import load_yaml
 from hdx.utilities.saver import save_json
@@ -60,6 +61,7 @@ class Downloads:
     packagelinks_file = "package_links.json"
     hdxconnect_file = "hdxconnect.json"
     organisations_file = "organisations.json"
+    users_file = "users.json"
     aging_file = "aging.yaml"
 
     def __init__(self, today, mixpanel_config_yaml, saved_dir=None):
@@ -169,3 +171,13 @@ class Downloads:
         if self.saved_dir:
             save_json(organisations, join(self.saved_dir, self.organisations_file))
         return organisations
+
+    def get_all_users(self):
+        logger.info("Obtaining user data")
+        user_list = User.get_all_users()
+        users = {}
+        for user in user_list:
+            users[user["id"]] = user.data
+        if self.saved_dir:
+            save_json(users, join(self.saved_dir, self.users_file))
+        return users

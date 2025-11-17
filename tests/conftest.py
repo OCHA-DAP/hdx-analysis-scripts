@@ -39,7 +39,7 @@ def input_folder(fixtures):
 @pytest.fixture(scope="session")
 def mock_downloads(input_folder):
     class MockDownloads:
-        today = parse_date("2025-07-20 22:50:00")
+        today = parse_date("2025-11-16 22:50:00")
 
         @classmethod
         def set_api_key(cls, api_key):
@@ -96,6 +96,10 @@ def mock_downloads(input_folder):
         @staticmethod
         def get_all_organisations():
             return load_json(join(input_folder, Downloads.organisations_file))
+
+        @staticmethod
+        def get_all_users():
+            return load_json(join(input_folder, Downloads.users_file))
 
         @staticmethod
         def get_aging(url):

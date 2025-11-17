@@ -34,7 +34,7 @@ classifiers = [
 requires-python = ">=3.10"
 
 dependencies = [
-  "hdx-python-api>= 6.5.2",
+  "hdx-python-api>= 6.5.3",
   "hdx-python-country>= 3.9.8",
   "hdx-python-utilities>= 3.9.5",
   "mixpanel-utils",

@@ -13,9 +13,9 @@ class TestGetOrgStats:
             total_public, total_updated_by_cod, total_updated_by_script = main(
                 mock_downloads, folder
             )
-            assert total_public == 18212
-            assert total_updated_by_cod == 229
-            assert total_updated_by_script == 15997
+            assert total_public == 19346
+            assert total_updated_by_cod == 213
+            assert total_updated_by_script == 16525
             filename = "org_stats.csv"
             assert_files_same(join(fixtures, filename), join(folder, filename))
             filename = "total_stats.csv"
