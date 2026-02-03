@@ -143,7 +143,6 @@ def main(downloads, output_dir, **ignore):
         organisation["denied requests"] = denied_requests
         organisation["tags"] = set()
         organisation["has crisis"] = "N"
-        organisation["has quickcharts"] = "N"
         organisation["valid maintainers"] = "Y"
     outdated_lastmodifieds = {}
     for dataset in downloads.get_all_datasets():
@@ -247,8 +246,6 @@ def main(downloads, output_dir, **ignore):
         datasetstats.add_tags_to_set(organisation["tags"])
         if datasetstats.crisis_tag == "Y":
             organisation["has crisis"] = "Y"
-        if datasetstats.has_quickcharts == "Y":
-            organisation["has quickcharts"] = "Y"
         if datasetstats.valid_maintainer == "N":
             organisation["valid maintainers"] = "N"
 
@@ -307,7 +304,6 @@ def main(downloads, output_dir, **ignore):
         "Denied requests",
         "Tags",
         "Has crisis",
-        "Has quickcharts",
         "Maintainers valid",
     ]
 
@@ -411,7 +407,6 @@ def main(downloads, output_dir, **ignore):
             organisation["denied requests"],
             ",".join(sorted(organisation["tags"])),
             organisation["has crisis"],
-            organisation["has quickcharts"],
             organisation["valid maintainers"],
         ]
         rows.append(row)

@@ -51,7 +51,6 @@ class DatasetStatistics(UserDict):
         self.get_updated_by_script()
         self.get_last_modified_freshness()
         self.get_end_date_freshness()
-        self.get_quickcharts()
         self.get_maintainer()
 
     def get_status(self):
@@ -319,12 +318,6 @@ class DatasetStatistics(UserDict):
                 self.end_date_uptodate = self.calculate_ed_uptodate(
                     enddate, update_frequency
                 )
-
-    def get_quickcharts(self):
-        if self.dataset["has_quickcharts"]:
-            self.has_quickcharts = "Y"
-        else:
-            self.has_quickcharts = "N"
 
     def get_maintainer(self):
         self.valid_maintainer = "N"

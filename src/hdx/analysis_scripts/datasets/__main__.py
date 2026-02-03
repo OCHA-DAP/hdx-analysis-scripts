@@ -71,7 +71,6 @@ def main(downloads, output_dir, **ignore):
             "date updated by script",
             "updated_by_script<<last_modified",
             "last_modified<<updated_by_script",
-            "has quickcharts",
             "valid maintainer",
         )
     ]
@@ -142,7 +141,6 @@ def main(downloads, output_dir, **ignore):
             datasetstats.updated_by_script,
             datasetstats.old_updated_by_noncod_script,
             datasetstats.outdated_lastmodified,
-            datasetstats.has_quickcharts,
             datasetstats.valid_maintainer,
         )
         rows.append(row)
