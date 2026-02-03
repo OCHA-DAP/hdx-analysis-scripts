@@ -11,7 +11,7 @@ attrs==25.4.0
     #   jsonlines
     #   jsonschema
     #   referencing
-certifi==2025.11.12
+certifi==2026.1.4
     # via
     #   -c requirements.txt
     #   requests
@@ -31,7 +31,7 @@ click==8.3.1
     # via
     #   -c requirements.txt
     #   typer
-coverage==7.11.3
+coverage==7.13.2
     # via pytest-cov
 cydifflib==1.2.0
     # via hdx-analysis-scripts (pyproject.toml)
@@ -48,7 +48,7 @@ docopt==0.6.2
     #   -c requirements.txt
     #   ckanapi
     #   num2words
-docutils==0.22.3
+docutils==0.22.4
     # via
     #   -c requirements.txt
     #   defopt
@@ -64,22 +64,22 @@ frictionless==5.18.1
     # via
     #   -c requirements.txt
     #   hdx-python-utilities
-hdx-python-api==6.5.3
+hdx-python-api==6.6.4
     # via
     #   -c requirements.txt
     #   hdx-analysis-scripts (pyproject.toml)
-hdx-python-country==3.9.8
+hdx-python-country==4.1.0
     # via
     #   -c requirements.txt
     #   hdx-analysis-scripts (pyproject.toml)
     #   hdx-python-api
-hdx-python-utilities==3.9.5
+hdx-python-utilities==4.0.4
     # via
     #   -c requirements.txt
     #   hdx-analysis-scripts (pyproject.toml)
     #   hdx-python-api
     #   hdx-python-country
-humanize==4.14.0
+humanize==4.15.0
     # via
     #   -c requirements.txt
     #   frictionless
@@ -114,7 +114,7 @@ jsonpath-ng==1.7.0
     # via
     #   -c requirements.txt
     #   libhxl
-jsonschema==4.25.1
+jsonschema==4.26.0
     # via
     #   -c requirements.txt
     #   frictionless
@@ -126,7 +126,6 @@ jsonschema-specifications==2025.9.1
 libhxl==5.2.2
     # via
     #   -c requirements.txt
-    #   hdx-python-api
     #   hdx-python-country
 loguru==0.7.3
     # via
@@ -140,7 +139,7 @@ markdown-it-py==4.0.0
     # via
     #   -c requirements.txt
     #   rich
-marko==2.2.1
+marko==2.2.2
     # via
     #   -c requirements.txt
     #   frictionless
@@ -168,8 +167,11 @@ openpyxl==3.1.5
     # via
     #   -c requirements.txt
     #   hdx-python-utilities
-packaging==25.0
-    # via pytest
+packaging==26.0
+    # via
+    #   -c requirements.txt
+    #   pytest
+    #   wheel
 petl==1.7.17
     # via
     #   -c requirements.txt
@@ -187,7 +189,7 @@ pockets==0.9.1
     # via
     #   -c requirements.txt
     #   sphinxcontrib-napoleon
-pydantic==2.12.4
+pydantic==2.12.5
     # via
     #   -c requirements.txt
     #   frictionless
@@ -204,12 +206,12 @@ pyphonetics==0.5.3
     # via
     #   -c requirements.txt
     #   hdx-python-utilities
-pytest==9.0.1
+pytest==9.0.2
     # via
     #   hdx-analysis-scripts (pyproject.toml)
     #   pytest-check
     #   pytest-cov
-pytest-check==2.6.0
+pytest-check==2.6.2
     # via hdx-analysis-scripts (pyproject.toml)
 pytest-cov==7.0.0
     # via hdx-analysis-scripts (pyproject.toml)
@@ -262,24 +264,20 @@ rfc3986==2.0.0
     # via
     #   -c requirements.txt
     #   frictionless
-rich==14.2.0
+rich==14.3.2
     # via
     #   -c requirements.txt
     #   typer
-rpds-py==0.29.0
+rpds-py==0.30.0
     # via
     #   -c requirements.txt
     #   jsonschema
     #   referencing
-ruamel-yaml==0.18.16
+ruamel-yaml==0.19.1
     # via
     #   -c requirements.txt
     #   hdx-python-utilities
-ruamel-yaml-clib==0.2.15
-    # via
-    #   -c requirements.txt
-    #   ruamel-yaml
-setuptools==80.9.0
+setuptools==80.10.2
     # via
     #   -c requirements.txt
     #   ckanapi
@@ -330,7 +328,7 @@ typeguard==4.4.4
     # via
     #   -c requirements.txt
     #   inflect
-typer==0.20.0
+typer==0.21.1
     # via
     #   -c requirements.txt
     #   frictionless
@@ -338,6 +336,7 @@ typing-extensions==4.15.0
     # via
     #   -c requirements.txt
     #   frictionless
+    #   hdx-python-utilities
     #   pydantic
     #   pydantic-core
     #   typeguard
@@ -352,7 +351,7 @@ unidecode==1.4.0
     #   -c requirements.txt
     #   libhxl
     #   pyphonetics
-urllib3==2.5.0
+urllib3==2.6.3
     # via
     #   -c requirements.txt
     #   libhxl
@@ -361,7 +360,7 @@ validators==0.35.0
     # via
     #   -c requirements.txt
     #   frictionless
-wheel==0.45.1
+wheel==0.46.3
     # via
     #   -c requirements.txt
     #   libhxl
@@ -373,7 +372,7 @@ xlrd3==1.1.0
     # via
     #   -c requirements.txt
     #   libhxl
-xlsx2csv==0.8.4
+xlsx2csv==0.8.6
     # via
     #   -c requirements.txt
     #   hdx-python-utilities

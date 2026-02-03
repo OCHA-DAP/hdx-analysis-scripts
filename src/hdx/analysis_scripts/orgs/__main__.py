@@ -71,8 +71,8 @@ def main(downloads, output_dir, **ignore):
         if organisation_location and len(organisation_location) == 3:
             country_info = Country.get_country_info_from_iso3(organisation_location)
             if country_info:
-                latitude = country_info["#geo+lat"]
-                longitude = country_info["#geo+lon"]
+                latitude = country_info["Latitude"]
+                longitude = country_info["Longitude"]
         organisation["latitude"] = latitude
         organisation["longitude"] = longitude
         admins = 0
