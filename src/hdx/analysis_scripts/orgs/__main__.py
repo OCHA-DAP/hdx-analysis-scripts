@@ -17,8 +17,9 @@ from hdx.api.configuration import Configuration
 from hdx.facades.keyword_arguments import facade
 from hdx.location.country import Country
 from hdx.utilities.dateparse import default_date, now_utc
-from hdx.utilities.dictandlist import dict_of_lists_add, write_list_to_csv
+from hdx.utilities.dictandlist import dict_of_lists_add
 from hdx.utilities.path import script_dir_plus_file
+from hdx.utilities.saver import save_iterable
 from hdx.utilities.text import get_fraction_str
 
 logger = logging.getLogger(__name__)
@@ -413,7 +414,7 @@ def main(downloads, output_dir, **ignore):
     if rows:
         filepath = join(output_dir, "org_stats.csv")
         logger.info(f"Writing rows to {filepath}")
-        write_list_to_csv(filepath, rows, headers, encoding="utf-8")
+        save_iterable(filepath, rows, headers, encoding="utf-8")
 
     if outdated_lastmodifieds:
         message = ["updated_by_script is significantly after last_modified for:\n"]
@@ -494,7 +495,7 @@ def main(downloads, output_dir, **ignore):
             quarterly_ed_uptodate_okr,
         ]
     ]
-    write_list_to_csv(filepath, rows, headers, encoding="utf-8")
+    save_iterable(filepath, rows, headers, encoding="utf-8")
     return total_public, total_updated_by_cod, total_updated_by_script
 
 

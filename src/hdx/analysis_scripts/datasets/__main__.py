@@ -15,8 +15,8 @@ from hdx.analysis_scripts.common.downloads import Downloads
 from hdx.api.configuration import Configuration
 from hdx.facades.keyword_arguments import facade
 from hdx.utilities.dateparse import now_utc
-from hdx.utilities.dictandlist import write_list_to_csv
 from hdx.utilities.path import script_dir_plus_file
+from hdx.utilities.saver import save_iterable
 
 logger = logging.getLogger(__name__)
 
@@ -147,7 +147,7 @@ def main(downloads, output_dir, **ignore):
     if rows:
         filepath = join(output_dir, "datasets.csv")
         logger.info(f"Writing rows to {filepath}")
-        write_list_to_csv(filepath, rows, headers=1, encoding="utf-8")
+        save_iterable(filepath, rows, headers=1, encoding="utf-8")
     keys = set(created_per_month.keys())
     keys.update(metadata_updated_per_month.keys())
     keys.update(data_updated_per_month.keys())
@@ -163,7 +163,7 @@ def main(downloads, output_dir, **ignore):
     if rows:
         filepath = join(output_dir, "non_script_updates.csv")
         logger.info(f"Writing rows to {filepath}")
-        write_list_to_csv(filepath, rows, headers=1, encoding="utf-8")
+        save_iterable(filepath, rows, headers=1, encoding="utf-8")
 
 
 if __name__ == "__main__":
