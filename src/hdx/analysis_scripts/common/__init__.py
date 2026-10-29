@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 from hdx.utilities.dictandlist import dict_of_lists_add
 
@@ -38,17 +38,15 @@ def get_aging(aging_config):
 
 def get_previous_quarter(date):
     if date.month < 4:
-        start_date = datetime(date.year - 1, 10, 1, 0, 0, tzinfo=timezone.utc)
-        end_date = datetime(
-            date.year - 1, 12, 31, 23, 59, 59, 999999, tzinfo=timezone.utc
-        )
+        start_date = datetime(date.year - 1, 10, 1, 0, 0, tzinfo=UTC)
+        end_date = datetime(date.year - 1, 12, 31, 23, 59, 59, 999999, tzinfo=UTC)
     elif date.month < 7:
-        start_date = datetime(date.year, 1, 1, 0, 0, tzinfo=timezone.utc)
-        end_date = datetime(date.year, 3, 31, 23, 59, 59, 999999, tzinfo=timezone.utc)
+        start_date = datetime(date.year, 1, 1, 0, 0, tzinfo=UTC)
+        end_date = datetime(date.year, 3, 31, 23, 59, 59, 999999, tzinfo=UTC)
     elif date.month < 10:
-        start_date = datetime(date.year, 4, 1, 0, 0, tzinfo=timezone.utc)
-        end_date = datetime(date.year, 6, 30, 23, 59, 59, 999999, tzinfo=timezone.utc)
+        start_date = datetime(date.year, 4, 1, 0, 0, tzinfo=UTC)
+        end_date = datetime(date.year, 6, 30, 23, 59, 59, 999999, tzinfo=UTC)
     else:
-        start_date = datetime(date.year, 7, 1, 0, 0, tzinfo=timezone.utc)
-        end_date = datetime(date.year, 9, 30, 23, 59, 59, 999999, tzinfo=timezone.utc)
+        start_date = datetime(date.year, 7, 1, 0, 0, tzinfo=UTC)
+        end_date = datetime(date.year, 9, 30, 23, 59, 59, 999999, tzinfo=UTC)
     return start_date, end_date

@@ -1,8 +1,9 @@
 from os.path import join
 
-from hdx.analysis_scripts.datasets.__main__ import main
 from hdx.utilities.compare import assert_files_same
 from hdx.utilities.path import temp_dir
+
+from hdx.analysis_scripts.datasets.__main__ import main
 
 
 class TestGetDatasetsInfo:

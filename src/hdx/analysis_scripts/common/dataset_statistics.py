@@ -5,10 +5,10 @@ from datetime import datetime, timedelta
 
 from dateutil.parser import ParserError
 from dateutil.relativedelta import relativedelta
-
-from hdx.analysis_scripts.common import get_previous_quarter
 from hdx.api.configuration import Configuration
 from hdx.utilities.dateparse import parse_date
+
+from hdx.analysis_scripts.common import get_previous_quarter
 
 logger = logging.getLogger(__name__)
 
@@ -187,9 +187,10 @@ class DatasetStatistics(UserDict):
             return
         if self.exclude_from_stats == "Y":
             return
-        if "HDXINTERNAL" in updated_by_script:
-            if any(x in updated_by_script for x in ("tagbot",)):
-                return
+        if "HDXINTERNAL" in updated_by_script and any(
+            x in updated_by_script for x in ("tagbot",)
+        ):
+            return
         if any(
             x in updated_by_script
             for x in (
@@ -273,11 +274,11 @@ class DatasetStatistics(UserDict):
             latest_of_modifieds = self.updated_by_script
         if self.update_frequency:
             update_frequency = int(self.update_frequency)
-            if update_frequency == 0:
-                self.last_modified_fresh = "Fresh"
-            elif update_frequency == -1:
-                self.last_modified_fresh = "Fresh"
-            elif update_frequency == -2:
+            if (
+                update_frequency == 0
+                or update_frequency == -1
+                or update_frequency == -2
+            ):
                 self.last_modified_fresh = "Fresh"
             else:
                 self.last_modified_fresh = self.calculate_lm_freshness(

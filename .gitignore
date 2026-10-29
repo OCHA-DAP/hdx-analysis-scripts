@@ -37,6 +37,7 @@ pip-log.txt
 pip-delete-this-directory.txt
 
 # Unit test / coverage reports
+test-results.xml
 htmlcov/
 .tox/
 .nox/
@@ -47,7 +48,9 @@ nosetests.xml
 coverage.xml
 *.cover
 *.py,cover
+coverage.lcov
 .hypothesis/
+tests/*.log
 .pytest_cache/
 cover/
 
@@ -106,8 +109,10 @@ ipython_config.py
 #pdm.lock
 #   pdm stores project-wide configurations in .pdm.toml, but it is recommended to not include it
 #   in version control.
-#   https://pdm.fming.dev/#use-with-ide
+#   https://pdm.fming.dev/latest/usage/project/#working-with-version-control
 .pdm.toml
+.pdm-python
+.pdm-build/
 
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
 __pypackages__/
@@ -153,15 +158,21 @@ dmypy.json
 cython_debug/
 
 # PyCharm
-#  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
-#  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
-#  and can be added to the global gitignore or merged into this file.  For a more nuclear
-#  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 .idea/
 
-## Project
-# Version file
-_version.py
+# VS Code
+.vscode/settings.json
 
-#OS Files
-*DS_Store
+## Project
+
+# Directory where the scraper caches data
+saved_data/
+
+# Version file
+**/_version.py
+
+# Mac files
+.DS_Store
+
+# Claude files
+.claude/
