@@ -2,14 +2,14 @@ from os.path import isfile, join
 
 import pytest
 from dateutil.relativedelta import relativedelta
-
-from hdx.analysis_scripts.common.downloads import Downloads
 from hdx.api.configuration import Configuration
 from hdx.data.dataset import Dataset
 from hdx.utilities.dateparse import parse_date
 from hdx.utilities.loader import load_json, load_yaml
 from hdx.utilities.path import script_dir_plus_file
 from hdx.utilities.useragent import UserAgent
+
+from hdx.analysis_scripts.common.downloads import Downloads
 
 
 @pytest.fixture(scope="session")

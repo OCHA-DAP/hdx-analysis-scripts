@@ -6,13 +6,6 @@ from os import mkdir
 from os.path import expanduser, join
 from shutil import rmtree
 
-from hdx.analysis_scripts.common import (
-    get_aging,
-    get_dataset_name_to_explorers,
-    get_requests_mappings,
-)
-from hdx.analysis_scripts.common.dataset_statistics import DatasetStatistics
-from hdx.analysis_scripts.common.downloads import Downloads
 from hdx.api.configuration import Configuration
 from hdx.facades.keyword_arguments import facade
 from hdx.location.country import Country
@@ -21,6 +14,14 @@ from hdx.utilities.dictandlist import dict_of_lists_add
 from hdx.utilities.path import script_dir_plus_file
 from hdx.utilities.saver import save_iterable
 from hdx.utilities.text import get_fraction_str
+
+from hdx.analysis_scripts.common import (
+    get_aging,
+    get_dataset_name_to_explorers,
+    get_requests_mappings,
+)
+from hdx.analysis_scripts.common.dataset_statistics import DatasetStatistics
+from hdx.analysis_scripts.common.downloads import Downloads
 
 logger = logging.getLogger(__name__)
 
@@ -229,11 +230,13 @@ def main(downloads, output_dir, **ignore):
             and is_public_not_requestable_archived
         ):
             organisation["formerly updated by cod script"] += 1
-        if datasetstats.created > organisation["latest created dataset date"]:
-            organisation["latest created dataset date"] = datasetstats.created
+        organisation["latest created dataset date"] = max(
+            organisation["latest created dataset date"], datasetstats.created
+        )
         if datasetstats.updated_by_script:
-            if datasetstats.last_modified > organisation["latest scripted update date"]:
-                organisation["latest scripted update date"] = datasetstats.last_modified
+            organisation["latest scripted update date"] = max(
+                organisation["latest scripted update date"], datasetstats.last_modified
+            )
             if (
                 datasetstats.updated_by_noncod_script == "Y"
                 and is_public_not_requestable_archived
@@ -320,7 +323,7 @@ def main(downloads, output_dir, **ignore):
         return number, percentage
 
     logger.info("Generating rows")
-    rows = list()
+    rows = []
     for organisation_name in sorted(organisation_name_to_id):
         organisation = organisations[organisation_name_to_id[organisation_name]]
         organisation_type = org_type_mapping[organisation["hdx_org_type"]]

@@ -5,6 +5,12 @@ from os import mkdir
 from os.path import expanduser, join
 from shutil import rmtree
 
+from hdx.api.configuration import Configuration
+from hdx.facades.keyword_arguments import facade
+from hdx.utilities.dateparse import now_utc
+from hdx.utilities.path import script_dir_plus_file
+from hdx.utilities.saver import save_iterable
+
 from hdx.analysis_scripts.common import (
     get_aging,
     get_dataset_name_to_explorers,
@@ -12,11 +18,6 @@ from hdx.analysis_scripts.common import (
 )
 from hdx.analysis_scripts.common.dataset_statistics import DatasetStatistics
 from hdx.analysis_scripts.common.downloads import Downloads
-from hdx.api.configuration import Configuration
-from hdx.facades.keyword_arguments import facade
-from hdx.utilities.dateparse import now_utc
-from hdx.utilities.path import script_dir_plus_file
-from hdx.utilities.saver import save_iterable
 
 logger = logging.getLogger(__name__)
 

@@ -3,18 +3,17 @@ from os import getenv
 from os.path import join
 
 from dateutil.relativedelta import relativedelta
-from mixpanel_utils import MixpanelUtils
-
 from hdx.data.dataset import Dataset
 from hdx.data.organization import Organization
 from hdx.data.user import User
 from hdx.utilities.downloader import Download
 from hdx.utilities.loader import load_yaml
 from hdx.utilities.saver import save_json
+from mixpanel_utils import MixpanelUtils
 
 logger = logging.getLogger(__name__)
 
-COMMON_HEADER = """
+COMMON_HEADER = r"""
 const BOT_STRINGS = ['bot', 'crawler', 'spider', 'hxl-proxy', 'hdxinternal', 'data\.world', 'opendataportalwatch', 'microsoft\ office', 'turnitin']
 const regex = new RegExp(BOT_STRINGS.join('|'), 'i')
 function containsAny(value) {{
