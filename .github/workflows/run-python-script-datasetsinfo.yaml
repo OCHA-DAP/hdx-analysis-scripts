@@ -5,7 +5,7 @@ name: run_datasetsinfo
 on:
   workflow_dispatch: # add run button in github
   schedule:
-    - cron: "43 5 * * *"
+    - cron: "43 6 * * *"
 
 jobs:
   run:
